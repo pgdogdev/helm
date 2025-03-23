@@ -1,5 +1,3 @@
-# name is the name of the Deployment, Service, ConfigMap and Secret.
-name: pgdog
 # image contains the Docker image properties.
 image:
   # name is the name of the Docker image, including repo and version.
