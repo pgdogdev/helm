@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.name }}
+data:
+  pgdog.toml: |
+    [general]
+    port = 6432
+
+    [[databases]]
+    name = "prod"
+    host = "127.0.0.1"
+    port = 5432
