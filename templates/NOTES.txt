@@ -1,0 +1,10 @@
+Thanks for using PgDog!
+
+PgDog is a PostgreSQL pooler that can shard databases automatically. This Helm chart provides
+a template for deploying PgDog to your cluster. You can modify it as you see fit.
+
+Usage:
+
+    1. Modify templates/config.yaml with the desired PgDog config.
+    2. Modify users.toml to add users that can connect to Pgdog.
+    3. helm install -f values.yaml pgdog .
