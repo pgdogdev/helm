@@ -18,14 +18,19 @@ spec:
         - name: pgdog
           image: {{ .Values.image.name }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/pgdog/pgdog"]
-          args: ["--config", "/etc/pgdog/pgdog.toml"]
+          command: ["/usr/local/bin/pgdog"]
+          args: ["--config", "/etc/pgdog/pgdog.toml", "--users", "/etc/secrets/pgdog/users.toml"]
           ports:
             - containerPort: {{ .Values.port }}
           volumeMounts:
             - name: config
               mountPath: /etc/pgdog
+            - name: users
+              mountPath: /etc/secrets/pgdog
       volumes:
         - name: config
           configMap:
             name: {{ .Values.name }}
+        - name: users
+          secret:
+            secretName: {{ .Values.name }}

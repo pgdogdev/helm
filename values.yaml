@@ -1,14 +1,13 @@
-# Deployment and service names.
+# name is the name of the Deployment, Service, ConfigMap and Secret.
 name: pgdog
-
-# Docker image settings.
+# image contains the Docker image properties.
 image:
-  # Image name (incl. repo, if pulling from external source)
+  # name is the name of the Docker image, including repo and version.
   name: ghcr.io/pgdogdev/pgdog:main
-  # Since we're using the main tag, you always want to pull it (no cache).
-  # Change this if you use a specific hash.
+  # pullPolicy specifies when to use cached version of the image. Prefer using Always
+  # when using tags like "main".
   pullPolicy: Always
-# Port on which PgDog is running.
+# port on which PgDog will run.
 port: 6432
-# How many instances of PgDog you want (HA).
+# replicas indicates how many instances of PgDog will run (HA).
 replicas: 2

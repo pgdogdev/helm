@@ -1,0 +1,10 @@
+#
+# users.toml
+#
+# Stored a K8s secret.
+#
+
+# [[users]]
+# database = "prod"
+# name = "test"
+# password = "test"
