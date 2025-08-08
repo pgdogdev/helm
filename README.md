@@ -6,8 +6,11 @@
 
 1. Install Helm
 2. Configure `kubectl` to point to your K8s cluster
-3. Configure databases and users in `values.yaml`
-4. Run `helm install ./ pgdog -f values.yaml`
+3. Add our Helm repository: `helm repo add pgdogdev https://helm.pgdog.dev`
+4. Configure databases and users in `values.yaml`
+5. Run `helm install pgdogdev/pgdog <name> -f values.yaml` where `<name>` is the name of your deployment.
+
+All resources will be created in `<name>` namespace.
 
 ### Configuration
 
