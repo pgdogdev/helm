@@ -7,6 +7,100 @@ data:
   # Note: don't change the port value, since it's pulled from Values.
   pgdog.toml: |
     [general]
-    port = {{ .Values.port }}
+    port                      =   {{ .Values.port }}
+    workers                   =   {{ .Values.workers | default "2" }}
+    default_pool_size         =   {{ .Values.defaultPoolSize | default "10" }}
+    min_pool_size             =   {{ .Values.minPoolSize | default "1" }}
+    pooler_mode               =   {{ .Values.poolerMode | default "transaction" | quote }}
+    healthcheck_interval      =   {{ .Values.healthcheckInterval | default "30_000" }}
+    idle_healthcheck_interval =   {{ .Values.idleHealthcheckInterval | default "30_000" }}
+    idle_healthcheck_delay    =   {{ .Values.idleHealthcheckDelay | default "5_000" }}
+    healthcheck_timeout       =   {{ .Values.healthcheckTimeout | default "5_000" }}
+    ban_timeout               =   {{ .Values.banTimeout | default "300_000" }}
+    rollback_timeout          =   {{ .Values.rollbackTimeout | default "5_000" }}
+    load_balancing_strategy   =   {{ .Values.loadBalancingStrategy | default "round_robin" | quote }}
+    read_write_strategy       =   {{ .Values.readWriteStrategy | default "conservative" | quote }}
+    read_write_split          =   {{ .Values.readWriteSplit | default "exclude_primary" | quote }}
+    {{- if (not (empty .Values.tlsCertificate)) }}
+    tls_certificate           =   {{ .Values.tlsCertificate | quote }}
+    {{- end }}
+    {{- if (not (empty .Values.tlsPrivateKey)) }}
+    tls_private_key           =   {{ .Values.tlsPrivateKey | quote }}
+    {{- end }}
+    tls_verify                =   {{ .Values.tlsVerify | default "prefer" | quote }}
+    {{- if (not (empty .Values.tlsServerCaCertificate)) }}
+    tls_server_ca_certificate =   {{ .Values.tlsServerCaCertificate | quote }}
+    {{- end}}
+    shutdown_timeout          =   {{ .Values.shutdownTimeout | default "60_000" }}
+    prepared_statements       =   {{ .Values.preparedStatements | default "extended" | quote }}
+    {{- if (not (empty .Values.preparedStatementsLimit)) }}
+    prepared_statements_limit =   {{ .Values.preparedStatementsLimit }}
+    {{- end}}
+    {{- if (not (empty .Values.queryCacheLimit)) }}
+    query_cache_limit         =   {{ .Values.queryCacheLimit | quote }}
+    {{- end }}
+    passthrough_auth          =   {{ .Values.passthroughAuth | default "disabled" | quote }}
+    connect_timeout           =   {{ .Values.connectTimeout | default "5_000" }}
+    connect_attempts          =   {{ .Values.connectAttempts | default "1" }}
+    connect_attempt_delay     =   {{ .Values.connectAttemptDelay | default "0" }}
+    {{- if (not (empty .Values.queryTimeout)) }}
+    query_timeout             =   {{ .Values.queryTimeout }}
+    {{- end }}
+    checkout_timeout          =   {{ .Values.checkoutTimeout | default "5_000" }}
+    dry_run                   =   {{ .Values.dryRun | default "false" }}
+    {{- if (not (empty .Values.queryTimeout)) }}
+    idle_timeout              =   {{ .Values.idleTimeout }}
+    {{- end }}
+    {{- if (not (empty .Values.clientIdleTimeout)) }}
+    client_idle_timeout       =   {{ .Values.clientIdleTimeout | quote }}
+    {{- end }}
+    mirror_queue              =   {{ .Values.mirrorQueue | default "128" }}
+    mirror_exposure           =   {{ .Values.mirrorExposure | default "1.0" }}
+    auth_type                 =   {{ .Values.authType | default "scram" | quote }}
+    cross_shard_disabled      =   {{ .Values.crossShardDisabled | default "false" }}
+    {{- if (not (empty .Values.dnsTtl)) }}
+    dns_ttl                   =   {{ .Values.dnsTtl }}
+    {{- end }}
+    {{- if (not (empty .Values.pubSubChannelSize)) }}
+    pub_sub_channel_size      =   {{ .Values.pubSubChannelSize }}
+    {{- end }}
+    openmetrics_port = {{ .Values.openMetricsPort | default "9090" }}
+    openmetrics_namespace = {{ .Values.openMetricsNamespace | default "pgdog_" | quote }}
 
+    {{- range .Values.databases }}
     [[databases]]
+    name = {{ .name | quote }}
+    host = {{ .host | quote }}
+    port = {{ .port | default "5432" }}
+    shard = {{ .shard | default "0" }}
+    {{- if .databaseName }}
+    database_name = {{ .databaseName | quote }}
+    {{- end }}
+    {{- if .user }}
+    user = "{{ .user | quote }}"
+    {{- end }}
+    {{- if .password }}
+    password = "{{ .password | quote }}"
+    {{- end }}
+    {{- if .poolSize }}
+    pool_size = {{ .poolSize }}
+    {{- end }}
+    {{- if .minPoolSize }}
+    min_pool_size = {{ .minPoolSize }}
+    {{- end }}
+    {{- if .poolerMode }}
+    pooler_mode = {{ .poolerMode | quote }}
+    {{- end }}
+    {{- if .statementTimeout }}
+    statement_timeout = {{ .statementTimeout }}
+    {{- end }}
+    {{- if .idleTimeout }}
+    idle_timeout = {{ .idleTimeout }}
+    {{- end }}
+    {{- if .mirrorOf }}
+    mirror_of = {{ .mirrorOf | quote }}
+    {{- end }}
+    {{- if .readOnly }}
+    read_only = {{ .readOnly }}
+    {{- end }}
+    {{- end }}

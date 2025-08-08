@@ -6,6 +6,7 @@ spec:
   selector:
     app: {{ .Release.Name }}
   ports:
-    - protocol: TCP
+    - name: pgdog
+      protocol: TCP
       port: {{ .Values.port }}
       targetPort: {{ .Values.port }}
