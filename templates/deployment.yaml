@@ -1,18 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}
+  name: pgdog
+  namespace: {{ .Release.Name }}
   labels:
-    app: {{ .Release.Name }}
+    app: pgdog
 spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}
+      app: pgdog
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}
+        app: pgdog
     spec:
       containers:
         - name: pgdog
@@ -48,10 +49,10 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: {{ .Release.Name }}
+            name: pgdog
         - name: users
           secret:
-            secretName: {{ .Release.Name }}
+            secretName: pgdog
         - name: prom
           configMap:
-            name: "{{ .Release.Name }}-prom"
+            name: prom

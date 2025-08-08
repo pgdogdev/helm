@@ -1,10 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}
+  namespace: {{ .Release.Name }}
+  name: pgdog
 spec:
   selector:
-    app: {{ .Release.Name }}
+    app: pgdog
   ports:
     - name: pgdog
       protocol: TCP
