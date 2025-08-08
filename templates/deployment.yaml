@@ -21,12 +21,30 @@ spec:
           command: ["/usr/local/bin/pgdog"]
           args: ["--config", "/etc/pgdog/pgdog.toml", "--users", "/etc/secrets/pgdog/users.toml"]
           ports:
-            - containerPort: {{ .Values.port }}
+            - name: pgdog
+              containerPort: {{ .Values.port }}
+            - name: metrics
+              containerPort: {{ .Values.openMetricsPort }}
           volumeMounts:
             - name: config
               mountPath: /etc/pgdog
             - name: users
               mountPath: /etc/secrets/pgdog
+        {{- if .Values.prometheusPort }}
+        - name: prom
+          image: prom/prometheus
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["prometheus"]
+          args:
+            - "--config.file=/etc/prom/prom.yml"
+            - '--web.listen-address=:{{ .Values.prometheusPort | default "9091" }}'
+          ports:
+            - name: prom
+              containerPort: {{ .Values.prometheusPort }}
+          volumeMounts:
+            - name: prom
+              mountPath: /etc/prom
+        {{- end }}
       volumes:
         - name: config
           configMap:
@@ -34,3 +52,6 @@ spec:
         - name: users
           secret:
             secretName: {{ .Release.Name }}
+        - name: prom
+          configMap:
+            name: "{{ .Release.Name }}-prom"

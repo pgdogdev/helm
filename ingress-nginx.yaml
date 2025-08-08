@@ -1,0 +1,9 @@
+# ingress-nginx values.yaml.
+#
+# TCP mapping to match your config.
+#
+controller:
+  service:
+    type: LoadBalancer
+tcp:
+  6432: "default/pgdog:6432"

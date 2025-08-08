@@ -9,3 +9,17 @@ image:
 port: 6432
 # replicas indicates how many instances of PgDog will run (HA).
 replicas: 2
+# openMetricsPort configures the port on which OpenMetrics (Prometheus) are exported
+openMetricsPort: 9090
+# prometheusPort configures the port on which Prometheus will export its metrics
+# prometheusPort: 9091
+# openMetricsNamespace configures the metrics namespace
+openMetricsNamespace: pgdog_
+
+# databases contains the list of database entries in pgdog.toml
+# Supports all arguments from pgdog.toml. Arguments are named in camelCase format.
+databases: []
+
+# users contains the list of user entries in users.toml
+# Supports all arguments from users.toml. Arguments are named in camelCase format.
+users: []
