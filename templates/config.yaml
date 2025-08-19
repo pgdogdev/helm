@@ -78,10 +78,10 @@ data:
     database_name = {{ .databaseName | quote }}
     {{- end }}
     {{- if .user }}
-    user = "{{ .user | quote }}"
+    user = {{ .user | quote }}
     {{- end }}
     {{- if .password }}
-    password = "{{ .password | quote }}"
+    password = {{ .password | quote }}
     {{- end }}
     {{- if .poolSize }}
     pool_size = {{ .poolSize }}
@@ -103,5 +103,8 @@ data:
     {{- end }}
     {{- if .readOnly }}
     read_only = {{ .readOnly }}
+    {{- end }}
+    {{- if .role }}
+    role = {{ .role | quote }}
     {{- end }}
     {{- end }}
