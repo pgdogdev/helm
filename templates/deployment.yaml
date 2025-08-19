@@ -1,8 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pgdog
-  namespace: {{ .Release.Name }}
+  name: {{ include "pgdog.fullname" . }}
   labels:
     app: pgdog
 spec:
@@ -49,10 +48,10 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: pgdog
+            name: {{ include "pgdog.fullname" . }}
         - name: users
           secret:
-            secretName: pgdog
+            secretName: {{ include "pgdog.fullname" . }}
         - name: prom
           configMap:
-            name: prom
+            name: {{ include "pgdog.fullname" . }}-prom

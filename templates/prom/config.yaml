@@ -1,8 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: prom
-  namespace: {{ .Release.Name }}
+  name: {{ include "pgdog.fullname" . }}-prom
 data:
   prom.yml: |
     global:
