@@ -1,8 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: pgdog
-  namespace: {{ .Release.Name }}
+  name: {{ include "pgdog.fullname" . }}
 data:
   # This is pgdog.toml. You can configure anything here, incl. databases.
   # Note: don't change the port value, since it's pulled from Values.
