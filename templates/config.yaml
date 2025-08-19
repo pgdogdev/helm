@@ -104,4 +104,7 @@ data:
     {{- if .readOnly }}
     read_only = {{ .readOnly }}
     {{- end }}
+    {{- if .role }}
+    role = {{ .role | quote }}
+    {{- end }}
     {{- end }}
