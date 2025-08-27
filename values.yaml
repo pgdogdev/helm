@@ -1,3 +1,7 @@
+# chart instance name overrides
+nameOverride: ""
+fullnameOverride: ""
+
 # image contains the Docker image properties.
 image:
   # name is the name of the Docker image, including repo and version.
