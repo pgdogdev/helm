@@ -9,6 +9,7 @@ CHART_NAME="pgdog"
 DEPLOY_DIR="$PROJECT_ROOT/deploy"
 
 echo "Creating deploy directory..."
+rm -rf "$DEPLOY_DIR"
 mkdir -p "$DEPLOY_DIR"
 
 echo "Packaging Helm chart..."
@@ -19,4 +20,4 @@ echo "Creating/updating Helm repository index..."
 helm repo index "$DEPLOY_DIR" --url "https://helm.pgdog.dev"
 
 echo "Deployment artifacts created in $DEPLOY_DIR/"
-ls -la "$DEPLOY_DIR/"
+ls -lsha "$DEPLOY_DIR/"
