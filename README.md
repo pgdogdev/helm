@@ -53,6 +53,16 @@ users:
     password: "hunter2"
 ```
 
+### Mirroring
+
+Add mirrors to `mirrors` list. For example:
+
+```yaml
+mirrors:
+  - sourceDb: "prod"
+    destinationDb: "staging"
+```
+
 ### Prometheus (optional)
 
 Prometheus metrics can be collected with a sidecar. Enable by configuring `prometheusPort`:

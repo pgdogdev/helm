@@ -97,13 +97,22 @@ data:
         {{- if .idleTimeout }}
         idle_timeout = {{ .idleTimeout }}
         {{- end }}
-        {{- if .mirrorOf }}
-        mirror_of = {{ .mirrorOf | quote }}
-        {{- end }}
         {{- if .readOnly }}
         read_only = {{ .readOnly }}
         {{- end }}
         {{- if .role }}
         role = {{ .role | quote }}
+        {{- end }}
+        {{- end }}
+
+        {{- range .Values.mirrors }}
+        [[mirroring]]
+        source_db = {{ .sourceDb | quote }}
+        destination_db = {{ .destinationDb | quote }}
+        {{- if .queueDepth }}
+        queue_depth = {{ .queueDepth }}
+        {{- end}}
+        {{- if .exposure }}
+        exposure = {{ .exposure }}
         {{- end }}
         {{- end }}
