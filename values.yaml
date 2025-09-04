@@ -27,3 +27,6 @@ databases: []
 # users contains the list of user entries in users.toml
 # Supports all arguments from users.toml. Arguments are named in camelCase format.
 users: []
+
+# mirrors contains a list of databases to replicate traffic from/to.
+mirrors: []
