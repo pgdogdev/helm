@@ -116,3 +116,8 @@ data:
         exposure = {{ .exposure }}
         {{- end }}
         {{- end }}
+
+        {{- if .Values.adminPassword }}
+        [admin]
+        password = {{ .Values.adminPassword | quote }}
+        {{- end }}

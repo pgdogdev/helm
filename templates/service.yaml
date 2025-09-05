@@ -2,7 +2,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "pgdog.fullname" . }}
+  {{- if .Values.service.annotations }}
+  annotations:
+    {{- toYaml .Values.service.annotations | nindent 4 }}
+  {{- end }}
+  labels:
+    app: pgdog
 spec:
+  type: {{ .Values.service.type }}
   selector:
     app: pgdog
   ports:
@@ -10,3 +17,7 @@ spec:
       protocol: TCP
       port: {{ .Values.port }}
       targetPort: {{ .Values.port }}
+    - name: openmetrics
+      protocol: TCP
+      port: {{ .Values.openMetricsPort }}
+      targetPort: {{ .Values.openMetricsPort }}

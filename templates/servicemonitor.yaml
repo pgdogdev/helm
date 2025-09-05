@@ -1,0 +1,12 @@
+{{- if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "pgdog.fullname" . }}
+spec:
+  endpoints:
+    - path: /
+      port: openmetrics
+  selector:
+    app: pgdog
+{{- end }}
