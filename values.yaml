@@ -20,6 +20,9 @@ openMetricsPort: 9090
 # openMetricsNamespace configures the metrics namespace
 openMetricsNamespace: pgdog_
 
+# Admin password
+# adminPassword: change-me
+
 # databases contains the list of database entries in pgdog.toml
 # Supports all arguments from pgdog.toml. Arguments are named in camelCase format.
 databases: []
@@ -30,3 +33,17 @@ users: []
 
 # mirrors contains a list of databases to replicate traffic from/to.
 mirrors: []
+
+# service contains the Kubernetes service configuration
+service:
+  # type specifies the type of Kubernetes service (ClusterIP, NodePort, LoadBalancer, etc)
+  type: ClusterIP
+  # annotations allows adding custom annotations to the service
+  annotations: {}
+
+# tolerations allows pods to be scheduled on nodes with matching taints
+tolerations: []
+
+# ServiceMonitor for Prometheus metrics
+serviceMonitor:
+  enabled: false
