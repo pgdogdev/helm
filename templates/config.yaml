@@ -105,7 +105,7 @@ data:
         role = {{ .role | quote }}
         {{- end }}
         {{- if .serverLifetime }}
-        server_lifetime = {{ .serverLifetime | default "86400000" }}l
+        server_lifetime = {{ .serverLifetime }}
         {{- end }}
         {{- end }}
 
