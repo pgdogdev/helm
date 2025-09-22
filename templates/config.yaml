@@ -66,6 +66,7 @@ data:
         {{- end }}
         openmetrics_port = {{ .Values.openMetricsPort | default "9090" }}
         openmetrics_namespace = {{ .Values.openMetricsNamespace | default "pgdog_" | quote }}
+        server_lifetime = {{ .Values.serverLifetime | default "86400000" }}
 
         {{- range .Values.databases }}
         [[databases]]
@@ -102,6 +103,9 @@ data:
         {{- end }}
         {{- if .role }}
         role = {{ .role | quote }}
+        {{- end }}
+        {{- if .serverLifetime }}
+        server_lifetime = {{ .serverLifetime }}
         {{- end }}
         {{- end }}
 
