@@ -12,6 +12,8 @@ echo "Creating deploy directory..."
 rm -rf "$DEPLOY_DIR"
 mkdir -p "$DEPLOY_DIR"
 
+aws s3 sync s3://pgdog-helm "$DEPLOY_DIR"
+
 echo "Packaging Helm chart..."
 cd "$PROJECT_ROOT"
 helm package . --destination "$DEPLOY_DIR"
@@ -21,3 +23,5 @@ helm repo index "$DEPLOY_DIR" --url "https://helm.pgdog.dev"
 
 echo "Deployment artifacts created in $DEPLOY_DIR/"
 ls -lsha "$DEPLOY_DIR/"
+
+aws s3 sync "$DEPLOY_DIR" s3://pgdog-helm
