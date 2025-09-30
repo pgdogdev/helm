@@ -4,16 +4,41 @@ fullnameOverride: ""
 
 # image contains the Docker image properties.
 image:
-  # name is the name of the Docker image, including repo and version.
-  name: ghcr.io/pgdogdev/pgdog:main
-  # pullPolicy specifies when to use cached version of the image. Prefer using Always
-  # when using tags like "main".
-  pullPolicy: Always
+  # repository is the Docker image repository
+  repository: ghcr.io/pgdogdev/pgdog
+  # tag is the Docker image tag (defaults to "latest" if not specified)
+  tag: "latest"
+  # pullPolicy specifies when to use cached version of the image.
+  pullPolicy: IfNotPresent
 # port on which PgDog will run.
 port: 6432
 # replicas indicates how many instances of PgDog will run (HA).
 replicas: 2
-# openMetricsPort configures the port on which OpenMetrics (Prometheus) are exported
+
+# resources define resource requests and limits for the pgdog container
+# Note: requests and limits are set to the same values for Guaranteed QoS
+# Ratio: 1GB memory per 1 CPU (1000m CPU = 1Gi memory)
+resources:
+  requests:
+    cpu: 1000m
+    memory: 1Gi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+# prometheusResources define resource requests and limits for the
+# prometheus sidecar (if enabled)
+# Note: requests and limits are set to the same values for Guaranteed QoS
+# Ratio: 1GB memory per 1 CPU (e.g., 100m CPU = 100Mi memory)
+prometheusResources:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+  limits:
+    cpu: 100m
+    memory: 100Mi
+# openMetricsPort configures the port on which OpenMetrics
+# (Prometheus) are exported
 openMetricsPort: 9090
 # prometheusPort configures the port on which Prometheus will export its metrics
 # prometheusPort: 9091
@@ -24,11 +49,13 @@ openMetricsNamespace: pgdog_
 # adminPassword: change-me
 
 # databases contains the list of database entries in pgdog.toml
-# Supports all arguments from pgdog.toml. Arguments are named in camelCase format.
+# Supports all arguments from pgdog.toml. Arguments are named in
+# camelCase format.
 databases: []
 
 # users contains the list of user entries in users.toml
-# Supports all arguments from users.toml. Arguments are named in camelCase format.
+# Supports all arguments from users.toml. Arguments are named in
+# camelCase format.
 users: []
 
 # mirrors contains a list of databases to replicate traffic from/to.
@@ -36,13 +63,91 @@ mirrors: []
 
 # service contains the Kubernetes service configuration
 service:
-  # type specifies the type of Kubernetes service (ClusterIP, NodePort, LoadBalancer, etc)
+  # type specifies the type of Kubernetes service
+  # (ClusterIP, NodePort, LoadBalancer, etc)
   type: ClusterIP
   # annotations allows adding custom annotations to the service
   annotations: {}
 
 # tolerations allows pods to be scheduled on nodes with matching taints
 tolerations: []
+
+# affinity and anti-affinity rules for pod scheduling
+affinity: {}
+  # Example: spread pods across different nodes for HA
+  # podAntiAffinity:
+  #   preferredDuringSchedulingIgnoredDuringExecution:
+  #   - weight: 100
+  #     podAffinityTerm:
+  #       labelSelector:
+  #         matchExpressions:
+  #         - key: app
+  #           operator: In
+  #           values:
+  #           - pgdog
+  #       topologyKey: kubernetes.io/hostname
+
+# podAntiAffinity enables default anti-affinity rules to spread pods
+# across nodes
+# Set to true for automatic pod anti-affinity configuration
+podAntiAffinity:
+  enabled: true
+  # type can be "soft" (preferred) or "hard" (required)
+  type: soft
+
+# podDisruptionBudget helps maintain availability during voluntary disruptions
+podDisruptionBudget:
+  enabled: true
+  # minAvailable specifies the minimum number of pods that must be available
+  # Can be an absolute number or a percentage (e.g., "50%")
+  minAvailable: 1
+  # maxUnavailable specifies the maximum number of pods that can be unavailable
+  # Only one of minAvailable or maxUnavailable can be specified
+  # maxUnavailable: 1
+
+# serviceAccount configuration for RBAC
+serviceAccount:
+  # create specifies whether a ServiceAccount should be created
+  create: true
+  # annotations to add to the service account
+  annotations: {}
+  # name of the service account to use
+  # (if not set and create is true, a name is generated)
+  name: ""
+
+# rbac configuration
+rbac:
+  # create specifies whether RBAC resources should be created
+  create: true
+
+# externalSecrets integration for secrets management
+externalSecrets:
+  # enabled controls whether to use ExternalSecrets instead of plain
+  # Kubernetes secrets
+  enabled: false
+  # create controls whether to create an ExternalSecret resource or
+  # use an existing one
+  # Set to false if you want to reference an externally managed ExternalSecret
+  create: true
+  # name of the ExternalSecret to create or reference
+  # (if empty, uses the chart fullname)
+  name: ""
+  # refreshInterval defines how often to sync secrets from external
+  # source (only used when create: true)
+  refreshInterval: 1h
+  # secretStoreRef references the SecretStore to use
+  # (only used when create: true)
+  secretStoreRef:
+    name: ""
+    kind: SecretStore
+  # remoteRefs defines the external secret references
+  # (only used when create: true)
+  remoteRefs: []
+    # Example structure:
+    # - secretKey: users.toml
+    #   remoteRef:
+    #     key: pgdog/users
+    #     property: users.toml
 
 # ServiceMonitor for Prometheus metrics
 serviceMonitor:

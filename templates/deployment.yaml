@@ -14,9 +14,12 @@ spec:
       labels:
         app: pgdog
     spec:
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ include "pgdog.serviceAccountName" . }}
+      {{- end }}
       containers:
         - name: pgdog
-          image: {{ .Values.image.name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/usr/local/bin/pgdog"]
           args: ["--config", "/etc/pgdog/pgdog.toml", "--users", "/etc/secrets/pgdog/users.toml"]
@@ -25,6 +28,10 @@ spec:
               containerPort: {{ .Values.port }}
             - name: metrics
               containerPort: {{ .Values.openMetricsPort }}
+          {{- if .Values.resources }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: config
               mountPath: /etc/pgdog
@@ -41,6 +48,10 @@ spec:
           ports:
             - name: prom
               containerPort: {{ .Values.prometheusPort }}
+          {{- if .Values.prometheusResources }}
+          resources:
+            {{- toYaml .Values.prometheusResources | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: prom
               mountPath: /etc/prom
@@ -59,4 +70,32 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-            
+      {{- if or .Values.affinity .Values.podAntiAffinity.enabled }}
+      affinity:
+        {{- if .Values.affinity }}
+        {{- toYaml .Values.affinity | nindent 8 }}
+        {{- else if .Values.podAntiAffinity.enabled }}
+        podAntiAffinity:
+          {{- if eq .Values.podAntiAffinity.type "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - pgdog
+            topologyKey: kubernetes.io/hostname
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - pgdog
+              topologyKey: kubernetes.io/hostname
+          {{- end }}
+        {{- end }}
+      {{- end }}
