@@ -19,7 +19,11 @@ spec:
       {{- end }}
       containers:
         - name: pgdog
+          {{- if .Values.image.name }}
+          image: {{ .Values.image.name }}
+          {{- else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/usr/local/bin/pgdog"]
           args:
@@ -48,7 +52,9 @@ spec:
           command: ["prometheus"]
           args:
             - "--config.file=/etc/prom/prom.yml"
-            - '--web.listen-address=:{{ .Values.prometheusPort | default "9091" }}'
+            - >-
+              --web.listen-address=:{{
+              .Values.prometheusPort | default "9091" }}
           ports:
             - name: prom
               containerPort: {{ .Values.prometheusPort }}

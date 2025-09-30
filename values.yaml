@@ -10,6 +10,10 @@ image:
   tag: "latest"
   # pullPolicy specifies when to use cached version of the image.
   pullPolicy: IfNotPresent
+  # name is the full image name (DEPRECATED: use repository and tag)
+  # If set, this takes precedence over repository and tag for backward
+  # compatibility
+  # name: ghcr.io/pgdogdev/pgdog:main
 # port on which PgDog will run.
 port: 6432
 # replicas indicates how many instances of PgDog will run (HA).
