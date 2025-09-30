@@ -22,7 +22,11 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/usr/local/bin/pgdog"]
-          args: ["--config", "/etc/pgdog/pgdog.toml", "--users", "/etc/secrets/pgdog/users.toml"]
+          args:
+            - "--config"
+            - "/etc/pgdog/pgdog.toml"
+            - "--users"
+            - "/etc/secrets/pgdog/users.toml"
           ports:
             - name: pgdog
               containerPort: {{ .Values.port }}
@@ -62,7 +66,12 @@ spec:
             name: {{ include "pgdog.fullname" . }}
         - name: users
           secret:
+            {{- if and .Values.externalSecrets.enabled
+                       .Values.externalSecrets.secretName }}
+            secretName: {{ .Values.externalSecrets.secretName }}
+            {{- else }}
             secretName: {{ include "pgdog.fullname" . }}
+            {{- end }}
         - name: prom
           configMap:
             name: {{ include "pgdog.fullname" . }}-prom

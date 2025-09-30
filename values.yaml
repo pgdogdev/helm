@@ -132,6 +132,11 @@ externalSecrets:
   # name of the ExternalSecret to create or reference
   # (if empty, uses the chart fullname)
   name: ""
+  # secretName is the name of the Kubernetes Secret that the
+  # ExternalSecret creates/targets (if empty, uses the chart fullname)
+  # Only needed when using an existing ExternalSecret with a custom
+  # target secret name
+  secretName: ""
   # refreshInterval defines how often to sync secrets from external
   # source (only used when create: true)
   refreshInterval: 1h
