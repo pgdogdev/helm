@@ -1,0 +1,107 @@
+# Example configurations for ExternalSecrets integration
+
+# ========================================
+# Option 1: Create ExternalSecret with the Helm chart
+# ========================================
+# Use this when you want the Helm chart to manage the ExternalSecret resource
+---
+externalSecrets:
+  enabled: true
+  create: true # Chart will create the ExternalSecret
+  refreshInterval: 1h
+
+  # Reference to your SecretStore (must already exist in the cluster)
+  secretStoreRef:
+    name: aws-secrets-manager # Name of your SecretStore
+    kind: SecretStore # Or ClusterSecretStore
+
+  # Define which secrets to fetch from your external secret store
+  remoteRefs:
+    - secretKey: users.toml
+      remoteRef:
+        key: pgdog/production/users # Path in your secret store
+        property: users.toml # Optional: specific property
+
+# ========================================
+# Option 2: Reference an existing ExternalSecret
+# ========================================
+# Use this when your infrastructure/platform team manages ExternalSecrets centrally
+# and you just want to reference an already-created ExternalSecret
+---
+externalSecrets:
+  enabled: true
+  create: false # Do NOT create an ExternalSecret, use existing one
+
+  # Optional: specify the name of the existing ExternalSecret to reference
+  # If not specified, it will look for an ExternalSecret named after the chart
+  # (e.g., "my-release-pgdog")
+  name: "platform-managed-pgdog-secrets"
+
+  # Note: The referenced ExternalSecret must:
+  # 1. Already exist in the same namespace
+  # 2. Create a Kubernetes Secret that matches what the chart expects
+  # 3. The target Secret name should be: {{ release-name }}-pgdog
+  #    OR you can manage the secret name mapping separately
+
+# ========================================
+# Option 3: Default behavior (no ExternalSecrets)
+# ========================================
+# Uses plain Kubernetes Secrets (not recommended for production)
+---
+externalSecrets:
+  enabled: false # Disabled by default
+
+# Define users directly in values (passwords will be in plain text)
+users:
+  - name: myuser
+    database: mydb
+    password: "changeme" # NOT RECOMMENDED: plain text password
+    poolSize: 10
+
+# ========================================
+# Complete example with ExternalSecrets + other production features
+# ========================================
+---
+# Pin to specific version
+image:
+  repository: ghcr.io/pgdogdev/pgdog
+  tag: "v1.2.3"
+  pullPolicy: IfNotPresent
+
+# Set replicas for HA
+replicas: 3
+
+# Configure resource limits (Guaranteed QoS: requests = limits)
+# Following 1GB:1CPU ratio (1000m CPU = 1Gi memory)
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Enable PodDisruptionBudget
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 2 # Keep at least 2 pods running
+
+# Enable anti-affinity for pod spreading
+podAntiAffinity:
+  enabled: true
+  type: soft # Prefer to spread across nodes
+
+# Use existing ExternalSecret managed by platform team
+externalSecrets:
+  enabled: true
+  create: false
+  name: "platform-pgdog-secrets-prod"
+
+# Enable RBAC
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::123456789012:role/pgdog-prod"
+
+rbac:
+  create: true
