@@ -6,10 +6,15 @@ high availability, security, and resource management features.
 ## Features
 
 ✅ Resource limits with Guaranteed QoS (1GB:1CPU ratio)
+
 ✅ PodDisruptionBudget for high availability
+
 ✅ Pod anti-affinity for spreading across nodes
+
 ✅ ExternalSecrets integration for secure credential management
+
 ✅ ServiceAccount and RBAC with minimal permissions
+
 ✅ Pinned image versions for production deployments
 
 ## Quick Start
