@@ -5,7 +5,7 @@ high availability, security, and resource management features.
 
 ## Features
 
-✅ Resource limits with Guaranteed QoS (1GB:1CPU ratio)
+✅ Resource limits with guaranteed QoS (1GB:1CPU ratio)
 
 ✅ PodDisruptionBudget for high availability
 
