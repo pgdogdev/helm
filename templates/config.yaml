@@ -12,6 +12,9 @@ data:
         default_pool_size         =   {{ .Values.defaultPoolSize | default "10" }}
         min_pool_size             =   {{ .Values.minPoolSize | default "1" }}
         pooler_mode               =   {{ .Values.poolerMode | default "transaction" | quote }}
+        {{- if .Values.healthcheckPort }}
+        healthcheck_port          =   {{ .Values.healthcheckPort }}
+        {{- end }}
         healthcheck_interval      =   {{ .Values.healthcheckInterval | default "30_000" }}
         idle_healthcheck_interval =   {{ .Values.idleHealthcheckInterval | default "30_000" }}
         idle_healthcheck_delay    =   {{ .Values.idleHealthcheckDelay | default "5_000" }}
