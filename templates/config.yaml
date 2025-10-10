@@ -10,7 +10,9 @@ data:
         port                      =   {{ .Values.port }}
         workers                   =   {{ .Values.workers | default "2" }}
         default_pool_size         =   {{ .Values.defaultPoolSize | default "10" }}
-        min_pool_size             =   {{ .Values.minPoolSize | default "1" }}
+        {{- if hasKey .Values "minPoolSize" }}
+        min_pool_size             =   {{ .Values.minPoolSize }}
+        {{- end }}
         pooler_mode               =   {{ .Values.poolerMode | default "transaction" | quote }}
         {{- if .Values.healthcheckPort }}
         healthcheck_port          =   {{ .Values.healthcheckPort }}
@@ -19,7 +21,9 @@ data:
         idle_healthcheck_interval =   {{ .Values.idleHealthcheckInterval | default "30_000" }}
         idle_healthcheck_delay    =   {{ .Values.idleHealthcheckDelay | default "5_000" }}
         healthcheck_timeout       =   {{ .Values.healthcheckTimeout | default "5_000" }}
-        ban_timeout               =   {{ .Values.banTimeout | default "300_000" }}
+        {{- if hasKey .Values "banTimeout" }}
+        ban_timeout               =   {{ .Values.banTimeout }}
+        {{- end }}
         rollback_timeout          =   {{ .Values.rollbackTimeout | default "5_000" }}
         load_balancing_strategy   =   {{ .Values.loadBalancingStrategy | default "round_robin" | quote }}
         read_write_strategy       =   {{ .Values.readWriteStrategy | default "conservative" | quote }}
