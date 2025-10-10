@@ -8,19 +8,19 @@ data:
     pgdog.toml: |
         [general]
         port                      =   {{ .Values.port }}
-        workers                   =   {{ .Values.workers | default "2" }}
-        default_pool_size         =   {{ .Values.defaultPoolSize | default "10" }}
-        min_pool_size             =   {{ .Values.minPoolSize | default "1" }}
+        workers                   =   {{ coalesce .Values.workers 2 }}
+        default_pool_size         =   {{ coalesce .Values.defaultPoolSize 10 }}
+        min_pool_size             =   {{ coalesce .Values.minPoolSize 1 }}
         pooler_mode               =   {{ .Values.poolerMode | default "transaction" | quote }}
         {{- if .Values.healthcheckPort }}
         healthcheck_port          =   {{ .Values.healthcheckPort }}
         {{- end }}
-        healthcheck_interval      =   {{ .Values.healthcheckInterval | default "30_000" }}
-        idle_healthcheck_interval =   {{ .Values.idleHealthcheckInterval | default "30_000" }}
-        idle_healthcheck_delay    =   {{ .Values.idleHealthcheckDelay | default "5_000" }}
-        healthcheck_timeout       =   {{ .Values.healthcheckTimeout | default "5_000" }}
-        ban_timeout               =   {{ .Values.banTimeout | default "300_000" }}
-        rollback_timeout          =   {{ .Values.rollbackTimeout | default "5_000" }}
+        healthcheck_interval      =   {{ coalesce .Values.healthcheckInterval 30_000 }}
+        idle_healthcheck_interval =   {{ coalesce .Values.idleHealthcheckInterval 30_000 }}
+        idle_healthcheck_delay    =   {{ coalesce .Values.idleHealthcheckDelay 5_000 }}
+        healthcheck_timeout       =   {{ coalesce .Values.healthcheckTimeout 5_000 }}
+        ban_timeout               =   {{ coalesce .Values.banTimeout 300_000 }}
+        rollback_timeout          =   {{ coalesce .Values.rollbackTimeout 5_000 }}
         load_balancing_strategy   =   {{ .Values.loadBalancingStrategy | default "round_robin" | quote }}
         read_write_strategy       =   {{ .Values.readWriteStrategy | default "conservative" | quote }}
         read_write_split          =   {{ .Values.readWriteSplit | default "exclude_primary" | quote }}
@@ -34,7 +34,7 @@ data:
         {{- if .Values.tlsServerCaCertificate }}
         tls_server_ca_certificate =   {{ .Values.tlsServerCaCertificate | quote }}
         {{- end}}
-        shutdown_timeout          =   {{ .Values.shutdownTimeout | default "60_000" }}
+        shutdown_timeout          =   {{ coalesce .Values.shutdownTimeout 60_000 }}
         prepared_statements       =   {{ .Values.preparedStatements | default "extended" | quote }}
         {{- if .Values.preparedStatementsLimit }}
         prepared_statements_limit =   {{ .Values.preparedStatementsLimit }}
@@ -43,13 +43,13 @@ data:
         query_cache_limit         =   {{ .Values.queryCacheLimit | quote }}
         {{- end }}
         passthrough_auth          =   {{ .Values.passthroughAuth | default "disabled" | quote }}
-        connect_timeout           =   {{ .Values.connectTimeout | default "5_000" }}
-        connect_attempts          =   {{ .Values.connectAttempts | default "1" }}
-        connect_attempt_delay     =   {{ .Values.connectAttemptDelay | default "0" }}
+        connect_timeout           =   {{ coalesce .Values.connectTimeout 5_000 }}
+        connect_attempts          =   {{ coalesce .Values.connectAttempts 1 }}
+        connect_attempt_delay     =   {{ coalesce .Values.connectAttemptDelay 0 }}
         {{- if .Values.queryTimeout }}
         query_timeout             =   {{ .Values.queryTimeout }}
         {{- end }}
-        checkout_timeout          =   {{ .Values.checkoutTimeout | default "5_000" }}
+        checkout_timeout          =   {{ coalesce .Values.checkoutTimeout 5_000 }}
         dry_run                   =   {{ .Values.dryRun | default "false" }}
         {{- if .Values.idleTimeout }}
         idle_timeout              =   {{ .Values.idleTimeout }}
@@ -57,8 +57,8 @@ data:
         {{- if .Values.clientIdleTimeout }}
         client_idle_timeout       =   {{ .Values.clientIdleTimeout | quote }}
         {{- end }}
-        mirror_queue              =   {{ .Values.mirrorQueue | default "128" }}
-        mirror_exposure           =   {{ .Values.mirrorExposure | default "1.0" }}
+        mirror_queue              =   {{ coalesce .Values.mirrorQueue 128 }}
+        mirror_exposure           =   {{ coalesce .Values.mirrorExposure 1.0 }}
         auth_type                 =   {{ .Values.authType | default "scram" | quote }}
         cross_shard_disabled      =   {{ .Values.crossShardDisabled | default "false" }}
         {{- if .Values.dnsTtl }}
@@ -67,16 +67,16 @@ data:
         {{- if .Values.pubSubChannelSize }}
         pub_sub_channel_size      =   {{ .Values.pubSubChannelSize }}
         {{- end }}
-        openmetrics_port = {{ .Values.openMetricsPort | default "9090" }}
+        openmetrics_port = {{ coalesce .Values.openMetricsPort 9090 }}
         openmetrics_namespace = {{ .Values.openMetricsNamespace | default "pgdog_" | quote }}
-        server_lifetime = {{ .Values.serverLifetime | default "86400000" }}
+        server_lifetime = {{ coalesce .Values.serverLifetime 86400000 }}
 
         {{- range .Values.databases }}
         [[databases]]
         name = {{ .name | quote }}
         host = {{ .host | quote }}
-        port = {{ .port | default "5432" }}
-        shard = {{ .shard | default "0" }}
+        port = {{ coalesce .port 5432 }}
+        shard = {{ coalesce .shard 0 }}
         {{- if .databaseName }}
         database_name = {{ .databaseName | quote }}
         {{- end }}
