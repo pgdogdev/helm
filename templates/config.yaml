@@ -10,7 +10,9 @@ data:
         port                      =   {{ .Values.port }}
         workers                   =   {{ .Values.workers | default "2" }}
         default_pool_size         =   {{ .Values.defaultPoolSize | default "10" }}
-        min_pool_size             =   {{ .Values.minPoolSize | default "1" }}
+        {{- if hasKey .Values "minPoolSize" }}
+        min_pool_size             =   {{ .Values.minPoolSize }}
+        {{- end }}
         pooler_mode               =   {{ .Values.poolerMode | default "transaction" | quote }}
         {{- if .Values.healthcheckPort }}
         healthcheck_port          =   {{ .Values.healthcheckPort }}
