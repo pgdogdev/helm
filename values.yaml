@@ -164,3 +164,32 @@ externalSecrets:
 # ServiceMonitor for Prometheus metrics
 serviceMonitor:
   enabled: false
+
+# Grafana remote write configuration for Prometheus
+grafanaRemoteWrite:
+  # url is the Grafana remote write endpoint
+  # When set, remote_write will be enabled automatically
+  # Example: https://prometheus-prod-XX-XXX.grafana.net/api/prom/push
+  url: ""
+  # basicAuth credentials for Grafana Cloud
+  basicAuth:
+    # username is typically a numeric user ID for Grafana Cloud
+    username: ""
+    # password is the Grafana Cloud API key/token
+    password: ""
+  # queueConfig allows fine-tuning the remote write queue behavior
+  queueConfig:
+    # capacity is the number of samples to buffer per shard before blocking
+    capacity: 10000
+    # maxShards is the maximum number of shards (parallelism)
+    maxShards: 50
+    # minShards is the minimum number of shards
+    minShards: 1
+    # maxSamplesPerSend is the maximum number of samples per send
+    maxSamplesPerSend: 5000
+    # batchSendDeadline is the maximum time samples will wait in buffer
+    batchSendDeadline: 5s
+    # minBackoff is the initial retry delay
+    minBackoff: 30ms
+    # maxBackoff is the maximum retry delay
+    maxBackoff: 5s
