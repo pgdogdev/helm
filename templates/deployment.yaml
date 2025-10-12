@@ -70,6 +70,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+            - name: DEPLOYMENT_NAME
+              value: {{ include "pgdog.fullname" . | quote }}
             {{- if .Values.clusterName }}
             - name: CLUSTER_NAME
               value: {{ .Values.clusterName | quote }}

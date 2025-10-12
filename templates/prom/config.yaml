@@ -10,6 +10,7 @@ data:
         {{- if .Values.clusterName }}
         cluster: ${CLUSTER_NAME}
         {{- end }}
+        deployment: ${DEPLOYMENT_NAME}
         pod_name: ${POD_NAME}
         pod_namespace: ${POD_NAMESPACE}
         pod_ip: ${POD_IP}
