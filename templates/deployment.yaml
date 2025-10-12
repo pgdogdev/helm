@@ -55,6 +55,27 @@ spec:
             - >-
               --web.listen-address=:{{
               .Values.prometheusPort | default "9091" }}
+            - "--enable-feature=expand-external-labels"
+            - "--web.enable-lifecycle"
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: DEPLOYMENT_NAME
+              value: {{ include "pgdog.fullname" . | quote }}
+            {{- if .Values.clusterName }}
+            - name: CLUSTER_NAME
+              value: {{ .Values.clusterName | quote }}
+            {{- end }}
           ports:
             - name: prom
               containerPort: {{ .Values.prometheusPort }}

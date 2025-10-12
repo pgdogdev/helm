@@ -2,6 +2,10 @@
 nameOverride: ""
 fullnameOverride: ""
 
+# clusterName identifies the Kubernetes cluster (optional)
+# When set, this will be added as a label to all Prometheus metrics
+# clusterName: ""
+
 # image contains the Docker image properties.
 image:
   # repository is the Docker image repository
