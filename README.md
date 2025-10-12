@@ -197,6 +197,31 @@ prometheusResources:
 Make sure it's different from `openMetricsPort`. You can configure
 Prometheus in `templates/prom/config.yaml`.
 
+#### Grafana Remote Write
+
+To send metrics to Grafana Cloud or a Grafana instance, configure
+the remote write settings:
+
+```yaml
+grafanaRemoteWrite:
+  url: "https://prometheus-prod-XX-XXX.grafana.net/api/prom/push"
+  basicAuth:
+    username: "123456" # Grafana Cloud user ID
+    password: "your-api-key" # Grafana Cloud API key
+  queueConfig:
+    capacity: 10000
+    maxShards: 50
+    minShards: 1
+    maxSamplesPerSend: 5000
+    batchSendDeadline: 5s
+    minBackoff: 30ms
+    maxBackoff: 5s
+```
+
+The `queueConfig` settings use Prometheus defaults and can be tuned
+for performance. Remote write is automatically enabled when `url` is
+set.
+
 ## Contributions
 
 Contributions are welcome. Please open a pull request / issue with
