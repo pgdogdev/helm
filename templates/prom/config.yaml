@@ -6,6 +6,13 @@ data:
   prom.yml: |
     global:
       scrape_interval: 15s
+      external_labels:
+        {{- if .Values.clusterName }}
+        cluster: ${CLUSTER_NAME}
+        {{- end }}
+        pod_name: ${POD_NAME}
+        pod_namespace: ${POD_NAMESPACE}
+        pod_ip: ${POD_IP}
     scrape_configs:
       - job_name: pgdog
         scrape_interval: 15s
