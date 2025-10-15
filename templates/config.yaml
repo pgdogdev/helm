@@ -132,3 +132,8 @@ data:
         [admin]
         password = {{ .Values.adminPassword | quote }}
         {{- end }}
+
+        {{- if and .Values.gateway.enabled .Values.gateway.connectFromPgdog }}
+        [gateway]
+        address = "{{ include "pgdog.fullname" . }}-gateway:{{ .Values.gateway.port | default 8443 }}"
+        {{- end }}

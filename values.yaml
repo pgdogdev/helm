@@ -9,9 +9,9 @@ fullnameOverride: ""
 # image contains the Docker image properties.
 image:
   # repository is the Docker image repository
-  repository: ghcr.io/pgdogdev/pgdog
+  repository: ghcr.io/pgdogdev/pgdog-enterprise
   # tag is the Docker image tag (defaults to "latest" if not specified)
-  tag: "latest"
+  tag: "main-ent"
   # pullPolicy specifies when to use cached version of the image.
   pullPolicy: IfNotPresent
   # name is the full image name (DEPRECATED: use repository and tag)
@@ -29,13 +29,13 @@ replicas: 2
 # resources define resource requests and limits for the pgdog container
 # Note: requests and limits are set to the same values for Guaranteed QoS
 # Ratio: 1GB memory per 1 CPU (1000m CPU = 1Gi memory)
-resources:
-  requests:
-    cpu: 1000m
-    memory: 1Gi
-  limits:
-    cpu: 1000m
-    memory: 1Gi
+# resources:
+#   requests:
+#     cpu: 1000m
+#     memory: 1Gi
+#   limits:
+#     cpu: 1000m
+#     memory: 1Gi
 
 # prometheusResources define resource requests and limits for the
 # prometheus sidecar (if enabled)
@@ -197,3 +197,66 @@ grafanaRemoteWrite:
     minBackoff: 30ms
     # maxBackoff is the maximum retry delay
     maxBackoff: 5s
+
+# Gateway configuration (Enterprise Edition)
+# The gateway provides query stats collection and monitoring capabilities
+# NOTE: Gateway runs as a single replica only
+gateway:
+  # enabled controls whether to deploy the gateway
+  enabled: true
+  # image contains the Docker image properties for the gateway
+  image:
+    # repository is the Docker image repository
+    repository: ghcr.io/pgdogdev/pgdog-enterprise/gateway
+    # tag is the Docker image tag
+    tag: "e9da432"
+    # pullPolicy specifies when to use cached version of the image
+    pullPolicy: IfNotPresent
+    # name is the full image name (if set, takes precedence)
+    # name: ghcr.io/pgdogdev/gateway:latest
+  # port on which the gateway will run
+  port: 8443
+  # bindAddress is the address the gateway binds to
+  bindAddress: "0.0.0.0"
+  # resources define resource requests and limits for the gateway container
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+  # tls configuration for the gateway
+  tls:
+    # existingSecret references an existing TLS secret (must contain tls.crt and tls.key)
+    existingSecret: ""
+    # certPath is the path to the certificate file (if not using existingSecret)
+    # Defaults to snakeoil certificate if not specified
+    certPath: ""
+    # keyPath is the path to the private key file (if not using existingSecret)
+    # Defaults to snakeoil key if not specified
+    keyPath: ""
+  # control configuration for the gateway
+  control:
+    # url is the WebSocket endpoint for control communication
+    url: "http://127.0.0.1:8080/ws"
+    # token is the authentication token for control communication
+    token: ""
+  # stats configuration intervals (in milliseconds)
+  stats:
+    activeQueriesInterval: 1000
+    pingInterval: 1000
+    pushInterval: 1000
+  # service contains the Kubernetes service configuration for gateway
+  service:
+    # type specifies the type of Kubernetes service
+    type: ClusterIP
+    # annotations allows adding custom annotations to the service
+    annotations: {}
+  # tolerations allows pods to be scheduled on nodes with matching taints
+  tolerations: []
+  # affinity rules for pod scheduling
+  affinity: {}
+  # connectFromPgdog enables pgdog to connect to the gateway
+  # When enabled, pgdog.toml will include a [gateway] section
+  connectFromPgdog: false
