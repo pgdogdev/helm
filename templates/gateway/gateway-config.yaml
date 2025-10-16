@@ -18,9 +18,11 @@ data:
         key_path = {{ .Values.gateway.tls.keyPath | default "/etc/ssl/private/ssl-cert-snakeoil.key" | quote }}
         {{- end }}
 
+        {{- if .Values.gateway.control.url }}
         [control]
         url = {{ .Values.gateway.control.url | quote }}
         token = {{ .Values.gateway.control.token | quote }}
+        {{- end }}
 
         [stats]
         active_queries_interval = {{ .Values.gateway.stats.activeQueriesInterval | default 1000 }}

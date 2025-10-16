@@ -9,9 +9,9 @@ fullnameOverride: ""
 # image contains the Docker image properties.
 image:
   # repository is the Docker image repository
-  repository: ghcr.io/pgdogdev/pgdog-enterprise
+  repository: ghcr.io/pgdogdev/pgdog
   # tag is the Docker image tag (defaults to "latest" if not specified)
-  tag: "main-ent"
+  tag: "latest"
   # pullPolicy specifies when to use cached version of the image.
   pullPolicy: IfNotPresent
   # name is the full image name (DEPRECATED: use repository and tag)
@@ -203,15 +203,15 @@ grafanaRemoteWrite:
 # NOTE: Gateway runs as a single replica only
 gateway:
   # enabled controls whether to deploy the gateway
-  enabled: true
+  enabled: false
   # image contains the Docker image properties for the gateway
   image:
     # repository is the Docker image repository
     repository: ghcr.io/pgdogdev/pgdog-enterprise/gateway
     # tag is the Docker image tag
-    tag: "e9da432"
+    tag: "main-ent"
     # pullPolicy specifies when to use cached version of the image
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     # name is the full image name (if set, takes precedence)
     # name: ghcr.io/pgdogdev/gateway:latest
   # port on which the gateway will run
@@ -221,11 +221,11 @@ gateway:
   # resources define resource requests and limits for the gateway container
   resources:
     requests:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 1000m
+      memory: 1Gi
     limits:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 1000m
+      memory: 1Gi
   # tls configuration for the gateway
   tls:
     # existingSecret references an existing TLS secret (must contain tls.crt and tls.key)
@@ -239,7 +239,7 @@ gateway:
   # control configuration for the gateway
   control:
     # url is the WebSocket endpoint for control communication
-    url: "http://127.0.0.1:8080/ws"
+    url: ""
     # token is the authentication token for control communication
     token: ""
   # stats configuration intervals (in milliseconds)
