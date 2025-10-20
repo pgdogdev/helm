@@ -29,13 +29,13 @@ replicas: 2
 # resources define resource requests and limits for the pgdog container
 # Note: requests and limits are set to the same values for Guaranteed QoS
 # Ratio: 1GB memory per 1 CPU (1000m CPU = 1Gi memory)
-# resources:
-#   requests:
-#     cpu: 1000m
-#     memory: 1Gi
-#   limits:
-#     cpu: 1000m
-#     memory: 1Gi
+resources:
+  requests:
+    cpu: 1000m
+    memory: 1Gi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
 
 # prometheusResources define resource requests and limits for the
 # prometheus sidecar (if enabled)
