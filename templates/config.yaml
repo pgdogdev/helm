@@ -135,5 +135,5 @@ data:
 
         {{- if and .Values.gateway.enabled .Values.gateway.connectFromPgdog }}
         [gateway]
-        address = "{{ include "pgdog.fullname" . }}-gateway:{{ .Values.gateway.port | default 8443 }}"
+        address = "{{ include "pgdog.fullname" . }}-gateway.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.gateway.port | default 8443 }}"
         {{- end }}

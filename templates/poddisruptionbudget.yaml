@@ -4,7 +4,7 @@ kind: PodDisruptionBudget
 metadata:
   name: {{ include "pgdog.fullname" . }}
   labels:
-    app: pgdog
+    {{- include "pgdog.labels" . | nindent 4 }}
 spec:
   {{- if .Values.podDisruptionBudget.minAvailable }}
   minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
@@ -14,6 +14,6 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      app: pgdog
+      {{- include "pgdog.selectorLabels" . | nindent 6 }}
 {{- end }}
 

@@ -4,16 +4,16 @@ kind: Deployment
 metadata:
   name: {{ include "pgdog.fullname" . }}-gateway
   labels:
-    app: pgdog-gateway
+    {{- include "pgdog.gateway.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pgdog-gateway
+      {{- include "pgdog.gateway.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: pgdog-gateway
+        {{- include "pgdog.gateway.selectorLabels" . | nindent 8 }}
     spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "pgdog.serviceAccountName" . }}

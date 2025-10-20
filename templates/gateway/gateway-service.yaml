@@ -8,11 +8,11 @@ metadata:
     {{- toYaml .Values.gateway.service.annotations | nindent 4 }}
   {{- end }}
   labels:
-    app: pgdog-gateway
+    {{- include "pgdog.gateway.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.gateway.service.type | default "ClusterIP" }}
   selector:
-    app: pgdog-gateway
+    {{- include "pgdog.gateway.selectorLabels" . | nindent 4 }}
   ports:
     - name: gateway
       protocol: TCP
