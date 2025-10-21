@@ -44,6 +44,10 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sleep", "5" ]
           volumeMounts:
             - name: config
               mountPath: /etc/pgdog
