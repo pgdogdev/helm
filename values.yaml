@@ -261,3 +261,10 @@ gateway:
   # connectFromPgdog enables pgdog to connect to the gateway
   # When enabled, pgdog.toml will include a [gateway] section
   connectFromPgdog: false
+# Query stats (PgDog EE)
+queryStats:
+  # enabled enables pgdog query stats (EE version only)
+  enabled: false
+  queryPlanThreshold: 1000
+  queryPlanMaxAge: 15000
+  queryPlansCache: 100
