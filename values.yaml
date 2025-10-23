@@ -247,6 +247,7 @@ gateway:
     activeQueriesInterval: 1000
     pingInterval: 1000
     pushInterval: 1000
+    configInterval: 1000
   # service contains the Kubernetes service configuration for gateway
   service:
     # type specifies the type of Kubernetes service

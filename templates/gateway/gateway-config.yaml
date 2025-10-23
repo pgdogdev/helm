@@ -30,4 +30,5 @@ data:
         active_queries_interval = {{ .Values.gateway.stats.activeQueriesInterval | default 1000 }}
         ping_interval = {{ .Values.gateway.stats.pingInterval | default 1000 }}
         push_interval = {{ .Values.gateway.stats.pushInterval | default 1000 }}
+        config_interval = {{ .Values.gateway.stats.configInterval | default 1000 }}
 {{- end }}
