@@ -33,3 +33,39 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Common labels for pgdog
+*/}}
+{{- define "pgdog.labels" -}}
+app.kubernetes.io/name: {{ include "pgdog.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/component: pgdog
+{{- end }}
+
+{{/*
+Selector labels for pgdog
+*/}}
+{{- define "pgdog.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "pgdog.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/component: pgdog
+{{- end }}
+
+{{/*
+Common labels for gateway
+*/}}
+{{- define "pgdog.gateway.labels" -}}
+app.kubernetes.io/name: {{ include "pgdog.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/component: gateway
+{{- end }}
+
+{{/*
+Selector labels for gateway
+*/}}
+{{- define "pgdog.gateway.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "pgdog.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/component: gateway
+{{- end }}

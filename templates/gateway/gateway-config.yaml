@@ -1,0 +1,34 @@
+{{- if .Values.gateway.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ include "pgdog.fullname" . }}-gateway
+    labels:
+      {{- include "pgdog.gateway.labels" . | nindent 6 }}
+data:
+    config.toml: |
+        [server]
+        bind_address = {{ .Values.gateway.bindAddress | default "0.0.0.0" | quote }}
+        port = {{ .Values.gateway.port | default 8443 }}
+
+        [tls]
+        {{- if .Values.gateway.tls.existingSecret }}
+        cert_path = "/etc/gateway/tls/tls.crt"
+        key_path = "/etc/gateway/tls/tls.key"
+        {{- else }}
+        cert_path = {{ .Values.gateway.tls.certPath | default "/etc/ssl/certs/ssl-cert-snakeoil.pem" | quote }}
+        key_path = {{ .Values.gateway.tls.keyPath | default "/etc/ssl/private/ssl-cert-snakeoil.key" | quote }}
+        {{- end }}
+
+        {{- if .Values.gateway.control.url }}
+        [control]
+        url = {{ .Values.gateway.control.url | quote }}
+        token = {{ .Values.gateway.control.token | quote }}
+        {{- end }}
+
+        [stats]
+        active_queries_interval = {{ .Values.gateway.stats.activeQueriesInterval | default 1000 }}
+        ping_interval = {{ .Values.gateway.stats.pingInterval | default 1000 }}
+        push_interval = {{ .Values.gateway.stats.pushInterval | default 1000 }}
+        config_interval = {{ .Values.gateway.stats.configInterval | default 1000 }}
+{{- end }}

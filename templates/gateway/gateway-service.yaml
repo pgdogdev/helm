@@ -1,0 +1,21 @@
+{{- if .Values.gateway.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pgdog.fullname" . }}-gateway
+  {{- if .Values.gateway.service.annotations }}
+  annotations:
+    {{- toYaml .Values.gateway.service.annotations | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "pgdog.gateway.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.gateway.service.type | default "ClusterIP" }}
+  selector:
+    {{- include "pgdog.gateway.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: gateway
+      protocol: TCP
+      port: {{ .Values.gateway.port | default 8443 }}
+      targetPort: {{ .Values.gateway.port | default 8443 }}
+{{- end }}

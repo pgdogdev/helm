@@ -132,3 +132,16 @@ data:
         [admin]
         password = {{ .Values.adminPassword | quote }}
         {{- end }}
+
+        {{- if and .Values.gateway.enabled .Values.gateway.connectFromPgdog }}
+        [gateway]
+        address = "{{ include "pgdog.fullname" . }}-gateway.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.gateway.port | default 8443 }}"
+        {{- end }}
+
+        {{- if .Values.queryStats.enabled }}
+        [query_stats]
+        enabled = {{ .Values.queryStats.enabled }}
+        query_plan_threshold = {{ .Values.queryStats.queryPlanThreshold | default "1_000" }}
+        query_plan_max_age = {{ .Values.queryStats.queryPlanMaxAge | default "15_000" }}
+        query_plans_cache = {{ .Values.queryStats.queryPlansCache | default "100" }}
+        {{- end }}

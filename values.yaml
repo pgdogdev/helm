@@ -197,3 +197,74 @@ grafanaRemoteWrite:
     minBackoff: 30ms
     # maxBackoff is the maximum retry delay
     maxBackoff: 5s
+
+# Gateway configuration (Enterprise Edition)
+# The gateway provides query stats collection and monitoring capabilities
+# NOTE: Gateway runs as a single replica only
+gateway:
+  # enabled controls whether to deploy the gateway
+  enabled: false
+  # image contains the Docker image properties for the gateway
+  image:
+    # repository is the Docker image repository
+    repository: ghcr.io/pgdogdev/pgdog-enterprise/gateway
+    # tag is the Docker image tag
+    tag: "main-ent"
+    # pullPolicy specifies when to use cached version of the image
+    pullPolicy: Always
+    # name is the full image name (if set, takes precedence)
+    # name: ghcr.io/pgdogdev/gateway:latest
+  # port on which the gateway will run
+  port: 8443
+  # bindAddress is the address the gateway binds to
+  bindAddress: "0.0.0.0"
+  # resources define resource requests and limits for the gateway container
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 1Gi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  # tls configuration for the gateway
+  tls:
+    # existingSecret references an existing TLS secret (must contain tls.crt and tls.key)
+    existingSecret: ""
+    # certPath is the path to the certificate file (if not using existingSecret)
+    # Defaults to snakeoil certificate if not specified
+    certPath: ""
+    # keyPath is the path to the private key file (if not using existingSecret)
+    # Defaults to snakeoil key if not specified
+    keyPath: ""
+  # control configuration for the gateway
+  control:
+    # url is the WebSocket endpoint for control communication
+    url: ""
+    # token is the authentication token for control communication
+    token: ""
+  # stats configuration intervals (in milliseconds)
+  stats:
+    activeQueriesInterval: 1000
+    pingInterval: 1000
+    pushInterval: 1000
+    configInterval: 1000
+  # service contains the Kubernetes service configuration for gateway
+  service:
+    # type specifies the type of Kubernetes service
+    type: ClusterIP
+    # annotations allows adding custom annotations to the service
+    annotations: {}
+  # tolerations allows pods to be scheduled on nodes with matching taints
+  tolerations: []
+  # affinity rules for pod scheduling
+  affinity: {}
+  # connectFromPgdog enables pgdog to connect to the gateway
+  # When enabled, pgdog.toml will include a [gateway] section
+  connectFromPgdog: false
+# Query stats (PgDog EE)
+queryStats:
+  # enabled enables pgdog query stats (EE version only)
+  enabled: false
+  queryPlanThreshold: 1000
+  queryPlanMaxAge: 15000
+  queryPlansCache: 100

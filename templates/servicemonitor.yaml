@@ -3,10 +3,13 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ include "pgdog.fullname" . }}
+  labels:
+    {{- include "pgdog.labels" . | nindent 4 }}
 spec:
   endpoints:
     - path: /
       port: openmetrics
   selector:
-    app: pgdog
+    matchLabels:
+      {{- include "pgdog.selectorLabels" . | nindent 6 }}
 {{- end }}

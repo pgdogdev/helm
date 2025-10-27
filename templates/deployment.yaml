@@ -3,16 +3,16 @@ kind: Deployment
 metadata:
   name: {{ include "pgdog.fullname" . }}
   labels:
-    app: pgdog
+    {{- include "pgdog.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: pgdog
+      {{- include "pgdog.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: pgdog
+        {{- include "pgdog.selectorLabels" . | nindent 8 }}
     spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "pgdog.serviceAccountName" . }}
@@ -115,22 +115,16 @@ spec:
           {{- if eq .Values.podAntiAffinity.type "hard" }}
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - pgdog
+              matchLabels:
+                {{- include "pgdog.selectorLabels" . | nindent 16 }}
             topologyKey: kubernetes.io/hostname
           {{- else }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
             podAffinityTerm:
               labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                  - pgdog
+                matchLabels:
+                  {{- include "pgdog.selectorLabels" . | nindent 18 }}
               topologyKey: kubernetes.io/hostname
           {{- end }}
         {{- end }}
