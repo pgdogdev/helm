@@ -2,6 +2,17 @@
 nameOverride: ""
 fullnameOverride: ""
 
+# labels configuration
+# Allows overriding the labels and selectors used by resources
+# If not set, defaults to new standard Kubernetes labels (app.kubernetes.io/*)
+# For backwards compatibility with existing deployments, set to legacy format:
+#   labels: { app: pgdog }
+#   selectorLabels: { app: pgdog }
+# NOTE: Changing selectors on existing deployments requires deleting and
+# recreating the Deployment due to Kubernetes selector immutability
+labels: {}
+selectorLabels: {}
+
 # clusterName identifies the Kubernetes cluster (optional)
 # When set, this will be added as a label to all Prometheus metrics
 # clusterName: ""
@@ -204,6 +215,11 @@ grafanaRemoteWrite:
 gateway:
   # enabled controls whether to deploy the gateway
   enabled: false
+  # labels allows overriding gateway resource labels (defaults to app.kubernetes.io/* format)
+  labels: {}
+  # selectorLabels allows overriding gateway selector labels
+  # WARNING: Changing selectors requires recreating Deployments
+  selectorLabels: {}
   # image contains the Docker image properties for the gateway
   image:
     # repository is the Docker image repository
