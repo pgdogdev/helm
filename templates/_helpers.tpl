@@ -38,34 +38,50 @@ Create the name of the service account to use
 Common labels for pgdog
 */}}
 {{- define "pgdog.labels" -}}
+{{- if .Values.labels }}
+{{- toYaml .Values.labels }}
+{{- else }}
 app.kubernetes.io/name: {{ include "pgdog.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: pgdog
+{{- end }}
 {{- end }}
 
 {{/*
 Selector labels for pgdog
 */}}
 {{- define "pgdog.selectorLabels" -}}
+{{- if .Values.selectorLabels }}
+{{- toYaml .Values.selectorLabels }}
+{{- else }}
 app.kubernetes.io/name: {{ include "pgdog.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: pgdog
+{{- end }}
 {{- end }}
 
 {{/*
 Common labels for gateway
 */}}
 {{- define "pgdog.gateway.labels" -}}
+{{- if .Values.gateway.labels }}
+{{- toYaml .Values.gateway.labels }}
+{{- else }}
 app.kubernetes.io/name: {{ include "pgdog.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: gateway
+{{- end }}
 {{- end }}
 
 {{/*
 Selector labels for gateway
 */}}
 {{- define "pgdog.gateway.selectorLabels" -}}
+{{- if .Values.gateway.selectorLabels }}
+{{- toYaml .Values.gateway.selectorLabels }}
+{{- else }}
 app.kubernetes.io/name: {{ include "pgdog.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: gateway
+{{- end }}
 {{- end }}
