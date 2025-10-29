@@ -268,3 +268,5 @@ queryStats:
   queryPlanThreshold: 1000
   queryPlanMaxAge: 15000
   queryPlansCache: 100
+  maxErrors: 100
+  maxErrorAge: 300000
