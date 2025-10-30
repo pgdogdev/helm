@@ -90,6 +90,11 @@ service:
   type: ClusterIP
   # annotations allows adding custom annotations to the service
   annotations: {}
+  # traffic distribution mode for Kubernetes service
+  # (PreferClose, PreferSameZone, PreferSameNode)
+  # see https://kubernetes.io/docs/reference/networking/virtual-ips/#traffic-distribution for more details.
+  trafficDistribution: ""
+
 
 # tolerations allows pods to be scheduled on nodes with matching taints
 tolerations: []
