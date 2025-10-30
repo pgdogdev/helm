@@ -12,6 +12,9 @@ spec:
   type: {{ .Values.service.type }}
   selector:
     {{- include "pgdog.selectorLabels" . | nindent 4 }}
+  {{- if .Values.service.trafficDistribution }}
+  trafficDistribution: {{ .Values.service.trafficDistribution | quote }}
+  {{- end }}
   ports:
     - name: pgdog
       protocol: TCP
