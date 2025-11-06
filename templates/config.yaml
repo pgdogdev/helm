@@ -131,7 +131,7 @@ data:
         {{- if or (hasKey .Values "tcpKeepalives") (hasKey .Values "tcpTime") (hasKey .Values "tcpInterval") (hasKey .Values "tcpRetries") }}
         [tcp]
         {{- if hasKey .Values "tcpKeepalives" }}
-        keepalives = {{ .Values.tcpKeepalives }}
+        keepalive = {{ .Values.tcpKeepalives }}
         {{- end }}
         {{- if hasKey .Values "tcpTime" }}
         time = {{ .Values.tcpTime }}
