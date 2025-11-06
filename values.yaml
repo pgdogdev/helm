@@ -99,6 +99,9 @@ service:
   trafficDistribution: ""
 
 
+# nodeSelector allows scheduling pods on nodes with specific labels
+nodeSelector: {}
+
 # tolerations allows pods to be scheduled on nodes with matching taints
 tolerations: []
 
@@ -278,6 +281,8 @@ gateway:
     type: ClusterIP
     # annotations allows adding custom annotations to the service
     annotations: {}
+  # nodeSelector allows scheduling pods on nodes with specific labels
+  nodeSelector: {}
   # tolerations allows pods to be scheduled on nodes with matching taints
   tolerations: []
   # affinity rules for pod scheduling

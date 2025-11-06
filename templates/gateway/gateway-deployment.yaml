@@ -53,6 +53,10 @@ spec:
           secret:
             secretName: {{ .Values.gateway.tls.existingSecret }}
         {{- end }}
+      {{- with .Values.gateway.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.gateway.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
