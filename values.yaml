@@ -294,3 +294,10 @@ queryStats:
   queryPlansCache: 100
   maxErrors: 100
   maxErrorAge: 300000
+
+# TCP keep-alive configuration (optional)
+# These settings control socket-level keep-alive behavior
+# tcpKeepalives: true
+# tcpTime: 7200
+# tcpInterval: 75
+# tcpRetries: 9

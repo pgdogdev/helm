@@ -128,6 +128,22 @@ data:
         {{- end }}
         {{- end }}
 
+        {{- if or (hasKey .Values "tcpKeepalives") (hasKey .Values "tcpTime") (hasKey .Values "tcpInterval") (hasKey .Values "tcpRetries") }}
+        [tcp]
+        {{- if hasKey .Values "tcpKeepalives" }}
+        keepalives = {{ .Values.tcpKeepalives }}
+        {{- end }}
+        {{- if hasKey .Values "tcpTime" }}
+        time = {{ .Values.tcpTime }}
+        {{- end }}
+        {{- if hasKey .Values "tcpInterval" }}
+        interval = {{ .Values.tcpInterval }}
+        {{- end }}
+        {{- if hasKey .Values "tcpRetries" }}
+        retries = {{ .Values.tcpRetries }}
+        {{- end }}
+        {{- end }}
+
         {{- if .Values.adminPassword }}
         [admin]
         password = {{ .Values.adminPassword | quote }}
