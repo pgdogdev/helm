@@ -222,6 +222,20 @@ The `queueConfig` settings use Prometheus defaults and can be tuned
 for performance. Remote write is automatically enabled when `url` is
 set.
 
+### TCP Keep-Alive Configuration
+
+Configure socket-level TCP keep-alive behavior (optional):
+
+```yaml
+tcpKeepalive: true
+tcpTime: 7200 # Time (in seconds) before first keepalive probe
+tcpInterval: 75 # Interval (in seconds) between keepalive probes
+tcpRetries: 9 # Number of keepalive probes before connection is dropped
+```
+
+These settings control the TCP keep-alive behavior for database
+connections. If not specified, system defaults are used.
+
 ## Contributions
 
 Contributions are welcome. Please open a pull request / issue with
