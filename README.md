@@ -227,7 +227,7 @@ set.
 Configure socket-level TCP keep-alive behavior (optional):
 
 ```yaml
-tcpKeepalives: true
+tcpKeepalive: true
 tcpTime: 7200 # Time (in seconds) before first keepalive probe
 tcpInterval: 75 # Interval (in seconds) between keepalive probes
 tcpRetries: 9 # Number of keepalive probes before connection is dropped
