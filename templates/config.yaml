@@ -44,7 +44,7 @@ data:
         prepared_statements_limit =   {{ .Values.preparedStatementsLimit }}
         {{- end}}
         {{- if .Values.queryCacheLimit }}
-        query_cache_limit         =   {{ .Values.queryCacheLimit | quote }}
+        query_cache_limit         =   {{ .Values.queryCacheLimit }}
         {{- end }}
         passthrough_auth          =   {{ .Values.passthroughAuth | default "disabled" | quote }}
         connect_timeout           =   {{ .Values.connectTimeout | default "5_000" }}
