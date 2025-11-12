@@ -87,7 +87,7 @@ users: []
 mirrors: []
 
 # shardedSchemas contains the list of sharded schema entries in pgdog.toml
-# Each entry requires: database, name, and shard
+# Each entry requires: database and shard; name is optional
 # Example:
 # shardedSchemas:
 #   - database: "prod"
