@@ -128,6 +128,15 @@ data:
         {{- end }}
         {{- end }}
 
+        {{- range .Values.shardedSchemas }}
+        [[sharded_schemas]]
+        database = {{ .database | quote }}
+        name = {{ .name | quote }}
+        {{- if .shard }}
+        shard = {{ .shard }}
+        {{- end }}
+        {{- end }}
+
         {{- if or (hasKey .Values "tcpKeepalive") (hasKey .Values "tcpTime") (hasKey .Values "tcpInterval") (hasKey .Values "tcpRetries") }}
         [tcp]
         {{- if hasKey .Values "tcpKeepalives" }}

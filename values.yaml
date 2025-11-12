@@ -86,6 +86,15 @@ users: []
 # mirrors contains a list of databases to replicate traffic from/to.
 mirrors: []
 
+# shardedSchemas contains the list of sharded schema entries in pgdog.toml
+# Each entry requires: database, name, and shard
+# Example:
+# shardedSchemas:
+#   - database: "prod"
+#     name: "customer_a"
+#     shard: 0
+shardedSchemas: []
+
 # service contains the Kubernetes service configuration
 service:
   # type specifies the type of Kubernetes service
