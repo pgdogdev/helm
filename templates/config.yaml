@@ -74,6 +74,8 @@ data:
         openmetrics_port = {{ .Values.openMetricsPort | default "9090" }}
         openmetrics_namespace = {{ .Values.openMetricsNamespace | default "pgdog_" | quote }}
         server_lifetime = {{ .Values.serverLifetime | default "86400000" }}
+        log_connections = {{ .Values.logConnections | default "true" }}
+        log_disconnections = {{ .Values.logDisconnections | default "true" }}
 
         {{- range .Values.databases }}
         [[databases]]
