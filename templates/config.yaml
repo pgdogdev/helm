@@ -40,6 +40,9 @@ data:
         {{- end}}
         shutdown_timeout          =   {{ .Values.shutdownTimeout | default "60_000" }}
         prepared_statements       =   {{ .Values.preparedStatements | default "extended" | quote }}
+        {{- with .Values.queryParserEnabled }}
+        query_parser_enabled      =   {{ . }}
+        {{- end }}
         {{- if .Values.preparedStatementsLimit }}
         prepared_statements_limit =   {{ .Values.preparedStatementsLimit }}
         {{- end}}
