@@ -79,6 +79,9 @@ data:
         server_lifetime = {{ .Values.serverLifetime | default "86400000" }}
         log_connections = {{ .Values.logConnections | default "true" }}
         log_disconnections = {{ .Values.logDisconnections | default "true" }}
+        {{- if .Values.connectionRecovery }}
+        connection_recovery      =   {{ .Values.connectionRecovery | quote }}
+        {{- end }}
 
         {{- range .Values.databases }}
         [[databases]]
