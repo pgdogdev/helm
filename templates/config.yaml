@@ -82,6 +82,7 @@ data:
         {{- if .Values.connectionRecovery }}
         connection_recovery      =   {{ .Values.connectionRecovery | quote }}
         {{- end }}
+        expanded_explain = {{ .Values.expandedExplain | default "false" }}
 
         {{- range .Values.databases }}
         [[databases]]
