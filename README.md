@@ -145,8 +145,7 @@ externalSecrets:
 externalSecrets:
   enabled: true
   create: false
-  name: "platform-managed-secret"
-  secretName: "my-secret" # Name of Secret it creates
+  secretName: "my-secret" # Name of Secret you created
 ```
 
 ### ServiceAccount & RBAC
