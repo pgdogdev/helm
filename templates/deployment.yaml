@@ -1,10 +1,17 @@
 apiVersion: apps/v1
+{{- if .Values.statefulSet.enabled }}
+kind: StatefulSet
+{{- else }}
 kind: Deployment
+{{- end }}
 metadata:
   name: {{ include "pgdog.fullname" . }}
   labels:
     {{- include "pgdog.labels" . | nindent 4 }}
 spec:
+  {{- if .Values.statefulSet.enabled }}
+  serviceName: {{ include "pgdog.fullname" . }}-headless
+  {{- end }}
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
@@ -35,6 +42,11 @@ spec:
             - "/etc/pgdog/pgdog.toml"
             - "--users"
             - "/etc/secrets/pgdog/users.toml"
+          env:
+            - name: NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
           ports:
             - name: pgdog
               containerPort: {{ .Values.port }}

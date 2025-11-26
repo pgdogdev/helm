@@ -40,6 +40,12 @@ port: 6432
 # replicas indicates how many instances of PgDog will run (HA).
 replicas: 2
 
+# statefulSet controls whether to deploy as StatefulSet instead of Deployment
+# StatefulSet provides stable DNS hostnames for each pod (e.g., pgdog-0, pgdog-1)
+statefulSet:
+  # enabled switches from Deployment to StatefulSet
+  enabled: false
+
 # resources define resource requests and limits for the pgdog container
 # Note: requests and limits are set to the same values for Guaranteed QoS
 # Ratio: 1GB memory per 1 CPU (1000m CPU = 1Gi memory)
@@ -106,6 +112,14 @@ service:
   # (PreferClose, PreferSameZone, PreferSameNode)
   # see https://kubernetes.io/docs/reference/networking/virtual-ips/#traffic-distribution for more details.
   trafficDistribution: ""
+  # aws configures AWS Load Balancer Controller annotations
+  # When enabled, service type is automatically set to LoadBalancer
+  aws:
+    # enabled controls whether to add AWS LB annotations
+    enabled: false
+    # scheme controls whether the load balancer is internet-facing or internal
+    # Valid values: "internet-facing" or "internal"
+    scheme: "internal"
 
 
 # nodeSelector allows scheduling pods on nodes with specific labels
