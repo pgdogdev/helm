@@ -83,6 +83,12 @@ data:
         connection_recovery      =   {{ .Values.connectionRecovery | quote }}
         {{- end }}
         expanded_explain = {{ .Values.expandedExplain | default "false" }}
+        {{- if hasKey .Values "lsnCheckDelay" }}
+        lsn_check_delay           =   {{ .Values.lsnCheckDelay }}
+        {{- end }}
+        {{- if hasKey .Values "lsnCheckInterval" }}
+        lsn_check_interval        =   {{ .Values.lsnCheckInterval }}
+        {{- end }}
 
         {{- range .Values.databases }}
         [[databases]]
