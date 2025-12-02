@@ -323,10 +323,10 @@ queryStats:
   maxErrors: 100
   maxErrorAge: 300000
 
-# LSN check delay for replication failover auto mode (in milliseconds)
-# Set to 0 to start LSN monitoring immediately for automatic replica promotion
+# LSN check configuration for replication failover auto mode (in milliseconds)
 # See: https://docs.pgdog.dev/features/load-balancer/replication-failover/
-# lsnCheckDelay: 0
+# lsnCheckDelay: 0        # Set to 0 to start LSN monitoring immediately
+# lsnCheckInterval: 1000  # How frequently to re-fetch replication status
 
 # TCP keep-alive configuration (optional)
 # These settings control socket-level keep-alive behavior

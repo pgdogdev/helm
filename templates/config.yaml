@@ -86,6 +86,9 @@ data:
         {{- if hasKey .Values "lsnCheckDelay" }}
         lsn_check_delay           =   {{ .Values.lsnCheckDelay }}
         {{- end }}
+        {{- if hasKey .Values "lsnCheckInterval" }}
+        lsn_check_interval        =   {{ .Values.lsnCheckInterval }}
+        {{- end }}
 
         {{- range .Values.databases }}
         [[databases]]
