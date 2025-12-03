@@ -143,6 +143,16 @@ affinity: {}
   #           - pgdog
   #       topologyKey: kubernetes.io/hostname
 
+# topologySpreadConstraints controls how pods are spread across topology domains
+# https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/
+topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   whenUnsatisfiable: DoNotSchedule
+  #   labelSelector:
+  #     matchLabels:
+  #       app: pgdog
+
 # podAntiAffinity enables default anti-affinity rules to spread pods
 # across nodes
 # Set to true for automatic pod anti-affinity configuration
