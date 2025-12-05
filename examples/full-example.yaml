@@ -86,6 +86,48 @@ podDisruptionBudget:
   enabled: true
   minAvailable: 2 # Keep at least 2 pods running
 
+# Configure graceful shutdown window
+terminationGracePeriodSeconds: 60
+
+# Demonstrate customizing Deployment strategy (opt-in; Deployment only)
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 50%
+    maxUnavailable: 0
+
+# Enable exec-based health probes using pg_isready. Note these don't check that there are any pools ready to serve traffic
+livenessProbe:
+  exec:
+    command:
+      - /usr/bin/pg_isready
+      - -h
+      - 127.0.0.1
+      - -p
+      - "6432"
+  initialDelaySeconds: 10
+  periodSeconds: 10
+readinessProbe:
+  exec:
+    command:
+      - /usr/bin/pg_isready
+      - -h
+      - 127.0.0.1
+      - -p
+      - "6432"
+  initialDelaySeconds: 5
+  periodSeconds: 5
+startupProbe:
+  exec:
+    command:
+      - /usr/bin/pg_isready
+      - -h
+      - 127.0.0.1
+      - -p
+      - "6432"
+  failureThreshold: 30
+  periodSeconds: 5
+
 # Enable anti-affinity for pod spreading
 podAntiAffinity:
   enabled: true
