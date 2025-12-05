@@ -40,6 +40,17 @@ port: 6432
 # replicas indicates how many instances of PgDog will run (HA).
 replicas: 2
 
+# Uncomment to enable explicit grace period
+# terminationGracePeriodSeconds: 30
+
+# Optional: Deployment rollout strategy (Deployment only)
+# strategy: {}
+
+# Optional: container health probes (disabled by default)
+# livenessProbe: {}
+# readinessProbe: {}
+# startupProbe: {}
+
 # statefulSet controls whether to deploy as StatefulSet instead of Deployment
 # StatefulSet provides stable DNS hostnames for each pod (e.g., pgdog-0, pgdog-1)
 statefulSet:
