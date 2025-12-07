@@ -27,7 +27,9 @@ data:
         rollback_timeout          =   {{ .Values.rollbackTimeout | default "5_000" }}
         load_balancing_strategy   =   {{ .Values.loadBalancingStrategy | default "round_robin" | quote }}
         read_write_strategy       =   {{ .Values.readWriteStrategy | default "conservative" | quote }}
-        read_write_split          =   {{ .Values.readWriteSplit | default "exclude_primary" | quote }}
+        {{- if .Values.readWriteSplit }}
+        read_write_split          =   {{ .Values.readWriteSplit | quote }}
+        {{- end }}
         {{- if .Values.tlsCertificate }}
         tls_certificate           =   {{ .Values.tlsCertificate | quote }}
         {{- end }}
