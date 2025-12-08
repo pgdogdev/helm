@@ -129,7 +129,7 @@ shardedTables: []
 #     - database: "prod"
 #       column: "tenant_id"
 #       kind: "list"
-#       values: = [1, 5, 1_000]
+#       values: [1, 5, 1_000]
 #       shard: 0
 #     - database: "prod"
 #       column: "tenant_id"
