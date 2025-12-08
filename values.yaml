@@ -112,6 +112,33 @@ mirrors: []
 #     shard: 0
 shardedSchemas: []
 
+# shardedTables contains the list of sharded table entries in pgdog.toml
+# Each entry requires: database, column and dataType; name is optional
+# Example:
+# shardedTables:
+#   - database: "prod"
+#     name: "users"
+#     column: "id"
+#     dataType: "bigint"
+shardedTables: []
+
+# shardedMappings contains the list of sharded mapping entries in pgdog.toml
+# Each entry requires: database, column, kind, shard; values, start and end are optional
+# Example:
+# shardedMappings:
+#     - database: "prod"
+#       column: "tenant_id"
+#       kind: "list"
+#       values: = [1, 5, 1_000]
+#       shard: 0
+#     - database: "prod"
+#       column: "tenant_id"
+#       kind: "range"
+#       start: 1
+#       end: 100
+#       shard: 1
+shardedMappings: []
+
 # service contains the Kubernetes service configuration
 service:
   # type specifies the type of Kubernetes service
