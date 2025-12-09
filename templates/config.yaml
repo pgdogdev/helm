@@ -154,6 +154,33 @@ data:
         shard = {{ .shard }}
         {{- end }}
 
+        {{- range .Values.shardedTables }}
+        [[sharded_tables]]
+        database = {{ .database | quote }}
+        {{- if .name }}
+        name = {{ .name | quote }}
+        {{- end }}
+        column = {{ .column | quote }}
+        data_type = {{ .dataType | quote }}
+        {{- end }}
+
+        {{- range .Values.shardedMappings }}
+        [[sharded_mappings]]
+        database = {{ .database | quote }}
+        column = {{ .column | quote }}
+        kind = {{ .kind | quote }}
+        shard = {{ .shard }}
+        {{- if .values }}
+        values = {{ .values| toToml }}
+        {{- end }}
+        {{- if .start }}
+        start = {{ .start }}
+        {{- end }}
+        {{- if .end }}
+        end = {{ .end }}
+        {{- end}}
+        {{- end }}
+
         {{- if or (hasKey .Values "tcpKeepalive") (hasKey .Values "tcpTime") (hasKey .Values "tcpInterval") (hasKey .Values "tcpRetries") }}
         [tcp]
         {{- if hasKey .Values "tcpKeepalives" }}
