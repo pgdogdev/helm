@@ -61,6 +61,12 @@ spec:
               containerPort: {{ .Values.port }}
             - name: metrics
               containerPort: {{ .Values.openMetricsPort }}
+          {{- if .Values.preStopSleepSeconds }}
+          lifecycle:
+            preStop:
+              sleep:
+                seconds: {{ .Values.preStopSleepSeconds }}
+          {{- end }}
           {{- if .Values.resources }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
