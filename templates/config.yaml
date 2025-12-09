@@ -169,7 +169,7 @@ data:
         database = {{ .database | quote }}
         column = {{ .column | quote }}
         kind = {{ .kind | quote }}
-        shard = {{ .shard}}
+        shard = {{ .shard }}
         {{- if .values }}
         values = {{ .values| toToml }}
         {{- end }}
