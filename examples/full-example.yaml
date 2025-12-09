@@ -86,8 +86,11 @@ podDisruptionBudget:
   enabled: true
   minAvailable: 2 # Keep at least 2 pods running
 
-# Configure graceful shutdown window
-terminationGracePeriodSeconds: 60
+# Configure graceful shutdown window. Should be larger than the sum of shutdownTimeout and preStopSleepSeconds
+terminationGracePeriodSeconds: 90
+
+# Enable preStop sleep
+preStopSleepSeconds: 25
 
 # Demonstrate customizing Deployment strategy (opt-in; Deployment only)
 strategy:

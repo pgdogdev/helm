@@ -40,7 +40,7 @@ Common labels for pgdog
 {{- define "pgdog.labels" -}}
 {{- if .Values.labels }}
 {{- toYaml .Values.labels }}
-{{- else }}
+{{- else -}}
 app.kubernetes.io/name: {{ include "pgdog.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: pgdog
@@ -53,7 +53,7 @@ Selector labels for pgdog
 {{- define "pgdog.selectorLabels" -}}
 {{- if .Values.selectorLabels }}
 {{- toYaml .Values.selectorLabels }}
-{{- else }}
+{{- else -}}
 app.kubernetes.io/name: {{ include "pgdog.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: pgdog
@@ -66,7 +66,7 @@ Common labels for gateway
 {{- define "pgdog.gateway.labels" -}}
 {{- if .Values.gateway.labels }}
 {{- toYaml .Values.gateway.labels }}
-{{- else }}
+{{- else -}}
 app.kubernetes.io/name: {{ include "pgdog.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: gateway
@@ -79,7 +79,7 @@ Selector labels for gateway
 {{- define "pgdog.gateway.selectorLabels" -}}
 {{- if .Values.gateway.selectorLabels }}
 {{- toYaml .Values.gateway.selectorLabels }}
-{{- else }}
+{{- else -}}
 app.kubernetes.io/name: {{ include "pgdog.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: gateway

@@ -41,7 +41,12 @@ port: 6432
 replicas: 2
 
 # Uncomment to enable explicit grace period
-# terminationGracePeriodSeconds: 30
+# terminationGracePeriodSeconds: 90
+
+# Optional: Delay stopping the container to allow the Kubernetes service to update its endpoints and
+# allow clients to switch to other instances before PgDog shuts down.
+# This is useful in combination with short client connection lifetimes to avoid errors during pod shutdown.
+# preStopSleepSeconds: 25
 
 # Optional: Deployment rollout strategy (Deployment only)
 # strategy: {}
