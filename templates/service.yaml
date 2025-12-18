@@ -39,3 +39,9 @@ spec:
       protocol: TCP
       port: {{ .Values.openMetricsPort }}
       targetPort: {{ .Values.openMetricsPort }}
+    {{- if .Values.healthcheckPort }}
+    - name: healthcheck
+      protocol: TCP
+      port: {{ .Values.healthcheckPort }}
+      targetPort: {{ .Values.healthcheckPort }}
+    {{- end }}
