@@ -11,6 +11,11 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: "external"
     service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: "true"
     service.beta.kubernetes.io/aws-load-balancer-listener-attributes.TCP-{{ .Values.port }}: tcp.idle_timeout.seconds=1800
+      {{- if .Values.healthcheckPort }}
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: {{ .Values.healthcheckPort | quote }}
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: /health
+      {{- end }}
     {{- end }}
     {{- with .Values.service.annotations }}
     {{- toYaml . | nindent 4 }}
