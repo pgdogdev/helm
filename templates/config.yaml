@@ -58,13 +58,16 @@ data:
         {{- if .Values.queryTimeout }}
         query_timeout             =   {{ .Values.queryTimeout }}
         {{- end }}
+        {{- if .Values.clientIdleInTransactionTimeout }}
+        client_idle_in_transaction_timeout =   {{ .Values.clientIdleInTransactionTimeout }}
+        {{- end }}
         checkout_timeout          =   {{ .Values.checkoutTimeout | default "5_000" }}
         dry_run                   =   {{ .Values.dryRun | default "false" }}
         {{- if .Values.idleTimeout }}
         idle_timeout              =   {{ .Values.idleTimeout }}
         {{- end }}
         {{- if .Values.clientIdleTimeout }}
-        client_idle_timeout       =   {{ .Values.clientIdleTimeout | quote }}
+        client_idle_timeout       =   {{ .Values.clientIdleTimeout }}
         {{- end }}
         mirror_queue              =   {{ .Values.mirrorQueue | default "128" }}
         mirror_exposure           =   {{ .Values.mirrorExposure | default "1.0" }}

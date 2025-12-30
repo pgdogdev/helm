@@ -1,0 +1,3 @@
+# Test StatefulSet deployment mode
+statefulSet:
+  enabled: true

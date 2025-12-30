@@ -1,0 +1,89 @@
+name: Test Helm chart
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'latest'
+
+      - name: Install yq
+        uses: mikefarah/yq@master
+
+      - name: Run tests
+        run: ./test/test.sh
+
+  validate-configs:
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Checkout pgdog
+        uses: actions/checkout@v4
+        with:
+          repository: pgdogdev/pgdog
+          ref: main
+          path: pgdog-source
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'latest'
+
+      - name: Install yq
+        uses: mikefarah/yq@master
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Cache Rust dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            pgdog-source/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('pgdog-source/**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Install CMake 3.31
+        run: |
+          sudo apt update && sudo apt install mold -y
+          sudo apt remove cmake
+          sudo pip3 install cmake==3.31.6
+
+      - name: Build pgdog
+        run: cargo build
+        working-directory: pgdog-source
+
+      - name: Validate configs
+        run: |
+          set -eo pipefail
+          for values_file in test/values-*.yaml; do
+            name=$(basename "$values_file" .yaml | sed 's/values-//')
+            echo "==> Validating config for $name..."
+            rm -f /tmp/pgdog.toml
+            ./test/generate-config.sh "$values_file" /tmp/pgdog.toml
+            ./pgdog-source/target/debug/pgdog --config=/tmp/pgdog.toml configcheck
+          done
+          echo "==> All configs valid!"

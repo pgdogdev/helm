@@ -1,0 +1,5 @@
+# Test AWS Load Balancer annotations
+service:
+  aws:
+    enabled: true
+    scheme: internet-facing
