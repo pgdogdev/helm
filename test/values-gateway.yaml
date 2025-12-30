@@ -1,4 +1,0 @@
-# Test gateway feature (Enterprise Edition)
-gateway:
-  enabled: true
-  connectFromPgdog: true
