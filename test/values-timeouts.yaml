@@ -8,7 +8,7 @@ queryTimeout: 60_000
 clientIdleInTransactionTimeout: 30_000
 checkoutTimeout: 10_000
 idleTimeout: 300_000
-clientIdleTimeout: "600_000"
+clientIdleTimeout: 600_000
 
 databases:
   - name: primary

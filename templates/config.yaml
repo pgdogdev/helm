@@ -67,7 +67,7 @@ data:
         idle_timeout              =   {{ .Values.idleTimeout }}
         {{- end }}
         {{- if .Values.clientIdleTimeout }}
-        client_idle_timeout       =   {{ .Values.clientIdleTimeout | quote }}
+        client_idle_timeout       =   {{ .Values.clientIdleTimeout }}
         {{- end }}
         mirror_queue              =   {{ .Values.mirrorQueue | default "128" }}
         mirror_exposure           =   {{ .Values.mirrorExposure | default "1.0" }}
