@@ -1,0 +1,18 @@
+# Test all timeout-related settings
+healthcheckTimeout: 10_000
+banTimeout: 30_000
+rollbackTimeout: 10_000
+shutdownTimeout: 120_000
+connectTimeout: 10_000
+queryTimeout: 60_000
+clientIdleInTransactionTimeout: 30_000
+checkoutTimeout: 10_000
+idleTimeout: 300_000
+clientIdleTimeout: "600_000"
+
+databases:
+  - name: primary
+    host: localhost
+    port: 5432
+    statementTimeout: 30_000
+    idleTimeout: 120_000

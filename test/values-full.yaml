@@ -1,0 +1,52 @@
+# Full configuration test with databases and users
+replicas: 3
+port: 6432
+healthcheckPort: 8080
+
+databases:
+  - name: primary
+    host: postgres-primary.example.com
+    port: 5432
+  - name: replica
+    host: postgres-replica.example.com
+    port: 5432
+    role: replica
+
+users:
+  - username: app_user
+    password: secret123
+    poolMode: transaction
+  - username: admin_user
+    password: admin123
+
+shardedTables:
+  - database: primary
+    name: users
+    column: id
+    dataType: bigint
+
+mirrors:
+  - sourceDb: primary
+    destinationDb: replica
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+
+nodeSelector:
+  node-type: database
+
+tolerations:
+  - key: dedicated
+    operator: Equal
+    value: database
+    effect: NoSchedule
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app: pgdog
+          topologyKey: kubernetes.io/hostname

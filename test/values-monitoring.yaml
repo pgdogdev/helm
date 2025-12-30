@@ -1,0 +1,9 @@
+# Test monitoring features
+serviceMonitor:
+  enabled: true
+
+grafanaRemoteWrite:
+  url: https://prometheus.example.com/push
+  basicAuth:
+    username: "123456"
+    password: "api-key-here"

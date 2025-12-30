@@ -58,6 +58,9 @@ data:
         {{- if .Values.queryTimeout }}
         query_timeout             =   {{ .Values.queryTimeout }}
         {{- end }}
+        {{- if .Values.clientIdleInTransactionTimeout }}
+        client_idle_in_transaction_timeout =   {{ .Values.clientIdleInTransactionTimeout }}
+        {{- end }}
         checkout_timeout          =   {{ .Values.checkoutTimeout | default "5_000" }}
         dry_run                   =   {{ .Values.dryRun | default "false" }}
         {{- if .Values.idleTimeout }}
