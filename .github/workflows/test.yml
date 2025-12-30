@@ -65,9 +65,11 @@ jobs:
 
       - name: Validate configs
         run: |
+          set -eo pipefail
           for values_file in test/values-*.yaml; do
             name=$(basename "$values_file" .yaml | sed 's/values-//')
             echo "==> Validating config for $name..."
+            rm -f /tmp/pgdog.toml
             ./test/generate-config.sh "$values_file" /tmp/pgdog.toml
             ./pgdog-source/target/debug/pgdog --config=/tmp/pgdog.toml configcheck
           done
