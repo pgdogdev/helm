@@ -22,6 +22,11 @@ jobs:
       - name: Install yq
         uses: mikefarah/yq@master
 
+      - name: Install kubeconform
+        run: |
+          curl -sL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz | tar xz
+          sudo mv kubeconform /usr/local/bin/
+
       - name: Run tests
         run: ./test/test.sh
 

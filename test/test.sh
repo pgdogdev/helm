@@ -10,8 +10,8 @@ helm lint "$CHART_DIR"
 for values_file in "$TEST_DIR"/values-*.yaml; do
   name=$(basename "$values_file" .yaml | sed 's/values-//')
   echo ""
-  echo "==> Templating with $name..."
-  helm template test-release "$CHART_DIR" -f "$values_file" > /dev/null
+  echo "==> Templating and validating $name..."
+  helm template test-release "$CHART_DIR" -f "$values_file" | kubeconform -strict -ignore-missing-schemas -summary
 done
 
 echo ""
