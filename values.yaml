@@ -24,8 +24,8 @@ podAnnotations: {}
 image:
   # repository is the Docker image repository
   repository: ghcr.io/pgdogdev/pgdog
-  # tag is the Docker image tag (defaults to "latest" if not specified)
-  tag: "latest"
+  # tag is the Docker image tag (defaults to Chart appVersion if not specified)
+  tag: ""
   # pullPolicy specifies when to use cached version of the image.
   pullPolicy: IfNotPresent
   # name is the full image name (DEPRECATED: use repository and tag)
@@ -163,7 +163,6 @@ service:
     # scheme controls whether the load balancer is internet-facing or internal
     # Valid values: "internet-facing" or "internal"
     scheme: "internal"
-
 
 # nodeSelector allows scheduling pods on nodes with specific labels
 nodeSelector: {}
@@ -375,7 +374,6 @@ queryStats:
   queryPlansCache: 100
   maxErrors: 100
   maxErrorAge: 300000
-
 # LSN check configuration for replication failover auto mode (in milliseconds)
 # See: https://docs.pgdog.dev/features/load-balancer/replication-failover/
 # lsnCheckDelay: 0        # Set to 0 to start LSN monitoring immediately
