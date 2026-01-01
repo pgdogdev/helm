@@ -47,7 +47,11 @@ openMetricsPort: 9090
 
 ### Docker Image
 
-Pin to a specific version for production deployments:
+By default, the chart uses the `appVersion` from `Chart.yaml` as the image
+tag. This ensures the chart deploys a known-compatible version of PgDog
+without requiring explicit configuration.
+
+To override with a specific version:
 
 ```yaml
 image:
