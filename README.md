@@ -47,7 +47,11 @@ openMetricsPort: 9090
 
 ### Docker Image
 
-Pin to a specific version for production deployments:
+By default, the chart uses the `appVersion` from `Chart.yaml` as the image
+tag. This ensures the chart deploys a known-compatible version of PgDog
+without requiring explicit configuration.
+
+To override with a specific version:
 
 ```yaml
 image:
@@ -55,6 +59,17 @@ image:
   tag: "v1.2.3" # Pin to specific version
   pullPolicy: IfNotPresent
 ```
+
+To pin to an exact build, use a digest instead of a tag:
+
+```yaml
+image:
+  repository: ghcr.io/pgdogdev/pgdog
+  digest: "sha256:abc123def456..." # Immutable reference
+  pullPolicy: IfNotPresent
+```
+
+When `digest` is specified, it takes precedence over `tag`.
 
 **Legacy format** (still supported for backward compatibility):
 
