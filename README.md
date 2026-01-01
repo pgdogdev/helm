@@ -56,6 +56,17 @@ image:
   pullPolicy: IfNotPresent
 ```
 
+To pin to an exact build, use a digest instead of a tag:
+
+```yaml
+image:
+  repository: ghcr.io/pgdogdev/pgdog
+  digest: "sha256:abc123def456..." # Immutable reference
+  pullPolicy: IfNotPresent
+```
+
+When `digest` is specified, it takes precedence over `tag`.
+
 **Legacy format** (still supported for backward compatibility):
 
 ```yaml
