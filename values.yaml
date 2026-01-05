@@ -388,3 +388,11 @@ queryStats:
 # tcpTime: 7200
 # tcpInterval: 75
 # tcpRetries: 9
+
+# Query parser configuration
+# queryParser controls whether the query parser is enabled
+# Valid values: "auto", "on", "off"
+# queryParser: "auto"
+
+# queryParserEnabled is DEPRECATED - use queryParser instead
+# queryParserEnabled: true
