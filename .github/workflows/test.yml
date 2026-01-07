@@ -38,12 +38,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Checkout pgdog
+      - name: Checkout pgdog-enterprise
         uses: actions/checkout@v4
         with:
-          repository: pgdogdev/pgdog
+          repository: pgdogdev/pgdog-enterprise
           ref: main
           path: pgdog-source
+          token: ${{ secrets.PGDOG_ENTERPRISE_TOKEN }}
 
       - name: Install Helm
         uses: azure/setup-helm@v4
@@ -78,7 +79,7 @@ jobs:
           sudo pip3 install cmake==3.31.6
 
       - name: Build pgdog
-        run: cargo build
+        run: cargo build --bin pgdog --bin gateway
         working-directory: pgdog-source
 
       - name: Validate configs
@@ -90,5 +91,12 @@ jobs:
             rm -f /tmp/pgdog.toml
             ./test/generate-config.sh "$values_file" /tmp/pgdog.toml
             ./pgdog-source/target/debug/pgdog --config=/tmp/pgdog.toml configcheck
+
+            # Check if gateway is enabled and validate gateway config
+            rm -f /tmp/gateway.toml
+            if ./test/generate-gateway-config.sh "$values_file" /tmp/gateway.toml 2>/dev/null; then
+              echo "==> Validating gateway config for $name..."
+              ./pgdog-source/target/debug/gateway --config=/tmp/gateway.toml configcheck
+            fi
           done
           echo "==> All configs valid!"
