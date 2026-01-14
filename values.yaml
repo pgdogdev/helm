@@ -165,7 +165,7 @@ service:
     enabled: false
     # scheme controls whether the load balancer is internet-facing or internal
     # Valid values: "internet-facing" or "internal"
-    scheme: "internal"
+    scheme: "internet-facing"
 
 # nodeSelector allows scheduling pods on nodes with specific labels
 nodeSelector: {}
@@ -396,3 +396,75 @@ queryStats:
 
 # queryParserEnabled is DEPRECATED - use queryParser instead
 # queryParserEnabled: true
+
+# Prometheus Collector configuration
+# Deploys a standalone Prometheus instance that collects metrics from all pgdog pods
+prometheusCollector:
+  # enabled controls whether to deploy the Prometheus collector
+  enabled: false
+  # labels allows overriding prometheus-collector resource labels
+  labels: {}
+  # selectorLabels allows overriding prometheus-collector selector labels
+  selectorLabels: {}
+  # podAnnotations allows adding custom annotations to the prometheus-collector pods
+  podAnnotations: {}
+  # image contains the Docker image properties for Prometheus
+  image:
+    repository: prom/prometheus
+    tag: latest
+    pullPolicy: IfNotPresent
+  # port on which Prometheus will expose metrics
+  port: 9090
+  # scrapeInterval defines how often to scrape targets
+  scrapeInterval: 15s
+  # evaluationInterval defines how often to evaluate rules
+  evaluationInterval: 15s
+  # resources define resource requests and limits for the Prometheus container
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  # storage configuration for Prometheus TSDB
+  storage:
+    # size is the maximum size of the emptyDir volume
+    size: 10Gi
+  # retention configuration for Prometheus TSDB
+  retention:
+    # time is the maximum duration to keep data (e.g., 15d, 6h)
+    time: 15d
+    # size is the maximum size of data to retain (e.g., 5GB, 500MB)
+    # Prometheus will delete oldest data first when this limit is exceeded
+    size: 5GB
+  # basicAuth configuration for protecting the Prometheus endpoint
+  basicAuth:
+    # enabled controls whether basic auth is required to access Prometheus
+    enabled: false
+    # username for basic auth
+    username: ""
+    # passwordHash is the bcrypt hash of the password
+    # Generate with: htpasswd -nBC 10 "" | tr -d ':\n'
+    # Or use Python: python -c "import bcrypt; print(bcrypt.hashpw(b'password', bcrypt.gensalt()).decode())"
+    passwordHash: ""
+  # service contains the Kubernetes service configuration
+  service:
+    # type specifies the type of Kubernetes service (ignored when aws.enabled is true)
+    type: ClusterIP
+    # annotations allows adding custom annotations to the service
+    annotations: {}
+    # aws configures AWS Load Balancer Controller annotations
+    # When enabled, service type is automatically set to LoadBalancer
+    aws:
+      # enabled controls whether to add AWS LB annotations
+      enabled: false
+      # scheme controls whether the load balancer is internet-facing or internal
+      # Valid values: "internet-facing" or "internal"
+      scheme: "internet-facing"
+  # nodeSelector allows scheduling pods on nodes with specific labels
+  nodeSelector: {}
+  # tolerations allows pods to be scheduled on nodes with matching taints
+  tolerations: []
+  # affinity rules for pod scheduling
+  affinity: {}

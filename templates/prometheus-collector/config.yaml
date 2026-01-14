@@ -1,0 +1,55 @@
+{{- if .Values.prometheusCollector.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "pgdog.fullname" . }}-prometheus-collector
+  labels:
+    {{- include "pgdog.prometheusCollector.labels" . | nindent 4 }}
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: {{ .Values.prometheusCollector.scrapeInterval | default "15s" }}
+      evaluation_interval: {{ .Values.prometheusCollector.evaluationInterval | default "15s" }}
+      {{- if .Values.clusterName }}
+      external_labels:
+        cluster: {{ .Values.clusterName | quote }}
+      {{- end }}
+
+    scrape_configs:
+      - job_name: 'pgdog'
+        kubernetes_sd_configs:
+          - role: pod
+            namespaces:
+              names:
+                - {{ .Release.Namespace }}
+        relabel_configs:
+          # Only scrape pods matching pgdog selector labels
+          - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+            action: keep
+            regex: {{ include "pgdog.name" . }}
+          - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_instance]
+            action: keep
+            regex: {{ .Release.Name }}
+          - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_component]
+            action: keep
+            regex: pgdog
+          # Set the metrics port
+          - source_labels: [__address__]
+            action: replace
+            regex: ([^:]+)(?::\d+)?
+            replacement: $1:{{ .Values.openMetricsPort }}
+            target_label: __address__
+          # Add pod metadata as labels
+          - source_labels: [__meta_kubernetes_pod_name]
+            action: replace
+            target_label: pod
+          - source_labels: [__meta_kubernetes_pod_node_name]
+            action: replace
+            target_label: node
+          - source_labels: [__meta_kubernetes_namespace]
+            action: replace
+            target_label: namespace
+          - source_labels: [__meta_kubernetes_pod_ip]
+            action: replace
+            target_label: pod_ip
+{{- end }}

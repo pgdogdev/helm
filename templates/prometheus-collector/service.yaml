@@ -1,0 +1,35 @@
+{{- if .Values.prometheusCollector.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pgdog.fullname" . }}-prometheus-collector
+  labels:
+    {{- include "pgdog.prometheusCollector.labels" . | nindent 4 }}
+  {{- if or .Values.prometheusCollector.service.annotations .Values.prometheusCollector.service.aws.enabled }}
+  annotations:
+    {{- if .Values.prometheusCollector.service.aws.enabled }}
+    service.beta.kubernetes.io/aws-load-balancer-scheme: {{ .Values.prometheusCollector.service.aws.scheme | quote }}
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: "true"
+    {{- end }}
+    {{- with .Values.prometheusCollector.service.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- end }}
+spec:
+  {{- if .Values.prometheusCollector.service.aws.enabled }}
+  type: LoadBalancer
+  loadBalancerClass: service.k8s.aws/nlb
+  {{- else }}
+  type: {{ .Values.prometheusCollector.service.type }}
+  {{- end }}
+  ports:
+    - name: prometheus
+      port: {{ .Values.prometheusCollector.port }}
+      targetPort: prometheus
+      protocol: TCP
+  selector:
+    {{- include "pgdog.prometheusCollector.selectorLabels" . | nindent 4 }}
+{{- end }}

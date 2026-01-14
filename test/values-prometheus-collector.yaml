@@ -1,0 +1,51 @@
+# Test Prometheus collector configuration
+prometheusCollector:
+  enabled: true
+  port: 9090
+  scrapeInterval: 30s
+  evaluationInterval: 30s
+  image:
+    repository: prom/prometheus
+    tag: v2.48.0
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  storage:
+    size: 5Gi
+  retention:
+    time: 7d
+    size: 2GB
+  # basicAuth:
+  #   enabled: true
+  #   username: prometheus
+  #   # bcrypt hash of "testpassword"
+  #   passwordHash: "$2a$10$IpLmUJvKPpVJkhbP6YVmAOQXoKr4kXXXXXXXXXXXXXXXXXXXXXXX"
+  service:
+    type: ClusterIP
+    annotations: {}
+    aws:
+      enabled: true
+      scheme: internal
+  nodeSelector:
+    monitoring: "true"
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: monitoring
+      effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: monitoring
+                operator: In
+                values:
+                  - "true"
+  podAnnotations:
+    prometheus.io/scrape: "false"
