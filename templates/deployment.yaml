@@ -8,6 +8,10 @@ metadata:
   name: {{ include "pgdog.fullname" . }}
   labels:
     {{- include "pgdog.labels" . | nindent 4 }}
+  {{- if .Values.annotations }}
+  annotations:
+    {{- toYaml .Values.annotations | nindent 4 }}
+  {{- end }}
 spec:
   {{- if .Values.statefulSet.enabled }}
   serviceName: {{ include "pgdog.fullname" . }}-headless

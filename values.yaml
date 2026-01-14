@@ -13,6 +13,9 @@ fullnameOverride: ""
 labels: {}
 selectorLabels: {}
 
+# allows adding custom annotations to the deployment
+annotations: {}
+
 # allows adding custom annotations to the pods
 podAnnotations: {}
 
