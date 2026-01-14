@@ -1,4 +1,7 @@
 {{- if .Values.prometheusCollector.enabled }}
+{{- $tlsEnabled := .Values.prometheusCollector.tls.enabled }}
+{{- $basicAuthEnabled := .Values.prometheusCollector.basicAuth.enabled }}
+{{- $webConfigEnabled := or $tlsEnabled $basicAuthEnabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -33,7 +36,7 @@ spec:
             - "--web.enable-lifecycle"
             - "--storage.tsdb.retention.time={{ .Values.prometheusCollector.retention.time }}"
             - "--storage.tsdb.retention.size={{ .Values.prometheusCollector.retention.size }}"
-            {{- if .Values.prometheusCollector.basicAuth.enabled }}
+            {{- if $webConfigEnabled }}
             - "--web.config.file=/etc/prometheus-web/web.yml"
             {{- end }}
           ports:
@@ -49,21 +52,47 @@ spec:
               mountPath: /etc/prometheus
             - name: storage
               mountPath: /prometheus
-            {{- if .Values.prometheusCollector.basicAuth.enabled }}
+            {{- if $webConfigEnabled }}
             - name: web-config
               mountPath: /etc/prometheus-web
               readOnly: true
             {{- end }}
           livenessProbe:
+            {{- if or $tlsEnabled $basicAuthEnabled }}
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  {{- if $basicAuthEnabled }}
+                  wget -q --spider {{ if $tlsEnabled }}--no-check-certificate https{{ else }}http{{ end }}://{{ .Values.prometheusCollector.basicAuth.username }}:$(cat /etc/prometheus-web/password)@localhost:{{ .Values.prometheusCollector.port }}/-/healthy
+                  {{- else }}
+                  wget -q --spider --no-check-certificate https://localhost:{{ .Values.prometheusCollector.port }}/-/healthy
+                  {{- end }}
+            {{- else }}
             httpGet:
               path: /-/healthy
               port: prometheus
+            {{- end }}
             initialDelaySeconds: 30
             periodSeconds: 15
           readinessProbe:
+            {{- if or $tlsEnabled $basicAuthEnabled }}
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  {{- if $basicAuthEnabled }}
+                  wget -q --spider {{ if $tlsEnabled }}--no-check-certificate https{{ else }}http{{ end }}://{{ .Values.prometheusCollector.basicAuth.username }}:$(cat /etc/prometheus-web/password)@localhost:{{ .Values.prometheusCollector.port }}/-/ready
+                  {{- else }}
+                  wget -q --spider --no-check-certificate https://localhost:{{ .Values.prometheusCollector.port }}/-/ready
+                  {{- end }}
+            {{- else }}
             httpGet:
               path: /-/ready
               port: prometheus
+            {{- end }}
             initialDelaySeconds: 5
             periodSeconds: 5
       volumes:
@@ -73,7 +102,7 @@ spec:
         - name: storage
           emptyDir:
             sizeLimit: {{ .Values.prometheusCollector.storage.size }}
-        {{- if .Values.prometheusCollector.basicAuth.enabled }}
+        {{- if $webConfigEnabled }}
         - name: web-config
           secret:
             secretName: {{ include "pgdog.fullname" . }}-prometheus-collector

@@ -438,12 +438,19 @@ prometheusCollector:
     # size is the maximum size of data to retain (e.g., 5GB, 500MB)
     # Prometheus will delete oldest data first when this limit is exceeded
     size: 5GB
+  # tls configuration for enabling HTTPS on the Prometheus endpoint
+  tls:
+    # enabled controls whether TLS is enabled for Prometheus
+    # When enabled, a self-signed certificate is automatically generated
+    enabled: false
   # basicAuth configuration for protecting the Prometheus endpoint
   basicAuth:
     # enabled controls whether basic auth is required to access Prometheus
     enabled: false
     # username for basic auth
     username: ""
+    # password is the plaintext password (used for health checks)
+    password: ""
     # passwordHash is the bcrypt hash of the password
     # Generate with: htpasswd -nBC 10 "" | tr -d ':\n'
     # Or use Python: python -c "import bcrypt; print(bcrypt.hashpw(b'password', bcrypt.gensalt()).decode())"
