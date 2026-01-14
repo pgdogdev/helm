@@ -14,5 +14,11 @@ rules:
   - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["get", "list", "watch"]
+  {{- if .Values.prometheusCollector.enabled }}
+  # Allow Prometheus to discover pods for scraping
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  {{- end }}
 {{- end }}
 

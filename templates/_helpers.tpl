@@ -85,3 +85,29 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: gateway
 {{- end }}
 {{- end }}
+
+{{/*
+Common labels for prometheus-collector
+*/}}
+{{- define "pgdog.prometheusCollector.labels" -}}
+{{- if .Values.prometheusCollector.labels }}
+{{- toYaml .Values.prometheusCollector.labels }}
+{{- else -}}
+app.kubernetes.io/name: {{ include "pgdog.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/component: prometheus-collector
+{{- end }}
+{{- end }}
+
+{{/*
+Selector labels for prometheus-collector
+*/}}
+{{- define "pgdog.prometheusCollector.selectorLabels" -}}
+{{- if .Values.prometheusCollector.selectorLabels }}
+{{- toYaml .Values.prometheusCollector.selectorLabels }}
+{{- else -}}
+app.kubernetes.io/name: {{ include "pgdog.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/component: prometheus-collector
+{{- end }}
+{{- end }}

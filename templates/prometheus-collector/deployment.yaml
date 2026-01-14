@@ -1,0 +1,122 @@
+{{- if .Values.prometheusCollector.enabled }}
+{{- $tlsEnabled := .Values.prometheusCollector.tls.enabled }}
+{{- $basicAuthEnabled := .Values.prometheusCollector.basicAuth.enabled }}
+{{- $webConfigEnabled := or $tlsEnabled $basicAuthEnabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pgdog.fullname" . }}-prometheus-collector
+  labels:
+    {{- include "pgdog.prometheusCollector.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "pgdog.prometheusCollector.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "pgdog.prometheusCollector.selectorLabels" . | nindent 8 }}
+      {{- if .Values.prometheusCollector.podAnnotations }}
+      annotations:
+        {{- toYaml .Values.prometheusCollector.podAnnotations | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ include "pgdog.serviceAccountName" . }}
+      {{- end }}
+      containers:
+        - name: prometheus
+          image: {{ .Values.prometheusCollector.image.repository }}:{{ .Values.prometheusCollector.image.tag }}
+          imagePullPolicy: {{ .Values.prometheusCollector.image.pullPolicy }}
+          args:
+            - "--config.file=/etc/prometheus/prometheus.yml"
+            - "--storage.tsdb.path=/prometheus"
+            - "--web.listen-address=:{{ .Values.prometheusCollector.port }}"
+            - "--web.enable-lifecycle"
+            - "--storage.tsdb.retention.time={{ .Values.prometheusCollector.retention.time }}"
+            - "--storage.tsdb.retention.size={{ .Values.prometheusCollector.retention.size }}"
+            {{- if $webConfigEnabled }}
+            - "--web.config.file=/etc/prometheus-web/web.yml"
+            {{- end }}
+          ports:
+            - name: prometheus
+              containerPort: {{ .Values.prometheusCollector.port }}
+              protocol: TCP
+          {{- if .Values.prometheusCollector.resources }}
+          resources:
+            {{- toYaml .Values.prometheusCollector.resources | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/prometheus
+            - name: storage
+              mountPath: /prometheus
+            {{- if $webConfigEnabled }}
+            - name: web-config
+              mountPath: /etc/prometheus-web
+              readOnly: true
+            {{- end }}
+          livenessProbe:
+            {{- if or $tlsEnabled $basicAuthEnabled }}
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  {{- if $basicAuthEnabled }}
+                  wget -q --spider {{ if $tlsEnabled }}--no-check-certificate https{{ else }}http{{ end }}://{{ .Values.prometheusCollector.basicAuth.username }}:$(cat /etc/prometheus-web/password)@localhost:{{ .Values.prometheusCollector.port }}/-/healthy
+                  {{- else }}
+                  wget -q --spider --no-check-certificate https://localhost:{{ .Values.prometheusCollector.port }}/-/healthy
+                  {{- end }}
+            {{- else }}
+            httpGet:
+              path: /-/healthy
+              port: prometheus
+            {{- end }}
+            initialDelaySeconds: 30
+            periodSeconds: 15
+          readinessProbe:
+            {{- if or $tlsEnabled $basicAuthEnabled }}
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  {{- if $basicAuthEnabled }}
+                  wget -q --spider {{ if $tlsEnabled }}--no-check-certificate https{{ else }}http{{ end }}://{{ .Values.prometheusCollector.basicAuth.username }}:$(cat /etc/prometheus-web/password)@localhost:{{ .Values.prometheusCollector.port }}/-/ready
+                  {{- else }}
+                  wget -q --spider --no-check-certificate https://localhost:{{ .Values.prometheusCollector.port }}/-/ready
+                  {{- end }}
+            {{- else }}
+            httpGet:
+              path: /-/ready
+              port: prometheus
+            {{- end }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "pgdog.fullname" . }}-prometheus-collector
+        - name: storage
+          emptyDir:
+            sizeLimit: {{ .Values.prometheusCollector.storage.size }}
+        {{- if $webConfigEnabled }}
+        - name: web-config
+          secret:
+            secretName: {{ include "pgdog.fullname" . }}-prometheus-collector
+        {{- end }}
+      {{- with .Values.prometheusCollector.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.prometheusCollector.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.prometheusCollector.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
