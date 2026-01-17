@@ -410,6 +410,9 @@ queryStats:
 # Valid values: "auto", "on", "off"
 # queryParser: "auto"
 
+# queryParserEngine specifies which query parser engine to use
+# queryParserEngine: ""
+
 # queryParserEnabled is DEPRECATED - use queryParser instead
 # queryParserEnabled: true
 

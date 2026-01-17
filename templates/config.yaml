@@ -49,6 +49,9 @@ data:
         query_parser_enabled      =   {{ . }}
         {{- end }}
         {{- end }}
+        {{- if .Values.queryParserEngine }}
+        query_parser_engine       =   {{ .Values.queryParserEngine | quote }}
+        {{- end }}
         {{- if .Values.preparedStatementsLimit }}
         prepared_statements_limit =   {{ .Values.preparedStatementsLimit }}
         {{- end}}

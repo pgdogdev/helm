@@ -1,5 +1,6 @@
 # Full configuration test with databases and users
 replicas: 3
+queryParserEngine: "pg_query_raw"
 port: 6432
 healthcheckPort: 8080
 
