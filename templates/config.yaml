@@ -49,6 +49,9 @@ data:
         query_parser_enabled      =   {{ . }}
         {{- end }}
         {{- end }}
+        {{- if .Values.queryParserEngine }}
+        query_parser_engine       =   {{ .Values.queryParserEngine | quote }}
+        {{- end }}
         {{- if .Values.preparedStatementsLimit }}
         prepared_statements_limit =   {{ .Values.preparedStatementsLimit }}
         {{- end}}
@@ -210,6 +213,19 @@ data:
         {{- end }}
         {{- if hasKey .Values "tcpRetries" }}
         retries = {{ .Values.tcpRetries }}
+        {{- end }}
+        {{- end }}
+
+        {{- if or (hasKey .Values "memoryNetBuffer") (hasKey .Values "memoryMessageBuffer") (hasKey .Values "memoryStackSize") }}
+        [memory]
+        {{- if hasKey .Values "memoryNetBuffer" }}
+        net_buffer = {{ .Values.memoryNetBuffer | int }}
+        {{- end }}
+        {{- if hasKey .Values "memoryMessageBuffer" }}
+        message_buffer = {{ .Values.memoryMessageBuffer | int }}
+        {{- end }}
+        {{- if hasKey .Values "memoryStackSize" }}
+        stack_size = {{ .Values.memoryStackSize | int }}
         {{- end }}
         {{- end }}
 
