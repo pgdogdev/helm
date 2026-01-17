@@ -405,6 +405,12 @@ queryStats:
 # tcpInterval: 75
 # tcpRetries: 9
 
+# Memory configuration (optional)
+# These settings control buffer and stack sizes
+# memoryNetBuffer: 8192
+# memoryMessageBuffer: 8192
+# memoryStackSize: 2097152
+
 # Query parser configuration
 # queryParser controls whether the query parser is enabled
 # Valid values: "auto", "on", "off"

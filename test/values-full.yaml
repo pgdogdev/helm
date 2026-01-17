@@ -1,6 +1,10 @@
 # Full configuration test with databases and users
 replicas: 3
 queryParserEngine: "pg_query_raw"
+
+memoryNetBuffer: 8192
+memoryMessageBuffer: 8192
+memoryStackSize: 2097152
 port: 6432
 healthcheckPort: 8080
 

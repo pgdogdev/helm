@@ -216,6 +216,19 @@ data:
         {{- end }}
         {{- end }}
 
+        {{- if or (hasKey .Values "memoryNetBuffer") (hasKey .Values "memoryMessageBuffer") (hasKey .Values "memoryStackSize") }}
+        [memory]
+        {{- if hasKey .Values "memoryNetBuffer" }}
+        net_buffer = {{ .Values.memoryNetBuffer }}
+        {{- end }}
+        {{- if hasKey .Values "memoryMessageBuffer" }}
+        message_buffer = {{ .Values.memoryMessageBuffer }}
+        {{- end }}
+        {{- if hasKey .Values "memoryStackSize" }}
+        stack_size = {{ .Values.memoryStackSize }}
+        {{- end }}
+        {{- end }}
+
         {{- if .Values.adminPassword }}
         [admin]
         password = {{ .Values.adminPassword | quote }}
