@@ -219,13 +219,13 @@ data:
         {{- if or (hasKey .Values "memoryNetBuffer") (hasKey .Values "memoryMessageBuffer") (hasKey .Values "memoryStackSize") }}
         [memory]
         {{- if hasKey .Values "memoryNetBuffer" }}
-        net_buffer = {{ .Values.memoryNetBuffer }}
+        net_buffer = {{ .Values.memoryNetBuffer | int }}
         {{- end }}
         {{- if hasKey .Values "memoryMessageBuffer" }}
-        message_buffer = {{ .Values.memoryMessageBuffer }}
+        message_buffer = {{ .Values.memoryMessageBuffer | int }}
         {{- end }}
         {{- if hasKey .Values "memoryStackSize" }}
-        stack_size = {{ .Values.memoryStackSize }}
+        stack_size = {{ .Values.memoryStackSize | int }}
         {{- end }}
         {{- end }}
 
