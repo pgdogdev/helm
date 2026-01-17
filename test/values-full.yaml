@@ -29,6 +29,17 @@ mirrors:
   - sourceDb: primary
     destinationDb: replica
 
+omnishardedTables:
+  - database: primary
+    sticky: true
+    tables:
+      - pg_class
+      - pg_attribute
+      - pg_attrdef
+      - pg_index
+      - pg_constraint
+      - pg_namespace
+
 podAnnotations:
   prometheus.io/scrape: "true"
 
