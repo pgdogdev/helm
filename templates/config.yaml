@@ -188,6 +188,15 @@ data:
         {{- end}}
         {{- end }}
 
+        {{- range .Values.omnishardedTables }}
+        [[omnisharded_tables]]
+        database = {{ .database | quote }}
+        {{- if .sticky }}
+        sticky = {{ .sticky }}
+        {{- end }}
+        tables = {{ .tables | toToml }}
+        {{- end }}
+
         {{- if or (hasKey .Values "tcpKeepalive") (hasKey .Values "tcpTime") (hasKey .Values "tcpInterval") (hasKey .Values "tcpRetries") }}
         [tcp]
         {{- if hasKey .Values "tcpKeepalives" }}

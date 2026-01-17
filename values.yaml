@@ -150,6 +150,19 @@ shardedTables: []
 #       shard: 1
 shardedMappings: []
 
+# omnishardedTables contains the list of omnisharded table entries in pgdog.toml
+# Each entry requires: database and tables; sticky is optional
+# Example:
+# omnishardedTables:
+#   - database: "prod"
+#     sticky: true
+#     tables:
+#       - "pg_class"
+#       - "pg_attribute"
+#       - "pg_attrdef"
+#       - "pg_index"
+omnishardedTables: []
+
 # service contains the Kubernetes service configuration
 service:
   # type specifies the type of Kubernetes service
