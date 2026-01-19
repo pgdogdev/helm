@@ -68,6 +68,35 @@ statefulSet:
   # enabled switches from Deployment to StatefulSet
   enabled: false
 
+# Extra customization for advanced use cases
+# extraInitContainers allows adding custom init containers that run before the main pgdog container
+# Init containers are useful for setup tasks like downloading certificates, waiting for dependencies, etc.
+# Example:
+# extraInitContainers:
+#   - name: init-ca
+#     image: busybox
+#     command: ['sh', '-c', 'wget -O /pki/ca-bundle.pem https://truststore.example.com/ca-bundle.pem']
+#     volumeMounts:
+#       - name: pki
+#         mountPath: /pki
+extraInitContainers: []
+
+# extraVolumes allows adding custom volumes to the pod
+# These volumes can be referenced by extraVolumeMounts or extraInitContainers
+# Example:
+# extraVolumes:
+#   - name: pki
+#     emptyDir: {}
+extraVolumes: []
+
+# extraVolumeMounts allows adding custom volume mounts to the main pgdog container
+# The volumes must be defined in extraVolumes
+# Example:
+# extraVolumeMounts:
+#   - name: pki
+#     mountPath: /pki
+extraVolumeMounts: []
+
 # resources define resource requests and limits for the pgdog container
 # Note: requests and limits are set to the same values for Guaranteed QoS
 # Ratio: 1GB memory per 1 CPU (1000m CPU = 1Gi memory)
