@@ -41,6 +41,10 @@ spec:
       {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- end }}
+      {{- with .Values.extraInitContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: pgdog
           {{- if .Values.image.name }}
@@ -94,6 +98,9 @@ spec:
               mountPath: /etc/pgdog
             - name: users
               mountPath: /etc/secrets/pgdog
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
         {{- if .Values.prometheusPort }}
         - name: prom
           image: prom/prometheus
@@ -151,6 +158,9 @@ spec:
         - name: prom
           configMap:
             name: {{ include "pgdog.fullname" . }}-prom
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
