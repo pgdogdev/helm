@@ -242,9 +242,10 @@ data:
         {{- if .Values.queryStats.enabled }}
         [query_stats]
         enabled = {{ .Values.queryStats.enabled }}
-        query_plan_threshold = {{ .Values.queryStats.queryPlanThreshold | default "1_000" }}
-        query_plan_max_age = {{ .Values.queryStats.queryPlanMaxAge | default "15_000" }}
+        max_entries = {{ .Values.queryStats.maxEntries | default "10_000" }}
+        query_plan_threshold = {{ .Values.queryStats.queryPlanThreshold | default "250" }}
         query_plans_cache = {{ .Values.queryStats.queryPlansCache | default "100" }}
+        query_plan_max_age = {{ .Values.queryStats.queryPlanMaxAge | default "15_000" }}
         max_errors = {{ .Values.queryStats.maxErrors | default "100" }}
         max_error_age = {{ .Values.queryStats.maxErrorAge | default "300_000" }}
         {{- end }}
