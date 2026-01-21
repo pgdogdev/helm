@@ -429,7 +429,7 @@ queryStats:
 
 # TCP keep-alive configuration (optional)
 # These settings control socket-level keep-alive behavior
-# tcpKeepalives: true
+# tcpKeepalive: true
 # tcpTime: 7200
 # tcpInterval: 75
 # tcpRetries: 9
