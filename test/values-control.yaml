@@ -1,0 +1,22 @@
+# Test control plane configuration (PgDog EE)
+control:
+  enabled: true
+  endpoint: "wss://control.example.com/ws"
+  token: "test-token-12345"
+  metricsInterval: 2000
+  statsInterval: 10000
+  activeQueriesInterval: 5000
+  errorsInterval: 5000
+  requestTimeout: 2000
+  queryTimingsChunkSize: 50
+  queryTimingsNewQueryQueueSize: 500
+
+# Basic database config for testing control integration
+databases:
+  - name: primary
+    host: postgres.example.com
+    port: 5432
+
+users:
+  - username: app_user
+    password: secret123

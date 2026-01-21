@@ -248,3 +248,16 @@ data:
         max_errors = {{ .Values.queryStats.maxErrors | default "100" }}
         max_error_age = {{ .Values.queryStats.maxErrorAge | default "300_000" }}
         {{- end }}
+
+        {{- if .Values.control.enabled }}
+        [control]
+        endpoint = {{ .Values.control.endpoint | quote }}
+        token = {{ .Values.control.token | quote }}
+        metrics_interval = {{ .Values.control.metricsInterval | default "1_000" }}
+        stats_interval = {{ .Values.control.statsInterval | default "5_000" }}
+        active_queries_interval = {{ .Values.control.activeQueriesInterval | default "5_000" }}
+        errors_interval = {{ .Values.control.errorsInterval | default "5_000" }}
+        request_timeout = {{ .Values.control.requestTimeout | default "1_000" }}
+        query_timings_chunk_size = {{ .Values.control.queryTimingsChunkSize | default "25" }}
+        query_timings_new_query_queue_size = {{ .Values.control.queryTimingsNewQueryQueueSize | default "1_000" }}
+        {{- end }}

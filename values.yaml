@@ -422,6 +422,30 @@ queryStats:
   queryPlansCache: 100
   maxErrors: 100
   maxErrorAge: 300000
+# Control configuration (PgDog EE)
+# Enables communication with PgDog Cloud control plane
+control:
+  # enabled controls whether to include [control] section in pgdog.toml
+  enabled: false
+  # endpoint is the control plane URL
+  endpoint: ""
+  # token is the authentication token for the control plane
+  token: ""
+  # metricsInterval defines how often to push metrics (in milliseconds)
+  metricsInterval: 1000
+  # statsInterval defines how often to push stats (in milliseconds)
+  statsInterval: 5000
+  # activeQueriesInterval defines how often to push active queries (in milliseconds)
+  activeQueriesInterval: 5000
+  # errorsInterval defines how often to push errors (in milliseconds)
+  errorsInterval: 5000
+  # requestTimeout defines the timeout for control plane requests (in milliseconds)
+  requestTimeout: 1000
+  # queryTimingsChunkSize defines the chunk size for query timings
+  queryTimingsChunkSize: 25
+  # queryTimingsNewQueryQueueSize defines the queue size for new query timings
+  queryTimingsNewQueryQueueSize: 1000
+
 # LSN check configuration for replication failover auto mode (in milliseconds)
 # See: https://docs.pgdog.dev/features/load-balancer/replication-failover/
 # lsnCheckDelay: 0        # Set to 0 to start LSN monitoring immediately
