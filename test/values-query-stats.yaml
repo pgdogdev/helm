@@ -1,0 +1,14 @@
+# Test query stats configuration
+queryStats:
+  enabled: true
+  maxEntries: 50000
+  queryPlanThreshold: 500
+  queryPlansCache: 200
+  queryPlanMaxAge: 30000
+  maxErrors: 250
+  maxErrorAge: 600000
+
+databases:
+  - name: primary
+    host: postgres.example.com
+    port: 5432
