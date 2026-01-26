@@ -262,3 +262,10 @@ data:
         query_timings_chunk_size = {{ .Values.control.queryTimingsChunkSize | default "25" }}
         query_timings_new_query_queue_size = {{ .Values.control.queryTimingsNewQueryQueueSize | default "1_000" }}
         {{- end }}
+
+        {{- if .Values.rewrite }}
+        [rewrite]
+        enabled = {{ .Values.rewrite.enabled | default "false" }}
+        shard_key = {{ .Values.rewrite.shardKey | default "error" | quote }}
+        split_inserts = {{ .Values.rewrite.splitInserts | default "error" | quote }}
+        {{- end }}
