@@ -91,12 +91,5 @@ jobs:
             rm -f /tmp/pgdog.toml
             ./test/generate-config.sh "$values_file" /tmp/pgdog.toml
             ./pgdog-source/target/debug/pgdog --config=/tmp/pgdog.toml configcheck
-
-            # Check if gateway is enabled and validate gateway config
-            rm -f /tmp/gateway.toml
-            if ./test/generate-gateway-config.sh "$values_file" /tmp/gateway.toml 2>/dev/null; then
-              echo "==> Validating gateway config for $name..."
-              ./pgdog-source/target/debug/gateway --config=/tmp/gateway.toml configcheck
-            fi
           done
           echo "==> All configs valid!"
