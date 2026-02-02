@@ -66,6 +66,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            {{- range .Values.env }}
+            {{- if ne .name "NODE_ID" }}
+            - {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- end }}
           ports:
             - name: pgdog
               containerPort: {{ .Values.port }}

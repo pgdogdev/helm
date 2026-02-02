@@ -1,5 +1,9 @@
 # Full configuration test with databases and users
 replicas: 3
+
+env:
+  - name: RUST_LOG
+    value: trace
 queryParserEngine: "pg_query_raw"
 
 memoryNetBuffer: 8192
