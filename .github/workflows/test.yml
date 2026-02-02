@@ -79,7 +79,7 @@ jobs:
           sudo pip3 install cmake==3.31.6
 
       - name: Build pgdog
-        run: cargo build --bin pgdog --bin gateway
+        run: cargo build --bin pgdog
         working-directory: pgdog-source
 
       - name: Validate configs
