@@ -68,6 +68,19 @@ statefulSet:
   # enabled switches from Deployment to StatefulSet
   enabled: false
 
+# env allows setting custom environment variables on the pgdog container
+# Note: NODE_ID is automatically generated and cannot be overridden
+# Example:
+# env:
+#   - name: MY_VAR
+#     value: "my-value"
+#   - name: SECRET_VAR
+#     valueFrom:
+#       secretKeyRef:
+#         name: my-secret
+#         key: password
+env: []
+
 # Extra customization for advanced use cases
 # extraInitContainers allows adding custom init containers that run before the main pgdog container
 # Init containers are useful for setup tasks like downloading certificates, waiting for dependencies, etc.

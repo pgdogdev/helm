@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
 
     steps:
       - name: Checkout repository
@@ -79,7 +79,7 @@ jobs:
           sudo pip3 install cmake==3.31.6
 
       - name: Build pgdog
-        run: cargo build --bin pgdog --bin gateway
+        run: cargo build --bin pgdog
         working-directory: pgdog-source
 
       - name: Validate configs
@@ -91,12 +91,5 @@ jobs:
             rm -f /tmp/pgdog.toml
             ./test/generate-config.sh "$values_file" /tmp/pgdog.toml
             ./pgdog-source/target/debug/pgdog --config=/tmp/pgdog.toml configcheck
-
-            # Check if gateway is enabled and validate gateway config
-            rm -f /tmp/gateway.toml
-            if ./test/generate-gateway-config.sh "$values_file" /tmp/gateway.toml 2>/dev/null; then
-              echo "==> Validating gateway config for $name..."
-              ./pgdog-source/target/debug/gateway --config=/tmp/gateway.toml configcheck
-            fi
           done
           echo "==> All configs valid!"
