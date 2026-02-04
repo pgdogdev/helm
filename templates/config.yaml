@@ -36,6 +36,7 @@ data:
         {{- if .Values.tlsPrivateKey }}
         tls_private_key           =   {{ .Values.tlsPrivateKey | quote }}
         {{- end }}
+        tls_client_required       =   {{ .Values.tlsClientRequired | default "false" }}
         tls_verify                =   {{ .Values.tlsVerify | default "prefer" | quote }}
         {{- if .Values.tlsServerCaCertificate }}
         tls_server_ca_certificate =   {{ .Values.tlsServerCaCertificate | quote }}
