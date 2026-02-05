@@ -3,7 +3,7 @@ rewrite:
   enabled: true
   shardKey: "rewrite"
   splitInserts: "ignore"
-  primary_key: "rewrite"
+  primaryKey: "rewrite"
 
 # Basic database config for testing rewrite
 databases:
