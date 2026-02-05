@@ -269,4 +269,5 @@ data:
         enabled = {{ .Values.rewrite.enabled | default "false" }}
         shard_key = {{ .Values.rewrite.shardKey | default "error" | quote }}
         split_inserts = {{ .Values.rewrite.splitInserts | default "error" | quote }}
+        primary_key = {{ .Values.rewrite.primaryKey | default "ignore" | quote }}
         {{- end }}
