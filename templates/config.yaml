@@ -42,6 +42,9 @@ data:
         tls_server_ca_certificate =   {{ .Values.tlsServerCaCertificate | quote }}
         {{- end}}
         shutdown_timeout          =   {{ .Values.shutdownTimeout | default "60_000" }}
+        {{- if .Values.shutdownTerminationTimeout }}
+        shutdown_termination_timeout =   {{ .Values.shutdownTerminationTimeout }}
+        {{- end }}
         prepared_statements       =   {{ .Values.preparedStatements | default "extended" | quote }}
         {{- with .Values.queryParser }}
         query_parser              =   {{ . | quote }}
@@ -71,11 +74,32 @@ data:
         {{- end }}
         checkout_timeout          =   {{ .Values.checkoutTimeout | default "5_000" }}
         dry_run                   =   {{ .Values.dryRun | default "false" }}
+        {{- if hasKey .Values "twoPhaseCommit" }}
+        two_phase_commit          =   {{ .Values.twoPhaseCommit }}
+        {{- end }}
+        {{- if hasKey .Values "twoPhaseCommitAuto" }}
+        two_phase_commit_auto     =   {{ .Values.twoPhaseCommitAuto }}
+        {{- end }}
+        {{- if .Values.systemCatalogs }}
+        system_catalogs           =   {{ .Values.systemCatalogs | quote }}
+        {{- end }}
+        {{- if hasKey .Values "omnishardedSticky" }}
+        omnisharded_sticky        =   {{ .Values.omnishardedSticky }}
+        {{- end }}
+        {{- if .Values.reshardingCopyFormat }}
+        resharding_copy_format    =   {{ .Values.reshardingCopyFormat | quote }}
+        {{- end }}
+        {{- if hasKey .Values "reloadSchemaOnDdl" }}
+        reload_schema_on_ddl      =   {{ .Values.reloadSchemaOnDdl }}
+        {{- end }}
         {{- if .Values.idleTimeout }}
         idle_timeout              =   {{ .Values.idleTimeout }}
         {{- end }}
         {{- if .Values.clientIdleTimeout }}
         client_idle_timeout       =   {{ .Values.clientIdleTimeout }}
+        {{- end }}
+        {{- if .Values.clientLoginTimeout }}
+        client_login_timeout      =   {{ .Values.clientLoginTimeout }}
         {{- end }}
         mirror_queue              =   {{ .Values.mirrorQueue | default "128" }}
         mirror_exposure           =   {{ .Values.mirrorExposure | default "1.0" }}
@@ -92,8 +116,14 @@ data:
         server_lifetime = {{ .Values.serverLifetime | default "86400000" }}
         log_connections = {{ .Values.logConnections | default "true" }}
         log_disconnections = {{ .Values.logDisconnections | default "true" }}
+        {{- if .Values.statsPeriod }}
+        stats_period              =   {{ .Values.statsPeriod }}
+        {{- end }}
         {{- if .Values.connectionRecovery }}
         connection_recovery      =   {{ .Values.connectionRecovery | quote }}
+        {{- end }}
+        {{- if .Values.clientConnectionRecovery }}
+        client_connection_recovery =   {{ .Values.clientConnectionRecovery | quote }}
         {{- end }}
         expanded_explain = {{ .Values.expandedExplain | default "false" }}
         {{- if hasKey .Values "lsnCheckDelay" }}
@@ -101,6 +131,9 @@ data:
         {{- end }}
         {{- if hasKey .Values "lsnCheckInterval" }}
         lsn_check_interval        =   {{ .Values.lsnCheckInterval }}
+        {{- end }}
+        {{- if hasKey .Values "lsnCheckTimeout" }}
+        lsn_check_timeout         =   {{ .Values.lsnCheckTimeout }}
         {{- end }}
 
         {{- range .Values.databases }}
