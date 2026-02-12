@@ -3,12 +3,20 @@ healthcheckTimeout: 10_000
 banTimeout: 30_000
 rollbackTimeout: 10_000
 shutdownTimeout: 120_000
+shutdownTerminationTimeout: 30_000
 connectTimeout: 10_000
 queryTimeout: 60_000
 clientIdleInTransactionTimeout: 30_000
 checkoutTimeout: 10_000
 idleTimeout: 300_000
 clientIdleTimeout: 600_000
+clientLoginTimeout: 30_000
+statsPeriod: 30_000
+lsnCheckDelay: 1_000
+lsnCheckInterval: 10_000
+lsnCheckTimeout: 5_000
+connectionRecovery: recover
+clientConnectionRecovery: recover
 
 databases:
   - name: primary

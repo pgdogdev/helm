@@ -6,6 +6,14 @@ env:
     value: trace
 queryParserEngine: "pg_query_raw"
 
+# Sharding settings
+twoPhaseCommit: true
+twoPhaseCommitAuto: false
+systemCatalogs: omnisharded_sticky
+omnishardedSticky: true
+reshardingCopyFormat: binary
+reloadSchemaOnDdl: true
+
 memoryNetBuffer: 8192
 memoryMessageBuffer: 8192
 memoryStackSize: 2097152
