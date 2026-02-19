@@ -92,6 +92,9 @@ data:
         {{- if hasKey .Values "reloadSchemaOnDdl" }}
         reload_schema_on_ddl      =   {{ .Values.reloadSchemaOnDdl }}
         {{- end }}
+        {{- if .Values.loadSchema }}
+        load_schema               =   {{ .Values.loadSchema | quote }}
+        {{- end }}
         {{- if .Values.idleTimeout }}
         idle_timeout              =   {{ .Values.idleTimeout }}
         {{- end }}
