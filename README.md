@@ -135,6 +135,19 @@ podAntiAffinity:
   type: soft # "soft" (preferred) or "hard" (required)
 ```
 
+### Config Change Restarts
+
+By default, ConfigMap changes are not automatically picked up by
+running pods. Enable `restartOnConfigChange` to trigger a rolling
+restart whenever the rendered config changes:
+
+```yaml
+restartOnConfigChange: true
+```
+
+This injects a `checksum/config` pod annotation that changes when the
+config template output changes, causing Kubernetes to roll the pods.
+
 ### ExternalSecrets Integration
 
 Securely manage credentials using ExternalSecrets operator:

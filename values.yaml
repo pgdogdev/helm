@@ -19,6 +19,11 @@ annotations: {}
 # allows adding custom annotations to the pods
 podAnnotations: {}
 
+# restartOnConfigChange triggers a rolling restart when pgdog config changes.
+# Disabled by default; enable if you don't have a hot-reload mechanism (e.g. SIGHUP sidecar).
+# See: https://github.com/pgdogdev/helm/issues/15
+# restartOnConfigChange: false
+
 # clusterName identifies the Kubernetes cluster (optional)
 # When set, this will be added as a label to all Prometheus metrics
 # clusterName: ""
