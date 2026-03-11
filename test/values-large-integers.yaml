@@ -1,0 +1,19 @@
+# Test: large integer values should render without scientific notation.
+# YAML parses integers >= 10M as float64; Helm renders those as e.g. 8.64e+07.
+# The pgdog.intval helper must convert them back to plain integers.
+
+port: 6432
+serverLifetime: 86400000
+healthcheckInterval: 30000000
+idleHealthcheckInterval: 30000000
+shutdownTimeout: 60000000
+connectTimeout: 10000000
+checkoutTimeout: 10000000
+
+databases:
+  - name: test
+    host: localhost
+    port: 5432
+    shard: 0
+    statementTimeout: 86400000
+    serverLifetime: 86400000

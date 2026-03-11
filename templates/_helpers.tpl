@@ -111,3 +111,14 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: prometheus-collector
 {{- end }}
 {{- end }}
+
+{{/*
+Render an integer value safely.
+YAML parses large integers (>= 10M) as float64, which Helm renders
+as scientific notation (e.g. 8.64e+07). TOML rejects this.
+- String inputs (defaults like "30_000", user strings): pass through as-is
+- Numeric inputs (float64 from YAML): convert via int64
+*/}}
+{{- define "pgdog.intval" -}}
+{{- if kindIs "string" . -}}{{ . }}{{- else -}}{{ int64 . }}{{- end -}}
+{{- end -}}

@@ -7,24 +7,24 @@ data:
     # Note: don't change the port value, since it's pulled from Values.
     pgdog.toml: |
         [general]
-        port                      =   {{ .Values.port }}
-        workers                   =   {{ .Values.workers | default "2" }}
-        default_pool_size         =   {{ .Values.defaultPoolSize | default "10" }}
+        port                      =   {{ include "pgdog.intval" .Values.port }}
+        workers                   =   {{ include "pgdog.intval" (.Values.workers | default 2) }}
+        default_pool_size         =   {{ include "pgdog.intval" (.Values.defaultPoolSize | default 10) }}
         {{- if hasKey .Values "minPoolSize" }}
-        min_pool_size             =   {{ .Values.minPoolSize }}
+        min_pool_size             =   {{ include "pgdog.intval" .Values.minPoolSize }}
         {{- end }}
         pooler_mode               =   {{ .Values.poolerMode | default "transaction" | quote }}
         {{- if .Values.healthcheckPort }}
-        healthcheck_port          =   {{ .Values.healthcheckPort }}
+        healthcheck_port          =   {{ include "pgdog.intval" .Values.healthcheckPort }}
         {{- end }}
-        healthcheck_interval      =   {{ .Values.healthcheckInterval | default "30_000" }}
-        idle_healthcheck_interval =   {{ .Values.idleHealthcheckInterval | default "30_000" }}
-        idle_healthcheck_delay    =   {{ .Values.idleHealthcheckDelay | default "5_000" }}
-        healthcheck_timeout       =   {{ .Values.healthcheckTimeout | default "5_000" }}
+        healthcheck_interval      =   {{ include "pgdog.intval" (.Values.healthcheckInterval | default "30_000") }}
+        idle_healthcheck_interval =   {{ include "pgdog.intval" (.Values.idleHealthcheckInterval | default "30_000") }}
+        idle_healthcheck_delay    =   {{ include "pgdog.intval" (.Values.idleHealthcheckDelay | default "5_000") }}
+        healthcheck_timeout       =   {{ include "pgdog.intval" (.Values.healthcheckTimeout | default "5_000") }}
         {{- if hasKey .Values "banTimeout" }}
-        ban_timeout               =   {{ .Values.banTimeout }}
+        ban_timeout               =   {{ include "pgdog.intval" .Values.banTimeout }}
         {{- end }}
-        rollback_timeout          =   {{ .Values.rollbackTimeout | default "5_000" }}
+        rollback_timeout          =   {{ include "pgdog.intval" (.Values.rollbackTimeout | default "5_000") }}
         load_balancing_strategy   =   {{ .Values.loadBalancingStrategy | default "round_robin" | quote }}
         read_write_strategy       =   {{ .Values.readWriteStrategy | default "conservative" | quote }}
         {{- if .Values.readWriteSplit }}
@@ -41,9 +41,9 @@ data:
         {{- if .Values.tlsServerCaCertificate }}
         tls_server_ca_certificate =   {{ .Values.tlsServerCaCertificate | quote }}
         {{- end}}
-        shutdown_timeout          =   {{ .Values.shutdownTimeout | default "60_000" }}
+        shutdown_timeout          =   {{ include "pgdog.intval" (.Values.shutdownTimeout | default "60_000") }}
         {{- if .Values.shutdownTerminationTimeout }}
-        shutdown_termination_timeout =   {{ .Values.shutdownTerminationTimeout }}
+        shutdown_termination_timeout =   {{ include "pgdog.intval" .Values.shutdownTerminationTimeout }}
         {{- end }}
         prepared_statements       =   {{ .Values.preparedStatements | default "extended" | quote }}
         {{- with .Values.queryParser }}
@@ -57,22 +57,22 @@ data:
         query_parser_engine       =   {{ .Values.queryParserEngine | quote }}
         {{- end }}
         {{- if .Values.preparedStatementsLimit }}
-        prepared_statements_limit =   {{ .Values.preparedStatementsLimit }}
+        prepared_statements_limit =   {{ include "pgdog.intval" .Values.preparedStatementsLimit }}
         {{- end}}
         {{- if .Values.queryCacheLimit }}
-        query_cache_limit         =   {{ .Values.queryCacheLimit }}
+        query_cache_limit         =   {{ include "pgdog.intval" .Values.queryCacheLimit }}
         {{- end }}
         passthrough_auth          =   {{ .Values.passthroughAuth | default "disabled" | quote }}
-        connect_timeout           =   {{ .Values.connectTimeout | default "5_000" }}
-        connect_attempts          =   {{ .Values.connectAttempts | default "1" }}
-        connect_attempt_delay     =   {{ .Values.connectAttemptDelay | default "0" }}
+        connect_timeout           =   {{ include "pgdog.intval" (.Values.connectTimeout | default "5_000") }}
+        connect_attempts          =   {{ include "pgdog.intval" (.Values.connectAttempts | default 1) }}
+        connect_attempt_delay     =   {{ include "pgdog.intval" (.Values.connectAttemptDelay | default 0) }}
         {{- if .Values.queryTimeout }}
-        query_timeout             =   {{ .Values.queryTimeout }}
+        query_timeout             =   {{ include "pgdog.intval" .Values.queryTimeout }}
         {{- end }}
         {{- if .Values.clientIdleInTransactionTimeout }}
-        client_idle_in_transaction_timeout =   {{ .Values.clientIdleInTransactionTimeout }}
+        client_idle_in_transaction_timeout =   {{ include "pgdog.intval" .Values.clientIdleInTransactionTimeout }}
         {{- end }}
-        checkout_timeout          =   {{ .Values.checkoutTimeout | default "5_000" }}
+        checkout_timeout          =   {{ include "pgdog.intval" (.Values.checkoutTimeout | default "5_000") }}
         dry_run                   =   {{ .Values.dryRun | default "false" }}
         {{- if hasKey .Values "twoPhaseCommit" }}
         two_phase_commit          =   {{ .Values.twoPhaseCommit }}
@@ -96,31 +96,31 @@ data:
         load_schema               =   {{ .Values.loadSchema | quote }}
         {{- end }}
         {{- if .Values.idleTimeout }}
-        idle_timeout              =   {{ .Values.idleTimeout }}
+        idle_timeout              =   {{ include "pgdog.intval" .Values.idleTimeout }}
         {{- end }}
         {{- if .Values.clientIdleTimeout }}
-        client_idle_timeout       =   {{ .Values.clientIdleTimeout }}
+        client_idle_timeout       =   {{ include "pgdog.intval" .Values.clientIdleTimeout }}
         {{- end }}
         {{- if .Values.clientLoginTimeout }}
-        client_login_timeout      =   {{ .Values.clientLoginTimeout }}
+        client_login_timeout      =   {{ include "pgdog.intval" .Values.clientLoginTimeout }}
         {{- end }}
-        mirror_queue              =   {{ .Values.mirrorQueue | default "128" }}
+        mirror_queue              =   {{ include "pgdog.intval" (.Values.mirrorQueue | default 128) }}
         mirror_exposure           =   {{ .Values.mirrorExposure | default "1.0" }}
         auth_type                 =   {{ .Values.authType | default "scram" | quote }}
         cross_shard_disabled      =   {{ .Values.crossShardDisabled | default "false" }}
         {{- if .Values.dnsTtl }}
-        dns_ttl                   =   {{ .Values.dnsTtl }}
+        dns_ttl                   =   {{ include "pgdog.intval" .Values.dnsTtl }}
         {{- end }}
         {{- if .Values.pubSubChannelSize }}
-        pub_sub_channel_size      =   {{ .Values.pubSubChannelSize }}
+        pub_sub_channel_size      =   {{ include "pgdog.intval" .Values.pubSubChannelSize }}
         {{- end }}
-        openmetrics_port = {{ .Values.openMetricsPort | default "9090" }}
+        openmetrics_port = {{ include "pgdog.intval" (.Values.openMetricsPort | default 9090) }}
         openmetrics_namespace = {{ .Values.openMetricsNamespace | default "pgdog_" | quote }}
-        server_lifetime = {{ .Values.serverLifetime | default "86400000" }}
+        server_lifetime = {{ include "pgdog.intval" (.Values.serverLifetime | default 86400000) }}
         log_connections = {{ .Values.logConnections | default "true" }}
         log_disconnections = {{ .Values.logDisconnections | default "true" }}
         {{- if .Values.statsPeriod }}
-        stats_period              =   {{ .Values.statsPeriod }}
+        stats_period              =   {{ include "pgdog.intval" .Values.statsPeriod }}
         {{- end }}
         {{- if .Values.connectionRecovery }}
         connection_recovery      =   {{ .Values.connectionRecovery | quote }}
@@ -130,21 +130,21 @@ data:
         {{- end }}
         expanded_explain = {{ .Values.expandedExplain | default "false" }}
         {{- if hasKey .Values "lsnCheckDelay" }}
-        lsn_check_delay           =   {{ .Values.lsnCheckDelay }}
+        lsn_check_delay           =   {{ include "pgdog.intval" .Values.lsnCheckDelay }}
         {{- end }}
         {{- if hasKey .Values "lsnCheckInterval" }}
-        lsn_check_interval        =   {{ .Values.lsnCheckInterval }}
+        lsn_check_interval        =   {{ include "pgdog.intval" .Values.lsnCheckInterval }}
         {{- end }}
         {{- if hasKey .Values "lsnCheckTimeout" }}
-        lsn_check_timeout         =   {{ .Values.lsnCheckTimeout }}
+        lsn_check_timeout         =   {{ include "pgdog.intval" .Values.lsnCheckTimeout }}
         {{- end }}
 
         {{- range .Values.databases }}
         [[databases]]
         name = {{ .name | quote }}
         host = {{ .host | quote }}
-        port = {{ .port | default "5432" }}
-        shard = {{ .shard | default "0" }}
+        port = {{ include "pgdog.intval" (.port | default 5432) }}
+        shard = {{ include "pgdog.intval" (.shard | default 0) }}
         {{- if .databaseName }}
         database_name = {{ .databaseName | quote }}
         {{- end }}
@@ -155,19 +155,19 @@ data:
         password = {{ .password | quote }}
         {{- end }}
         {{- if .poolSize }}
-        pool_size = {{ .poolSize }}
+        pool_size = {{ include "pgdog.intval" .poolSize }}
         {{- end }}
         {{- if .minPoolSize }}
-        min_pool_size = {{ .minPoolSize }}
+        min_pool_size = {{ include "pgdog.intval" .minPoolSize }}
         {{- end }}
         {{- if .poolerMode }}
         pooler_mode = {{ .poolerMode | quote }}
         {{- end }}
         {{- if .statementTimeout }}
-        statement_timeout = {{ .statementTimeout }}
+        statement_timeout = {{ include "pgdog.intval" .statementTimeout }}
         {{- end }}
         {{- if .idleTimeout }}
-        idle_timeout = {{ .idleTimeout }}
+        idle_timeout = {{ include "pgdog.intval" .idleTimeout }}
         {{- end }}
         {{- if .readOnly }}
         read_only = {{ .readOnly }}
@@ -176,7 +176,7 @@ data:
         role = {{ .role | quote }}
         {{- end }}
         {{- if .serverLifetime }}
-        server_lifetime = {{ .serverLifetime }}
+        server_lifetime = {{ include "pgdog.intval" .serverLifetime }}
         {{- end }}
         {{- end }}
 
@@ -185,7 +185,7 @@ data:
         source_db = {{ .sourceDb | quote }}
         destination_db = {{ .destinationDb | quote }}
         {{- if .queueDepth }}
-        queue_depth = {{ .queueDepth }}
+        queue_depth = {{ include "pgdog.intval" .queueDepth }}
         {{- end}}
         {{- if .exposure }}
         exposure = {{ .exposure }}
@@ -198,7 +198,7 @@ data:
         {{- if .name }}
         name = {{ .name | quote }}
         {{- end }}
-        shard = {{ .shard }}
+        shard = {{ include "pgdog.intval" .shard }}
         {{- end }}
 
         {{- range .Values.shardedTables }}
@@ -216,15 +216,15 @@ data:
         database = {{ .database | quote }}
         column = {{ .column | quote }}
         kind = {{ .kind | quote }}
-        shard = {{ .shard }}
+        shard = {{ include "pgdog.intval" .shard }}
         {{- if .values }}
         values = {{ .values| toToml }}
         {{- end }}
         {{- if .start }}
-        start = {{ .start }}
+        start = {{ include "pgdog.intval" .start }}
         {{- end }}
         {{- if .end }}
-        end = {{ .end }}
+        end = {{ include "pgdog.intval" .end }}
         {{- end}}
         {{- end }}
 
@@ -243,13 +243,13 @@ data:
         keepalive = {{ .Values.tcpKeepalive }}
         {{- end }}
         {{- if hasKey .Values "tcpTime" }}
-        time = {{ .Values.tcpTime }}
+        time = {{ include "pgdog.intval" .Values.tcpTime }}
         {{- end }}
         {{- if hasKey .Values "tcpInterval" }}
-        interval = {{ .Values.tcpInterval }}
+        interval = {{ include "pgdog.intval" .Values.tcpInterval }}
         {{- end }}
         {{- if hasKey .Values "tcpRetries" }}
-        retries = {{ .Values.tcpRetries }}
+        retries = {{ include "pgdog.intval" .Values.tcpRetries }}
         {{- end }}
         {{- end }}
 
@@ -279,25 +279,25 @@ data:
         {{- if .Values.queryStats.enabled }}
         [query_stats]
         enabled = {{ .Values.queryStats.enabled }}
-        max_entries = {{ .Values.queryStats.maxEntries | default "10_000" }}
-        query_plan_threshold = {{ .Values.queryStats.queryPlanThreshold | default "250" }}
-        query_plans_cache = {{ .Values.queryStats.queryPlansCache | default "100" }}
-        query_plan_max_age = {{ .Values.queryStats.queryPlanMaxAge | default "15_000" }}
-        max_errors = {{ .Values.queryStats.maxErrors | default "100" }}
-        max_error_age = {{ .Values.queryStats.maxErrorAge | default "300_000" }}
+        max_entries = {{ include "pgdog.intval" (.Values.queryStats.maxEntries | default "10_000") }}
+        query_plan_threshold = {{ include "pgdog.intval" (.Values.queryStats.queryPlanThreshold | default 250) }}
+        query_plans_cache = {{ include "pgdog.intval" (.Values.queryStats.queryPlansCache | default 100) }}
+        query_plan_max_age = {{ include "pgdog.intval" (.Values.queryStats.queryPlanMaxAge | default "15_000") }}
+        max_errors = {{ include "pgdog.intval" (.Values.queryStats.maxErrors | default 100) }}
+        max_error_age = {{ include "pgdog.intval" (.Values.queryStats.maxErrorAge | default "300_000") }}
         {{- end }}
 
         {{- if .Values.control.enabled }}
         [control]
         endpoint = {{ .Values.control.endpoint | quote }}
         token = {{ .Values.control.token | quote }}
-        metrics_interval = {{ .Values.control.metricsInterval | default "1_000" }}
-        stats_interval = {{ .Values.control.statsInterval | default "5_000" }}
-        active_queries_interval = {{ .Values.control.activeQueriesInterval | default "5_000" }}
-        errors_interval = {{ .Values.control.errorsInterval | default "5_000" }}
-        request_timeout = {{ .Values.control.requestTimeout | default "1_000" }}
-        query_timings_chunk_size = {{ .Values.control.queryTimingsChunkSize | default "25" }}
-        query_timings_new_query_queue_size = {{ .Values.control.queryTimingsNewQueryQueueSize | default "1_000" }}
+        metrics_interval = {{ include "pgdog.intval" (.Values.control.metricsInterval | default "1_000") }}
+        stats_interval = {{ include "pgdog.intval" (.Values.control.statsInterval | default "5_000") }}
+        active_queries_interval = {{ include "pgdog.intval" (.Values.control.activeQueriesInterval | default "5_000") }}
+        errors_interval = {{ include "pgdog.intval" (.Values.control.errorsInterval | default "5_000") }}
+        request_timeout = {{ include "pgdog.intval" (.Values.control.requestTimeout | default "1_000") }}
+        query_timings_chunk_size = {{ include "pgdog.intval" (.Values.control.queryTimingsChunkSize | default 25) }}
+        query_timings_new_query_queue_size = {{ include "pgdog.intval" (.Values.control.queryTimingsNewQueryQueueSize | default "1_000") }}
         {{- end }}
 
         {{- if .Values.rewrite }}
