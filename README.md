@@ -242,13 +242,14 @@ Configure socket-level TCP keep-alive behavior (optional):
 
 ```yaml
 tcpKeepalive: true
-tcpTime: 7200 # Time (in seconds) before first keepalive probe
-tcpInterval: 75 # Interval (in seconds) between keepalive probes
+tcpTime: 7200000 # 2 hours (ms) before first keepalive probe
+tcpInterval: 75000 # 75 seconds (ms) between keepalive probes
 tcpRetries: 9 # Number of keepalive probes before connection is dropped
 ```
 
 These settings control the TCP keep-alive behavior for database
-connections. If not specified, system defaults are used.
+connections. All time values are in milliseconds. If not specified,
+system defaults are used.
 
 ## Contributions
 

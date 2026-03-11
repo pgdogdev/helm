@@ -465,10 +465,11 @@ control:
 # lsnCheckInterval: 1000  # How frequently to re-fetch replication status
 
 # TCP keep-alive configuration (optional)
-# These settings control socket-level keep-alive behavior
-# tcpKeepalives: true
-# tcpTime: 7200
-# tcpInterval: 75
+# These settings control socket-level keep-alive behavior.
+# All time values are in milliseconds.
+# tcpKeepalive: true
+# tcpTime: 7200000     # 2 hours (Linux default: 7200s)
+# tcpInterval: 75000   # 75 seconds (Linux default: 75s)
 # tcpRetries: 9
 
 # Memory configuration (optional)
