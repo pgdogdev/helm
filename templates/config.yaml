@@ -237,6 +237,14 @@ data:
         tables = {{ .tables | toToml }}
         {{- end }}
 
+        {{- range .Values.plugins }}
+        [[plugins]]
+        name = {{ .name | quote }}
+        {{- if .config }}
+        config = "/etc/pgdog/{{ .name }}.toml"
+        {{- end }}
+        {{- end }}
+
         {{- if or (hasKey .Values "tcpKeepalive") (hasKey .Values "tcpTime") (hasKey .Values "tcpInterval") (hasKey .Values "tcpRetries") }}
         [tcp]
         {{- if hasKey .Values "tcpKeepalive" }}
@@ -307,3 +315,9 @@ data:
         split_inserts = {{ .Values.rewrite.splitInserts | default "error" | quote }}
         primary_key = {{ .Values.rewrite.primaryKey | default "ignore" | quote }}
         {{- end }}
+    {{- range .Values.plugins }}
+    {{- if .config }}
+    {{ .name }}.toml: |
+{{ .config | indent 8 }}
+    {{- end }}
+    {{- end }}

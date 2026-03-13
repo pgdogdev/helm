@@ -1,0 +1,12 @@
+# Plugins configuration test
+databases:
+  - name: primary
+    host: postgres-primary.example.com
+    port: 5432
+
+plugins:
+  - name: pgdog_routing
+    config: |
+      [routing]
+      key = "value"
+  - name: pgdog_auth
