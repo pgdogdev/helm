@@ -210,6 +210,19 @@ shardedMappings: []
 #       - "pg_index"
 omnishardedTables: []
 
+# plugins contains the list of plugin entries in pgdog.toml
+# Each entry requires: name; config is optional (inline TOML content)
+# When config is provided, a <name>.toml file is added to the ConfigMap
+# and the plugin config path is set to /etc/pgdog/<name>.toml
+# Example:
+# plugins:
+#   - name: "pgdog_routing"
+#     config: |
+#       [routing]
+#       key = "value"
+#   - name: "pgdog_auth"
+plugins: []
+
 # service contains the Kubernetes service configuration
 service:
   # type specifies the type of Kubernetes service

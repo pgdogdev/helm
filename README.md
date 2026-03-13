@@ -249,6 +249,22 @@ The `queueConfig` settings use Prometheus defaults and can be tuned
 for performance. Remote write is automatically enabled when `url` is
 set.
 
+### Plugins
+
+Add plugins to the `plugins` list. Each plugin requires a `name`; `config` is
+optional and accepts inline TOML content. When `config` is provided, a
+`<name>.toml` file is added to the ConfigMap and mounted at
+`/etc/pgdog/<name>.toml`.
+
+```yaml
+plugins:
+  - name: pgdog_routing
+    config: |
+      [routing]
+      key = "value"
+  - name: pgdog_auth
+```
+
 ### TCP Keep-Alive Configuration
 
 Configure socket-level TCP keep-alive behavior (optional):
