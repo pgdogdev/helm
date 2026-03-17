@@ -19,6 +19,9 @@ memoryMessageBuffer: 8192
 memoryStackSize: 2097152
 port: 6432
 healthcheckPort: 8080
+logFormat: json
+logLevel: debug
+
 
 databases:
   - name: primary
