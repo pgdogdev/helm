@@ -10,6 +10,8 @@ data:
         port                      =   {{ include "pgdog.intval" .Values.port }}
         workers                   =   {{ include "pgdog.intval" (.Values.workers | default 2) }}
         default_pool_size         =   {{ include "pgdog.intval" (.Values.defaultPoolSize | default 10) }}
+        log_format                =   {{ .Values.logFormat | default "text" | quote }}
+        log_level                 =   {{ .Values.logLevel | default "info" | quote }}
         {{- if hasKey .Values "minPoolSize" }}
         min_pool_size             =   {{ include "pgdog.intval" .Values.minPoolSize }}
         {{- end }}

@@ -43,6 +43,8 @@ of snake_case, for example: `checkout_timeout` becomes
 workers: 2
 defaultPoolSize: 15
 openMetricsPort: 9090
+logFormat: json
+logLevel: info
 ```
 
 ### Docker Image

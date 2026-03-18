@@ -145,6 +145,29 @@ openMetricsPort: 9090
 # openMetricsNamespace configures the metrics namespace
 openMetricsNamespace: pgdog_
 
+
+# logOutput defines the output format of the logs.
+#
+# Available options:
+# - text
+# - json
+#
+# Defaults to `text`.
+logFormat: text
+
+# logLevel defines the log level using the same syntax as RUST_LOG.
+#
+# Available options:
+# - error
+# - warn
+# - info
+# - debug
+# - trace
+# - off
+#
+# Defaults to `info`.
+logLevel: "info"
+
 # Admin password
 # adminPassword: change-me
 
