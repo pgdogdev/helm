@@ -51,6 +51,10 @@ port: 6432
 # replicas indicates how many instances of PgDog will run (HA).
 replicas: 2
 
+# priorityClassName assigns a PriorityClass to pgdog pods for scheduling priority.
+# Not set by default; omitted from the pod spec unless explicitly specified.
+# Example: priorityClassName: production-critical
+
 # Uncomment to enable explicit grace period
 # terminationGracePeriodSeconds: 90
 
