@@ -286,6 +286,12 @@ data:
         address = "{{ include "pgdog.fullname" . }}-gateway.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.gateway.port | default 8443 }}"
         {{- end }}
 
+        {{- if .Values.qos }}
+        [qos]
+        enabled = {{ .Values.qos.enabled | default "false" }}
+        max_entries = {{ include "pgdog.intval" (.Values.qos.maxEntries | default "10_000") }}
+        {{- end }}
+
         {{- if .Values.queryStats.enabled }}
         [query_stats]
         enabled = {{ .Values.queryStats.enabled }}
