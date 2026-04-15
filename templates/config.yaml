@@ -55,6 +55,9 @@ data:
         query_parser_enabled      =   {{ . }}
         {{- end }}
         {{- end }}
+        {{- with .Values.regexParserLimit }}
+        regex_parser_limit        =   {{ include "pgdog.intval" . }}
+        {{- end }}
         {{- if .Values.queryParserEngine }}
         query_parser_engine       =   {{ .Values.queryParserEngine | quote }}
         {{- end }}

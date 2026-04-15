@@ -1,0 +1,7 @@
+# Test regex_parser_limit configuration
+regexParserLimit: 1000
+
+databases:
+  - name: primary
+    host: postgres.example.com
+    port: 5432
