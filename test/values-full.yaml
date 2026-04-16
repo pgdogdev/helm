@@ -5,6 +5,7 @@ env:
   - name: RUST_LOG
     value: trace
 queryParserEngine: "pg_query_raw"
+regexParserLimit: 1000
 
 # Sharding settings
 twoPhaseCommit: true

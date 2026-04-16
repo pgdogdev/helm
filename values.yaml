@@ -524,8 +524,8 @@ control:
 # memoryStackSize: 2097152
 
 # Query parser configuration
-# queryParser controls whether the query parser is enabled
-# Valid values: "auto", "on", "off"
+# queryParser controls whether the query parser and which features are enabled
+# Valid values: "auto", "on", "off", "session_control", "session_control_and_locks"
 # queryParser: "auto"
 
 # queryParserEngine specifies which query parser engine to use
@@ -533,6 +533,10 @@ control:
 
 # queryParserEnabled is DEPRECATED - use queryParser instead
 # queryParserEnabled: true
+
+# regexParserLimit specifies the maximum number of characters in a query that the regex parser
+# will inspect. Only applies when queryParser is "session_control" or "session_control_and_locks"
+# regexParserLimit: 1000
 
 # Prometheus Collector configuration
 # Deploys a standalone Prometheus instance that collects metrics from all pgdog pods
