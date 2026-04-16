@@ -13,6 +13,7 @@ twoPhaseCommitAuto: false
 systemCatalogs: omnisharded_sticky
 omnishardedSticky: true
 reshardingCopyFormat: binary
+reshardingParallelCopies: 1
 reloadSchemaOnDdl: true
 
 memoryNetBuffer: 8192
