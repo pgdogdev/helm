@@ -58,6 +58,9 @@ data:
         {{- if .Values.queryParserEngine }}
         query_parser_engine       =   {{ .Values.queryParserEngine | quote }}
         {{- end }}
+        {{- if .Values.regexParserLimit }}
+        regex_parser_limit        =   {{ include "pgdog.intval" .Values.regexParserLimit }}
+        {{- end }}
         {{- if .Values.preparedStatementsLimit }}
         prepared_statements_limit =   {{ include "pgdog.intval" .Values.preparedStatementsLimit }}
         {{- end}}
@@ -91,6 +94,9 @@ data:
         {{- if .Values.reshardingCopyFormat }}
         resharding_copy_format    =   {{ .Values.reshardingCopyFormat | quote }}
         {{- end }}
+        {{- if .Values.reshardingParallelCopies }}
+        resharding_parallel_copies =   {{ include "pgdog.intval" .Values.reshardingParallelCopies }}
+        {{- end }}
         {{- if hasKey .Values "reloadSchemaOnDdl" }}
         reload_schema_on_ddl      =   {{ .Values.reloadSchemaOnDdl }}
         {{- end }}
@@ -121,6 +127,8 @@ data:
         server_lifetime = {{ include "pgdog.intval" (.Values.serverLifetime | default 86400000) }}
         log_connections = {{ .Values.logConnections | default "true" }}
         log_disconnections = {{ .Values.logDisconnections | default "true" }}
+        log_dedup_threshold = {{ include "pgdog.intval" (.Values.logDedupThreshold | default 0) }}
+        log_dedup_window = {{ include "pgdog.intval" (.Values.logDedupWindow | default 0) }}
         {{- if .Values.statsPeriod }}
         stats_period              =   {{ include "pgdog.intval" .Values.statsPeriod }}
         {{- end }}
