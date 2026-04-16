@@ -16,6 +16,8 @@ selectorLabels: {}
 # allows adding custom annotations to the deployment
 annotations: {}
 
+# allows adding custom labels to the pods
+podLabels: {}
 # allows adding custom annotations to the pods
 podAnnotations: {}
 
@@ -27,6 +29,15 @@ podAnnotations: {}
 # clusterName identifies the Kubernetes cluster (optional)
 # When set, this will be added as a label to all Prometheus metrics
 # clusterName: ""
+
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+## e.g:
+## imagePullSecrets:
+##   - name: regcred
+##
+imagePullSecrets: []
 
 # image contains the Docker image properties.
 image:
