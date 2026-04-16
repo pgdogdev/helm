@@ -26,10 +26,12 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   {{- end }}
+  {{- include "pgdog.imagePullSecrets" . | nindent 2 }}
   template:
     metadata:
       labels:
         {{- include "pgdog.selectorLabels" . | nindent 8 }}
+        {{- include "pgdog.podLabels" . | nindent 8 }}
       {{- if or .Values.restartOnConfigChange .Values.podAnnotations }}
       annotations:
         {{- if .Values.restartOnConfigChange }}
