@@ -1,0 +1,2 @@
+# Test auto-generated self-signed TLS certificate
+tlsGenerateSelfSignedCert: true

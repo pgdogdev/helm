@@ -118,6 +118,11 @@ spec:
               mountPath: /etc/pgdog
             - name: users
               mountPath: /etc/secrets/pgdog
+            {{- if .Values.tlsGenerateSelfSignedCert }}
+            - name: tls
+              mountPath: /etc/pgdog-tls
+              readOnly: true
+            {{- end }}
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -178,6 +183,11 @@ spec:
         - name: prom
           configMap:
             name: {{ include "pgdog.fullname" . }}-prom
+        {{- if .Values.tlsGenerateSelfSignedCert }}
+        - name: tls
+          secret:
+            secretName: {{ include "pgdog.fullname" . }}-tls
+        {{- end }}
         {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
