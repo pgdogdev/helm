@@ -1,0 +1,16 @@
+{{- if .Values.rdsCertificateBundle.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "pgdog.fullname" . }}-rds-ca
+  labels:
+    {{- include "pgdog.labels" . | nindent 4 }}
+data:
+  {{- if eq (.Values.rdsCertificateBundle.type | default "global") "govcloud" }}
+  rds-ca-bundle.pem: |
+{{ .Files.Get "files/rds-global-bundle-gov.pem" | indent 4 }}
+  {{- else }}
+  rds-ca-bundle.pem: |
+{{ .Files.Get "files/rds-global-bundle.pem" | indent 4 }}
+  {{- end }}
+{{- end }}

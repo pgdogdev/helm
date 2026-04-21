@@ -520,6 +520,23 @@ control:
 # lsnCheckDelay: 0        # Set to 0 to start LSN monitoring immediately
 # lsnCheckInterval: 1000  # How frequently to re-fetch replication status
 
+# tlsGenerateSelfSignedCert generates a self-signed TLS certificate and private
+# key on chart installation and stores them as a Kubernetes Secret.
+# When enabled, tls_certificate and tls_private_key are automatically configured
+# in pgdog.toml, so you don't need to set tlsCertificate/tlsPrivateKey manually.
+# Note: certificates are regenerated on every helm upgrade.
+# tlsGenerateSelfSignedCert: false
+
+# rdsCertificateBundle includes the AWS RDS CA certificate bundle so pgdog can
+# verify TLS connections to RDS/Aurora instances. When enabled,
+# tls_server_ca_certificate is automatically configured in pgdog.toml.
+# See: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html
+rdsCertificateBundle:
+  # enabled controls whether to mount the RDS CA bundle
+  enabled: false
+  # type selects which bundle to use: "global" (all commercial regions) or "govcloud"
+  type: global
+
 # TCP keep-alive configuration (optional)
 # These settings control socket-level keep-alive behavior.
 # All time values are in milliseconds.

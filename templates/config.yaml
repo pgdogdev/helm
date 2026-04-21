@@ -32,15 +32,22 @@ data:
         {{- if .Values.readWriteSplit }}
         read_write_split          =   {{ .Values.readWriteSplit | quote }}
         {{- end }}
+        {{- if .Values.tlsGenerateSelfSignedCert }}
+        tls_certificate           =   "/etc/pgdog-tls/tls.crt"
+        tls_private_key           =   "/etc/pgdog-tls/tls.key"
+        {{- else }}
         {{- if .Values.tlsCertificate }}
         tls_certificate           =   {{ .Values.tlsCertificate | quote }}
         {{- end }}
         {{- if .Values.tlsPrivateKey }}
         tls_private_key           =   {{ .Values.tlsPrivateKey | quote }}
         {{- end }}
+        {{- end }}
         tls_client_required       =   {{ .Values.tlsClientRequired | default "false" }}
         tls_verify                =   {{ .Values.tlsVerify | default "prefer" | quote }}
-        {{- if .Values.tlsServerCaCertificate }}
+        {{- if and .Values.rdsCertificateBundle .Values.rdsCertificateBundle.enabled }}
+        tls_server_ca_certificate =   "/etc/pgdog-rds-ca/rds-ca-bundle.pem"
+        {{- else if .Values.tlsServerCaCertificate }}
         tls_server_ca_certificate =   {{ .Values.tlsServerCaCertificate | quote }}
         {{- end}}
         shutdown_timeout          =   {{ include "pgdog.intval" (.Values.shutdownTimeout | default "60_000") }}
