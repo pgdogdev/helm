@@ -134,8 +134,12 @@ data:
         server_lifetime = {{ include "pgdog.intval" (.Values.serverLifetime | default 86400000) }}
         log_connections = {{ .Values.logConnections | default "true" }}
         log_disconnections = {{ .Values.logDisconnections | default "true" }}
-        log_dedup_threshold = {{ include "pgdog.intval" (.Values.logDedupThreshold | default 0) }}
-        log_dedup_window = {{ include "pgdog.intval" (.Values.logDedupWindow | default 0) }}
+        {{- if .Values.logDedupThreshold }}
+        log_dedup_threshold = {{ include "pgdog.intval" .Values.logDedupThreshold }}
+        {{- end }}
+        {{- if .Values.logDedupWindow }}
+        log_dedup_window = {{ include "pgdog.intval" .Values.logDedupWindow }}
+        {{- end }}
         {{- if .Values.statsPeriod }}
         stats_period              =   {{ include "pgdog.intval" .Values.statsPeriod }}
         {{- end }}
