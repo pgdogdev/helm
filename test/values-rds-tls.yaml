@@ -1,0 +1,4 @@
+# Test RDS certificate bundle configuration
+rdsCertificateBundle:
+  enabled: true
+  type: global

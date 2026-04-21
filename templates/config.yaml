@@ -45,7 +45,9 @@ data:
         {{- end }}
         tls_client_required       =   {{ .Values.tlsClientRequired | default "false" }}
         tls_verify                =   {{ .Values.tlsVerify | default "prefer" | quote }}
-        {{- if .Values.tlsServerCaCertificate }}
+        {{- if and .Values.rdsCertificateBundle .Values.rdsCertificateBundle.enabled }}
+        tls_server_ca_certificate =   "/etc/pgdog-rds-ca/rds-ca-bundle.pem"
+        {{- else if .Values.tlsServerCaCertificate }}
         tls_server_ca_certificate =   {{ .Values.tlsServerCaCertificate | quote }}
         {{- end}}
         shutdown_timeout          =   {{ include "pgdog.intval" (.Values.shutdownTimeout | default "60_000") }}

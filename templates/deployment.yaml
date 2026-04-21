@@ -123,6 +123,11 @@ spec:
               mountPath: /etc/pgdog-tls
               readOnly: true
             {{- end }}
+            {{- if and .Values.rdsCertificateBundle .Values.rdsCertificateBundle.enabled }}
+            - name: rds-ca
+              mountPath: /etc/pgdog-rds-ca
+              readOnly: true
+            {{- end }}
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -187,6 +192,11 @@ spec:
         - name: tls
           secret:
             secretName: {{ include "pgdog.fullname" . }}-tls
+        {{- end }}
+        {{- if and .Values.rdsCertificateBundle .Values.rdsCertificateBundle.enabled }}
+        - name: rds-ca
+          configMap:
+            name: {{ include "pgdog.fullname" . }}-rds-ca
         {{- end }}
         {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}
