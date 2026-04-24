@@ -43,9 +43,7 @@ spec:
         {{- end }}
       {{- end }}
     spec:
-      {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "pgdog.serviceAccountName" . }}
-      {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
@@ -60,6 +58,10 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      securityContext:
+        {{- with .Values.podSecurityContext }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       containers:
         - name: pgdog
           {{- if .Values.image.name }}
@@ -131,6 +133,10 @@ spec:
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
         {{- if .Values.prometheusPort }}
         - name: prom
           image: prom/prometheus

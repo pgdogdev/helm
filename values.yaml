@@ -644,3 +644,6 @@ prometheusCollector:
   tolerations: []
   # affinity rules for pod scheduling
   affinity: {}
+
+securityContext: {}
+podSecurityContext: {}
