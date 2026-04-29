@@ -130,6 +130,10 @@ extraVolumes: []
 #     mountPath: /pki
 extraVolumeMounts: []
 
+# noCpuLimits removes CPU limits from containers so they can use idle CPU on the host.
+# Memory limits are still applied. CPU requests are preserved for scheduling.
+noCpuLimits: false
+
 # resources define resource requests and limits for the pgdog container
 # Note: requests and limits are set to the same values for Guaranteed QoS
 # Ratio: 1GB memory per 1 CPU (1000m CPU = 1Gi memory)

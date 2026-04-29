@@ -122,3 +122,26 @@ as scientific notation (e.g. 8.64e+07). TOML rejects this.
 {{- define "pgdog.intval" -}}
 {{- if kindIs "string" . -}}{{ . }}{{- else -}}{{ int64 . }}{{- end -}}
 {{- end -}}
+
+{{/*
+Render a resources block, omitting CPU limits when noCpuLimits is true.
+Call as: include "pgdog.resources" (dict "resources" .Values.resources "noCpuLimits" .Values.noCpuLimits)
+*/}}
+{{- define "pgdog.resources" -}}
+{{- $res := .resources -}}
+{{- if $res -}}
+resources:
+  {{- if $res.requests }}
+  requests:
+    {{- toYaml $res.requests | nindent 4 }}
+  {{- end }}
+  {{- $limits := $res.limits }}
+  {{- if and .noCpuLimits $limits }}
+  {{- $limits = omit $limits "cpu" }}
+  {{- end }}
+  {{- if $limits }}
+  limits:
+    {{- toYaml $limits | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end -}}

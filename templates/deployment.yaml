@@ -99,10 +99,7 @@ spec:
               sleep:
                 seconds: {{ .Values.preStopSleepSeconds }}
           {{- end }}
-          {{- if .Values.resources }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          {{- end }}
+          {{- include "pgdog.resources" (dict "resources" .Values.resources "noCpuLimits" .Values.noCpuLimits) | nindent 10 }}
           {{- if .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
@@ -171,10 +168,7 @@ spec:
           ports:
             - name: prom
               containerPort: {{ .Values.prometheusPort }}
-          {{- if .Values.prometheusResources }}
-          resources:
-            {{- toYaml .Values.prometheusResources | nindent 12 }}
-          {{- end }}
+          {{- include "pgdog.resources" (dict "resources" .Values.prometheusResources "noCpuLimits" .Values.noCpuLimits) | nindent 10 }}
           volumeMounts:
             - name: prom
               mountPath: /etc/prom
