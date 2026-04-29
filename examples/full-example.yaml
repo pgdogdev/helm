@@ -71,14 +71,15 @@ image:
 # Set replicas for HA
 replicas: 3
 
-# Configure resource limits (Guaranteed QoS: requests = limits)
+# Configure resource limits
 # Following 1GB:1CPU ratio (1000m CPU = 1Gi memory)
+# No CPU limits are set so the container can use idle CPU on the host.
+noCpuLimits: true
 resources:
   requests:
     cpu: 500m
     memory: 512Mi
   limits:
-    cpu: 500m
     memory: 512Mi
 
 # Enable PodDisruptionBudget
