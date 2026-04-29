@@ -205,6 +205,18 @@ resources:
     memory: 1Gi
 ```
 
+You can set `noCpuLimits: true` to omit CPU limits. This allows containers to use idle CPU on the host.
+
+```yaml
+noCpuLimits: true
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    memory: 512Mi
+```
+
 ### Prometheus (optional)
 
 Prometheus metrics can be collected with a sidecar. Enable by
