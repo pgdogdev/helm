@@ -15,7 +15,6 @@ twoPhaseCommitWalCheckpointInterval: 60
 reshardingCopyRetryMaxAttempts: 3
 reshardingCopyRetryMinDelay: 1_000
 
-queryLog: /var/log/pgdog/queries.log
 rewriteShardKeyUpdates: error
 
 uniqueIdMin: 1_000_000

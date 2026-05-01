@@ -183,9 +183,6 @@ data:
         {{- if hasKey .Values "lsnCheckTimeout" }}
         lsn_check_timeout         =   {{ include "pgdog.intval" .Values.lsnCheckTimeout }}
         {{- end }}
-        {{- if .Values.queryLog }}
-        query_log                 =   {{ .Values.queryLog | quote }}
-        {{- end }}
         {{- if .Values.rewriteShardKeyUpdates }}
         rewrite_shard_key_updates =   {{ .Values.rewriteShardKeyUpdates | quote }}
         {{- end }}
