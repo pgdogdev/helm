@@ -1,0 +1,64 @@
+# Test recently-added pgdog-config settings.
+# Covers: ban_replica_lag*, 2PC WAL persistence, resharding copy retries,
+# query_log, rewrite_shard_key_updates, unique_id_*, cutover_*,
+# tcp user_timeout/congestion_control, mirroring queue_length/level,
+# database lb_weight/resharding_only, multi_tenant, otel.
+
+banReplicaLag: 60_000
+banReplicaLagBytes: 10_000_000
+
+twoPhaseCommitWalDir: /var/lib/pgdog/wal
+twoPhaseCommitWalSegmentSize: 16777216
+twoPhaseCommitWalFsyncInterval: 2
+twoPhaseCommitWalCheckpointInterval: 60
+
+reshardingCopyRetryMaxAttempts: 3
+reshardingCopyRetryMinDelay: 1_000
+
+rewriteShardKeyUpdates: error
+
+uniqueIdMin: 1_000_000
+uniqueIdFunction: compact
+
+cutoverTrafficStopThreshold: 1_000_000
+cutoverReplicationLagThreshold: 0
+cutoverLastTransactionDelay: 1_000
+cutoverTimeout: 30_000
+cutoverTimeoutAction: abort
+cutoverSaveConfig: false
+
+tcpKeepalive: true
+tcpUserTimeout: 30_000
+tcpCongestionControl: cubic
+
+multiTenant:
+  column: tenant_id
+
+# Mirroring with level = "dml" requires the query parser
+queryParser: "on"
+
+otel:
+  endpoint: https://otlp.example.com/v1/metrics
+  namespace: pgdog
+  datadogApiKey: dd-api-key-value
+  pushInterval: 10_000
+  headers:
+    DD-API-KEY: header-value
+    X-Custom: foo
+
+databases:
+  - name: primary
+    host: db.example.com
+    port: 5432
+    lbWeight: 100
+  - name: shard0
+    host: shard0.example.com
+    role: primary
+    reshardingOnly: true
+
+mirrors:
+  - sourceDb: primary
+    destinationDb: primary_mirror
+    queueLength: 256
+    exposure: 0.5
+    level: dml
