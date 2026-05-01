@@ -26,6 +26,12 @@ data:
         {{- if hasKey .Values "banTimeout" }}
         ban_timeout               =   {{ include "pgdog.intval" .Values.banTimeout }}
         {{- end }}
+        {{- if hasKey .Values "banReplicaLag" }}
+        ban_replica_lag           =   {{ include "pgdog.intval" .Values.banReplicaLag }}
+        {{- end }}
+        {{- if hasKey .Values "banReplicaLagBytes" }}
+        ban_replica_lag_bytes     =   {{ include "pgdog.intval" .Values.banReplicaLagBytes }}
+        {{- end }}
         rollback_timeout          =   {{ include "pgdog.intval" (.Values.rollbackTimeout | default "5_000") }}
         load_balancing_strategy   =   {{ .Values.loadBalancingStrategy | default "round_robin" | quote }}
         read_write_strategy       =   {{ .Values.readWriteStrategy | default "conservative" | quote }}
@@ -92,6 +98,18 @@ data:
         {{- if hasKey .Values "twoPhaseCommitAuto" }}
         two_phase_commit_auto     =   {{ .Values.twoPhaseCommitAuto }}
         {{- end }}
+        {{- if .Values.twoPhaseCommitWalDir }}
+        two_phase_commit_wal_dir  =   {{ .Values.twoPhaseCommitWalDir | quote }}
+        {{- end }}
+        {{- if .Values.twoPhaseCommitWalSegmentSize }}
+        two_phase_commit_wal_segment_size      =   {{ include "pgdog.intval" .Values.twoPhaseCommitWalSegmentSize }}
+        {{- end }}
+        {{- if .Values.twoPhaseCommitWalFsyncInterval }}
+        two_phase_commit_wal_fsync_interval    =   {{ include "pgdog.intval" .Values.twoPhaseCommitWalFsyncInterval }}
+        {{- end }}
+        {{- if .Values.twoPhaseCommitWalCheckpointInterval }}
+        two_phase_commit_wal_checkpoint_interval =   {{ include "pgdog.intval" .Values.twoPhaseCommitWalCheckpointInterval }}
+        {{- end }}
         {{- if .Values.systemCatalogs }}
         system_catalogs           =   {{ .Values.systemCatalogs | quote }}
         {{- end }}
@@ -103,6 +121,12 @@ data:
         {{- end }}
         {{- if .Values.reshardingParallelCopies }}
         resharding_parallel_copies =   {{ include "pgdog.intval" .Values.reshardingParallelCopies }}
+        {{- end }}
+        {{- if .Values.reshardingCopyRetryMaxAttempts }}
+        resharding_copy_retry_max_attempts =   {{ include "pgdog.intval" .Values.reshardingCopyRetryMaxAttempts }}
+        {{- end }}
+        {{- if .Values.reshardingCopyRetryMinDelay }}
+        resharding_copy_retry_min_delay =   {{ include "pgdog.intval" .Values.reshardingCopyRetryMinDelay }}
         {{- end }}
         {{- if hasKey .Values "reloadSchemaOnDdl" }}
         reload_schema_on_ddl      =   {{ .Values.reloadSchemaOnDdl }}
@@ -159,6 +183,36 @@ data:
         {{- if hasKey .Values "lsnCheckTimeout" }}
         lsn_check_timeout         =   {{ include "pgdog.intval" .Values.lsnCheckTimeout }}
         {{- end }}
+        {{- if .Values.queryLog }}
+        query_log                 =   {{ .Values.queryLog | quote }}
+        {{- end }}
+        {{- if .Values.rewriteShardKeyUpdates }}
+        rewrite_shard_key_updates =   {{ .Values.rewriteShardKeyUpdates | quote }}
+        {{- end }}
+        {{- if hasKey .Values "uniqueIdMin" }}
+        unique_id_min             =   {{ include "pgdog.intval" .Values.uniqueIdMin }}
+        {{- end }}
+        {{- if .Values.uniqueIdFunction }}
+        unique_id_function        =   {{ .Values.uniqueIdFunction | quote }}
+        {{- end }}
+        {{- if hasKey .Values "cutoverTrafficStopThreshold" }}
+        cutover_traffic_stop_threshold     =   {{ include "pgdog.intval" .Values.cutoverTrafficStopThreshold }}
+        {{- end }}
+        {{- if hasKey .Values "cutoverReplicationLagThreshold" }}
+        cutover_replication_lag_threshold  =   {{ include "pgdog.intval" .Values.cutoverReplicationLagThreshold }}
+        {{- end }}
+        {{- if hasKey .Values "cutoverLastTransactionDelay" }}
+        cutover_last_transaction_delay     =   {{ include "pgdog.intval" .Values.cutoverLastTransactionDelay }}
+        {{- end }}
+        {{- if hasKey .Values "cutoverTimeout" }}
+        cutover_timeout           =   {{ include "pgdog.intval" .Values.cutoverTimeout }}
+        {{- end }}
+        {{- if .Values.cutoverTimeoutAction }}
+        cutover_timeout_action    =   {{ .Values.cutoverTimeoutAction | quote }}
+        {{- end }}
+        {{- if hasKey .Values "cutoverSaveConfig" }}
+        cutover_save_config       =   {{ .Values.cutoverSaveConfig }}
+        {{- end }}
 
         {{- range .Values.databases }}
         [[databases]]
@@ -199,17 +253,26 @@ data:
         {{- if .serverLifetime }}
         server_lifetime = {{ include "pgdog.intval" .serverLifetime }}
         {{- end }}
+        {{- if .reshardingOnly }}
+        resharding_only = {{ .reshardingOnly }}
+        {{- end }}
+        {{- if .lbWeight }}
+        lb_weight = {{ include "pgdog.intval" .lbWeight }}
+        {{- end }}
         {{- end }}
 
         {{- range .Values.mirrors }}
         [[mirroring]]
         source_db = {{ .sourceDb | quote }}
         destination_db = {{ .destinationDb | quote }}
-        {{- if .queueDepth }}
-        queue_depth = {{ include "pgdog.intval" .queueDepth }}
+        {{- if or .queueLength .queueDepth }}
+        queue_length = {{ include "pgdog.intval" (.queueLength | default .queueDepth) }}
         {{- end}}
         {{- if .exposure }}
         exposure = {{ .exposure }}
+        {{- end }}
+        {{- if .level }}
+        level = {{ .level | quote }}
         {{- end }}
         {{- end }}
 
@@ -266,7 +329,7 @@ data:
         {{- end }}
         {{- end }}
 
-        {{- if or (hasKey .Values "tcpKeepalive") (hasKey .Values "tcpTime") (hasKey .Values "tcpInterval") (hasKey .Values "tcpRetries") }}
+        {{- if or (hasKey .Values "tcpKeepalive") (hasKey .Values "tcpTime") (hasKey .Values "tcpInterval") (hasKey .Values "tcpRetries") (hasKey .Values "tcpUserTimeout") (hasKey .Values "tcpCongestionControl") }}
         [tcp]
         {{- if hasKey .Values "tcpKeepalive" }}
         keepalive = {{ .Values.tcpKeepalive }}
@@ -279,6 +342,12 @@ data:
         {{- end }}
         {{- if hasKey .Values "tcpRetries" }}
         retries = {{ include "pgdog.intval" .Values.tcpRetries }}
+        {{- end }}
+        {{- if hasKey .Values "tcpUserTimeout" }}
+        user_timeout = {{ include "pgdog.intval" .Values.tcpUserTimeout }}
+        {{- end }}
+        {{- if hasKey .Values "tcpCongestionControl" }}
+        congestion_control = {{ .Values.tcpCongestionControl | quote }}
         {{- end }}
         {{- end }}
 
@@ -341,6 +410,33 @@ data:
         shard_key = {{ .Values.rewrite.shardKey | default "error" | quote }}
         split_inserts = {{ .Values.rewrite.splitInserts | default "error" | quote }}
         primary_key = {{ .Values.rewrite.primaryKey | default "ignore" | quote }}
+        {{- end }}
+
+        {{- if .Values.multiTenant }}
+        [multi_tenant]
+        column = {{ .Values.multiTenant.column | quote }}
+        {{- end }}
+
+        {{- if .Values.otel }}
+        [otel]
+        {{- if .Values.otel.endpoint }}
+        endpoint = {{ .Values.otel.endpoint | quote }}
+        {{- end }}
+        {{- if .Values.otel.namespace }}
+        namespace = {{ .Values.otel.namespace | quote }}
+        {{- end }}
+        {{- if .Values.otel.datadogApiKey }}
+        datadog_api_key = {{ .Values.otel.datadogApiKey | quote }}
+        {{- end }}
+        {{- if .Values.otel.pushInterval }}
+        push_interval = {{ include "pgdog.intval" .Values.otel.pushInterval }}
+        {{- end }}
+        {{- if .Values.otel.headers }}
+        [otel.headers]
+        {{- range $k, $v := .Values.otel.headers }}
+        {{ $k }} = {{ $v | quote }}
+        {{- end }}
+        {{- end }}
         {{- end }}
     {{- range .Values.plugins }}
     {{- if .config }}
