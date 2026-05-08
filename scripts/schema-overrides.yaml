@@ -204,6 +204,7 @@ mirrorExposure:
 
 # --- Query parser ---
 queryParser:
+  type: string
   enum: ["auto", "on", "off", "session_control", "session_control_and_locks"]
   description: Query parser mode
 queryParserEnabled:
@@ -619,6 +620,11 @@ securityContext:
 podSecurityContext:
   type: object
   description: Pod security context
+
+# --- OpenTelemetry ---
+otel.headers:
+  type: object
+  description: Custom headers for OTEL export
 
 # --- Rewrite ---
 rewrite.enabled:

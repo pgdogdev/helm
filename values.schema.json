@@ -793,7 +793,8 @@
           "type": "string"
         },
         "headers": {
-          "type": "string"
+          "type": "object",
+          "description": "Custom headers for OTEL export"
         },
         "namespace": {
           "type": "string"
@@ -1076,7 +1077,7 @@
       "minimum": 0
     },
     "queryParser": {
-      "type": "object",
+      "type": "string",
       "description": "Query parser mode",
       "enum": [
         "auto",
