@@ -1,0 +1,657 @@
+# Schema overrides for values that can't be fully inferred from templates.
+# Keys are dotted paths matching .Values.* references.
+# Supported fields: type, description, enum, minimum, maximum, pattern,
+#                   required, items, minItems, maxItems
+
+# --- Top-level settings ---
+nameOverride:
+  description: Override the chart name
+fullnameOverride:
+  description: Override the full release name
+labels:
+  description: Custom labels for resources
+selectorLabels:
+  description: Custom selector labels for resources
+annotations:
+  description: Custom annotations for the deployment
+podLabels:
+  description: Custom labels for pods
+podAnnotations:
+  description: Custom annotations for pods
+restartOnConfigChange:
+  description: Trigger rolling restart when pgdog config changes
+clusterName:
+  description: Kubernetes cluster name, added as a label to Prometheus metrics
+
+# --- Image ---
+image.repository:
+  type: string
+  description: Docker image repository
+image.tag:
+  type: string
+  description: Docker image tag (defaults to Chart appVersion)
+image.digest:
+  type: string
+  description: Image digest (overrides tag when specified)
+image.pullPolicy:
+  enum: ["Always", "IfNotPresent", "Never"]
+  description: Image pull policy
+image.name:
+  type: string
+  description: "DEPRECATED: Full image name (use repository and tag instead)"
+
+# --- Ports ---
+port:
+  type: integer
+  description: Port on which PgDog will run
+  minimum: 1
+  maximum: 65535
+healthcheckPort:
+  type: integer
+  description: Port for healthcheck endpoint
+  minimum: 1
+  maximum: 65535
+openMetricsPort:
+  type: integer
+  description: Port for OpenMetrics (Prometheus) export
+  minimum: 1
+  maximum: 65535
+prometheusPort:
+  type: integer
+  description: Port for the Prometheus sidecar
+  minimum: 1
+  maximum: 65535
+
+# --- Replicas ---
+replicas:
+  type: integer
+  description: Number of PgDog replicas
+  minimum: 1
+
+# --- Scheduling ---
+priorityClassName:
+  type: string
+  description: PriorityClass name for pgdog pods
+terminationGracePeriodSeconds:
+  type: integer
+  description: Grace period for pod termination
+preStopSleepSeconds:
+  type: integer
+  description: Delay before stopping container to allow endpoint updates
+
+# --- Probes (free-form objects) ---
+livenessProbe:
+  type: object
+  description: Container liveness probe configuration
+readinessProbe:
+  type: object
+  description: Container readiness probe configuration
+startupProbe:
+  type: object
+  description: Container startup probe configuration
+strategy:
+  type: object
+  description: Deployment rollout strategy
+
+# --- StatefulSet ---
+statefulSet.enabled:
+  type: boolean
+  description: Deploy as StatefulSet instead of Deployment
+
+# --- Env ---
+env:
+  type: array
+  description: Custom environment variables for the pgdog container
+  items:
+    type: object
+    required: ["name"]
+    properties:
+      name:
+        type: string
+      value:
+        type: string
+      valueFrom:
+        type: object
+
+# --- Extra containers/volumes ---
+extraInitContainers:
+  type: array
+  description: Additional init containers
+  items:
+    type: object
+extraVolumes:
+  type: array
+  description: Additional volumes for the pod
+  items:
+    type: object
+extraVolumeMounts:
+  type: array
+  description: Additional volume mounts for the pgdog container
+  items:
+    type: object
+
+# --- Resources ---
+noCpuLimits:
+  type: boolean
+  description: Remove CPU limits from containers
+resources:
+  description: Resource requests and limits for the pgdog container
+prometheusResources:
+  description: Resource requests and limits for the prometheus sidecar
+
+# --- Image pull secrets ---
+imagePullSecrets:
+  type: array
+  description: Image pull secrets for private registries
+  items:
+    type: object
+    additionalProperties: false
+    required: ["name"]
+    properties:
+      name:
+        type: string
+
+# --- Logging ---
+logFormat:
+  enum: ["text", "json"]
+  description: Log output format
+logLevel:
+  enum: ["error", "warn", "info", "debug", "trace", "off"]
+  description: Log level (RUST_LOG syntax)
+logConnections:
+  type: ["boolean", "string"]
+  description: Log connections
+logDisconnections:
+  type: ["boolean", "string"]
+  description: Log disconnections
+
+# --- Pool & connection settings ---
+poolerMode:
+  enum: ["transaction", "session", "statement"]
+  description: Connection pooler mode
+loadBalancingStrategy:
+  enum: ["round_robin", "random", "least_active_connections"]
+  description: Load balancing strategy
+workers:
+  type: integer
+  minimum: 1
+  description: Number of worker threads
+defaultPoolSize:
+  type: integer
+  minimum: 1
+  description: Default connection pool size
+connectAttempts:
+  type: integer
+  minimum: 1
+  description: Number of connection attempts
+
+# --- Boolean/string fields where templates use both forms ---
+dryRun:
+  type: ["boolean", "string"]
+  description: Enable dry run mode
+crossShardDisabled:
+  type: ["boolean", "string"]
+  description: Disable cross-shard queries
+expandedExplain:
+  type: ["boolean", "string"]
+  description: Enable expanded explain
+tlsClientRequired:
+  type: ["boolean", "string"]
+  description: Require TLS client certificates
+mirrorExposure:
+  type: ["number", "string"]
+  description: Mirror traffic exposure ratio
+
+# --- Query parser ---
+queryParser:
+  type: string
+  enum: ["auto", "on", "off", "session_control", "session_control_and_locks"]
+  description: Query parser mode
+queryParserEnabled:
+  type: boolean
+  description: "DEPRECATED: use queryParser instead"
+
+# --- TLS ---
+tlsGenerateSelfSignedCert:
+  type: boolean
+  description: Generate self-signed TLS certificate
+rdsCertificateBundle.enabled:
+  type: boolean
+  description: Mount the RDS CA bundle
+rdsCertificateBundle.type:
+  enum: ["global", "govcloud"]
+  description: RDS CA bundle type
+
+# --- Databases array ---
+databases:
+  type: array
+  description: Database entries for pgdog.toml
+  items:
+    type: object
+    additionalProperties: false
+    required: ["name", "host"]
+    properties:
+      name:
+        type: string
+      host:
+        type: string
+      port:
+        type: integer
+        minimum: 1
+        maximum: 65535
+      shard:
+        type: integer
+        minimum: 0
+      databaseName:
+        type: string
+      user:
+        type: string
+      password:
+        type: string
+      poolSize:
+        type: integer
+        minimum: 0
+      minPoolSize:
+        type: integer
+        minimum: 0
+      poolerMode:
+        type: string
+      statementTimeout:
+        type: integer
+        minimum: 0
+      idleTimeout:
+        type: integer
+        minimum: 0
+      readOnly:
+        type: boolean
+      role:
+        type: string
+      serverLifetime:
+        type: integer
+        minimum: 0
+      reshardingOnly:
+        type: boolean
+      lbWeight:
+        type: integer
+        minimum: 0
+
+# --- Users array ---
+users:
+  type: array
+  description: User entries for users.toml
+  items:
+    type: object
+
+# --- Mirrors array ---
+mirrors:
+  type: array
+  description: Mirror database entries
+  items:
+    type: object
+    additionalProperties: false
+    required: ["sourceDb", "destinationDb"]
+    properties:
+      sourceDb:
+        type: string
+      destinationDb:
+        type: string
+      queueLength:
+        type: integer
+        minimum: 0
+      queueDepth:
+        type: integer
+        minimum: 0
+      exposure:
+        type: number
+      level:
+        type: string
+
+# --- Sharded schemas ---
+shardedSchemas:
+  type: array
+  description: Sharded schema entries
+  items:
+    type: object
+    additionalProperties: false
+    required: ["database", "shard"]
+    properties:
+      database:
+        type: string
+      name:
+        type: string
+      shard:
+        type: integer
+        minimum: 0
+
+# --- Sharded tables ---
+shardedTables:
+  type: array
+  description: Sharded table entries
+  items:
+    type: object
+    additionalProperties: false
+    required: ["database", "column", "dataType"]
+    properties:
+      database:
+        type: string
+      name:
+        type: string
+      column:
+        type: string
+      dataType:
+        type: string
+
+# --- Sharded mappings ---
+shardedMappings:
+  type: array
+  description: Sharded mapping entries
+  items:
+    type: object
+    additionalProperties: false
+    required: ["database", "column", "kind", "shard"]
+    properties:
+      database:
+        type: string
+      column:
+        type: string
+      kind:
+        type: string
+        enum: ["list", "range"]
+      shard:
+        type: integer
+        minimum: 0
+      values:
+        type: array
+      start:
+        type: integer
+      end:
+        type: integer
+
+# --- Omnisharded tables ---
+omnishardedTables:
+  type: array
+  description: Omnisharded table entries
+  items:
+    type: object
+    additionalProperties: false
+    required: ["database", "tables"]
+    properties:
+      database:
+        type: string
+      sticky:
+        type: boolean
+      tables:
+        type: array
+        items:
+          type: string
+
+# --- Plugins ---
+plugins:
+  type: array
+  description: Plugin entries
+  items:
+    type: object
+    additionalProperties: false
+    required: ["name"]
+    properties:
+      name:
+        type: string
+      config:
+        type: string
+
+# --- Service ---
+service.type:
+  enum: ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
+  description: Service type
+service.trafficDistribution:
+  type: string
+  description: Traffic distribution mode
+
+# --- Node scheduling ---
+nodeSelector:
+  type: object
+  description: Node selector for pod scheduling
+tolerations:
+  type: array
+  description: Pod tolerations
+  items:
+    type: object
+affinity:
+  type: object
+  description: Pod affinity rules
+topologySpreadConstraints:
+  type: array
+  description: Topology spread constraints
+  items:
+    type: object
+
+# --- Pod anti-affinity ---
+podAntiAffinity.enabled:
+  type: boolean
+  description: Enable default anti-affinity rules
+podAntiAffinity.type:
+  enum: ["soft", "hard"]
+  description: Anti-affinity type
+
+# --- PDB ---
+podDisruptionBudget.enabled:
+  type: boolean
+  description: Enable PDB
+podDisruptionBudget.minAvailable:
+  type: ["integer", "string"]
+  description: "Minimum available pods (number or percentage string)"
+podDisruptionBudget.maxUnavailable:
+  type: ["integer", "string"]
+  description: "Maximum unavailable pods (number or percentage string)"
+
+# --- Service account ---
+serviceAccount.create:
+  type: boolean
+serviceAccount.name:
+  type: string
+
+# --- RBAC ---
+rbac.create:
+  type: boolean
+
+# --- External secrets ---
+externalSecrets.enabled:
+  type: boolean
+externalSecrets.create:
+  type: boolean
+externalSecrets.name:
+  type: string
+externalSecrets.secretName:
+  type: string
+externalSecrets.refreshInterval:
+  type: string
+externalSecrets.secretStoreRef.name:
+  type: string
+externalSecrets.secretStoreRef.kind:
+  enum: ["SecretStore", "ClusterSecretStore"]
+externalSecrets.remoteRefs:
+  type: array
+  items:
+    type: object
+
+# --- Grafana remote write ---
+grafanaRemoteWrite.url:
+  type: string
+grafanaRemoteWrite.basicAuth.username:
+  type: string
+grafanaRemoteWrite.basicAuth.password:
+  type: string
+grafanaRemoteWrite.queueConfig.capacity:
+  type: integer
+  minimum: 1
+grafanaRemoteWrite.queueConfig.maxShards:
+  type: integer
+  minimum: 1
+grafanaRemoteWrite.queueConfig.minShards:
+  type: integer
+  minimum: 1
+grafanaRemoteWrite.queueConfig.maxSamplesPerSend:
+  type: integer
+  minimum: 1
+grafanaRemoteWrite.queueConfig.batchSendDeadline:
+  type: string
+grafanaRemoteWrite.queueConfig.minBackoff:
+  type: string
+grafanaRemoteWrite.queueConfig.maxBackoff:
+  type: string
+
+# --- Service monitor ---
+serviceMonitor.enabled:
+  type: boolean
+
+# --- Gateway labels/scheduling ---
+gateway.labels:
+  type: object
+gateway.selectorLabels:
+  type: object
+gateway.nodeSelector:
+  type: object
+gateway.tolerations:
+  type: array
+  items:
+    type: object
+gateway.affinity:
+  type: object
+gateway.service.annotations:
+  type: object
+
+# --- Gateway ---
+gateway.enabled:
+  type: boolean
+gateway.connectFromPgdog:
+  type: boolean
+gateway.image.pullPolicy:
+  enum: ["Always", "IfNotPresent", "Never"]
+gateway.image.name:
+  type: string
+gateway.port:
+  type: integer
+  minimum: 1
+  maximum: 65535
+gateway.bindAddress:
+  type: string
+gateway.service.type:
+  enum: ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
+gateway.tls.existingSecret:
+  type: string
+gateway.tls.certPath:
+  type: string
+gateway.tls.keyPath:
+  type: string
+gateway.control.url:
+  type: string
+gateway.control.token:
+  type: string
+gateway.stats.activeQueriesInterval:
+  type: integer
+  minimum: 0
+gateway.stats.pingInterval:
+  type: integer
+  minimum: 0
+gateway.stats.pushInterval:
+  type: integer
+  minimum: 0
+gateway.stats.configInterval:
+  type: integer
+  minimum: 0
+gateway.stats.queryStatsInterval:
+  type: integer
+  minimum: 0
+
+# --- Prometheus collector labels/scheduling ---
+prometheusCollector.labels:
+  type: object
+prometheusCollector.selectorLabels:
+  type: object
+prometheusCollector.podAnnotations:
+  type: object
+prometheusCollector.nodeSelector:
+  type: object
+prometheusCollector.tolerations:
+  type: array
+  items:
+    type: object
+prometheusCollector.affinity:
+  type: object
+prometheusCollector.service.annotations:
+  type: object
+
+# --- Prometheus collector ---
+prometheusCollector.enabled:
+  type: boolean
+prometheusCollector.image.pullPolicy:
+  enum: ["Always", "IfNotPresent", "Never"]
+prometheusCollector.port:
+  type: integer
+  minimum: 1
+  maximum: 65535
+prometheusCollector.scrapeInterval:
+  type: string
+prometheusCollector.evaluationInterval:
+  type: string
+prometheusCollector.basicAuth.enabled:
+  type: boolean
+prometheusCollector.basicAuth.username:
+  type: string
+prometheusCollector.basicAuth.password:
+  type: string
+prometheusCollector.basicAuth.passwordHash:
+  type: string
+prometheusCollector.tls.enabled:
+  type: boolean
+prometheusCollector.storage.size:
+  type: string
+prometheusCollector.retention.time:
+  type: string
+prometheusCollector.retention.size:
+  type: string
+prometheusCollector.service.type:
+  enum: ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
+
+# --- Security contexts (free-form) ---
+securityContext:
+  type: object
+  description: Container security context
+podSecurityContext:
+  type: object
+  description: Pod security context
+
+# --- OpenTelemetry ---
+otel.headers:
+  type: object
+  description: Custom headers for OTEL export
+
+# --- Rewrite ---
+rewrite.enabled:
+  type: ["boolean", "string"]
+
+# --- QoS ---
+qos.enabled:
+  type: boolean
+queryStats.enabled:
+  type: boolean
+control.enabled:
+  type: boolean
+control.endpoint:
+  type: string
+control.token:
+  type: string
+
+# --- Two-phase commit booleans ---
+twoPhaseCommit:
+  type: boolean
+twoPhaseCommitAuto:
+  type: boolean
+omnishardedSticky:
+  type: boolean
+reloadSchemaOnDdl:
+  type: boolean
+cutoverSaveConfig:
+  type: boolean
+tcpKeepalive:
+  type: boolean
