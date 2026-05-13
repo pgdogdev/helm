@@ -49,7 +49,7 @@ data:
         tls_private_key           =   {{ .Values.tlsPrivateKey | quote }}
         {{- end }}
         {{- end }}
-        tls_client_required       =   {{ .Values.tlsClientRequired | default "false" }}
+        tls_client_required       =   {{ hasKey .Values "tlsClientRequired" | ternary .Values.tlsClientRequired "false" }}
         tls_verify                =   {{ .Values.tlsVerify | default "prefer" | quote }}
         {{- if and .Values.rdsCertificateBundle .Values.rdsCertificateBundle.enabled }}
         tls_server_ca_certificate =   "/etc/pgdog-rds-ca/rds-ca-bundle.pem"
@@ -91,7 +91,7 @@ data:
         client_idle_in_transaction_timeout =   {{ include "pgdog.intval" .Values.clientIdleInTransactionTimeout }}
         {{- end }}
         checkout_timeout          =   {{ include "pgdog.intval" (.Values.checkoutTimeout | default "5_000") }}
-        dry_run                   =   {{ .Values.dryRun | default "false" }}
+        dry_run                   =   {{ hasKey .Values "dryRun" | ternary .Values.dryRun "false" }}
         {{- if hasKey .Values "twoPhaseCommit" }}
         two_phase_commit          =   {{ .Values.twoPhaseCommit }}
         {{- end }}
@@ -146,7 +146,7 @@ data:
         mirror_queue              =   {{ include "pgdog.intval" (.Values.mirrorQueue | default 128) }}
         mirror_exposure           =   {{ .Values.mirrorExposure | default "1.0" }}
         auth_type                 =   {{ .Values.authType | default "scram" | quote }}
-        cross_shard_disabled      =   {{ .Values.crossShardDisabled | default "false" }}
+        cross_shard_disabled      =   {{ hasKey .Values "crossShardDisabled" | ternary .Values.crossShardDisabled "false" }}
         {{- if .Values.dnsTtl }}
         dns_ttl                   =   {{ include "pgdog.intval" .Values.dnsTtl }}
         {{- end }}
@@ -156,8 +156,8 @@ data:
         openmetrics_port = {{ include "pgdog.intval" (.Values.openMetricsPort | default 9090) }}
         openmetrics_namespace = {{ .Values.openMetricsNamespace | default "pgdog_" | quote }}
         server_lifetime = {{ include "pgdog.intval" (.Values.serverLifetime | default 86400000) }}
-        log_connections = {{ .Values.logConnections | default "true" }}
-        log_disconnections = {{ .Values.logDisconnections | default "true" }}
+        log_connections = {{ hasKey .Values "logConnections" | ternary .Values.logConnections "true" }}
+        log_disconnections = {{ hasKey .Values "logDisconnections" | ternary .Values.logDisconnections "true" }}
         {{- if .Values.logDedupThreshold }}
         log_dedup_threshold = {{ include "pgdog.intval" .Values.logDedupThreshold }}
         {{- end }}
@@ -173,7 +173,7 @@ data:
         {{- if .Values.clientConnectionRecovery }}
         client_connection_recovery =   {{ .Values.clientConnectionRecovery | quote }}
         {{- end }}
-        expanded_explain = {{ .Values.expandedExplain | default "false" }}
+        expanded_explain = {{ hasKey .Values "expandedExplain" | ternary .Values.expandedExplain "false" }}
         {{- if hasKey .Values "lsnCheckDelay" }}
         lsn_check_delay           =   {{ include "pgdog.intval" .Values.lsnCheckDelay }}
         {{- end }}
@@ -373,7 +373,7 @@ data:
 
         {{- if .Values.qos }}
         [qos]
-        enabled = {{ .Values.qos.enabled | default "false" }}
+        enabled = {{ hasKey .Values.qos "enabled" | ternary .Values.qos.enabled "false" }}
         max_entries = {{ include "pgdog.intval" (.Values.qos.maxEntries | default "10_000") }}
         {{- end }}
 
@@ -403,7 +403,7 @@ data:
 
         {{- if .Values.rewrite }}
         [rewrite]
-        enabled = {{ .Values.rewrite.enabled | default "false" }}
+        enabled = {{ hasKey .Values.rewrite "enabled" | ternary .Values.rewrite.enabled "false" }}
         shard_key = {{ .Values.rewrite.shardKey | default "error" | quote }}
         split_inserts = {{ .Values.rewrite.splitInserts | default "error" | quote }}
         primary_key = {{ .Values.rewrite.primaryKey | default "ignore" | quote }}
