@@ -66,7 +66,9 @@ replicas: 2
 # Not set by default; omitted from the pod spec unless explicitly specified.
 # Example: priorityClassName: production-critical
 
-# Uncomment to enable explicit grace period
+# terminationGracePeriodSeconds is automatically set to shutdownTimeout + 5 seconds.
+# Default is 65 seconds (60s shutdownTimeout + 5s buffer).
+# Uncomment to override with an explicit value:
 # terminationGracePeriodSeconds: 90
 
 # Optional: Delay stopping the container to allow the Kubernetes service to update its endpoints and

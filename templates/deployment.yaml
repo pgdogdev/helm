@@ -49,6 +49,8 @@ spec:
       {{- end }}
       {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- else }}
+      terminationGracePeriodSeconds: {{ add (div (default 60000 .Values.shutdownTimeout | int64) 1000) 5 }}
       {{- end }}
       {{- with .Values.extraInitContainers }}
       initContainers:
