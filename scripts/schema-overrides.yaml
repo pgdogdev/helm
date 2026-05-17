@@ -19,6 +19,7 @@ podLabels:
 podAnnotations:
   description: Custom annotations for pods
 restartOnConfigChange:
+  type: boolean
   description: Trigger rolling restart when pgdog config changes
 clusterName:
   description: Kubernetes cluster name, added as a label to Prometheus metrics

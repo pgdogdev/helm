@@ -1200,7 +1200,7 @@
       "description": "Resource requests and limits for the pgdog container"
     },
     "restartOnConfigChange": {
-      "type": "string",
+      "type": "boolean",
       "description": "Trigger rolling restart when pgdog config changes"
     },
     "rewrite": {
