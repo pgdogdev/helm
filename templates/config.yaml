@@ -71,6 +71,12 @@ data:
         {{- if .Values.queryParserEngine }}
         query_parser_engine       =   {{ .Values.queryParserEngine | quote }}
         {{- end }}
+        {{- if .Values.logMinDurationParse }}
+        log_min_duration_parse    =   {{ include "pgdog.intval" .Values.logMinDurationParse }}
+        {{- end }}
+        {{- if .Values.logQuerySampleLength }}
+        log_query_sample_length   =   {{ include "pgdog.intval" .Values.logQuerySampleLength }}
+        {{- end }}
         {{- if .Values.regexParserLimit }}
         regex_parser_limit        =   {{ include "pgdog.intval" .Values.regexParserLimit }}
         {{- end }}

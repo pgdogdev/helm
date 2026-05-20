@@ -1168,6 +1168,14 @@
       "type": "object",
       "description": "Container readiness probe configuration"
     },
+    "logMinDurationParse": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "logQuerySampleLength": {
+      "type": "integer",
+      "minimum": 0
+    },
     "regexParserLimit": {
       "type": "integer",
       "minimum": 0
