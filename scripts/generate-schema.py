@@ -40,18 +40,18 @@ VALUES_RE = re.compile(r"\.Values\.([a-zA-Z_][\w]*(?:\.[a-zA-Z_][\w]*)*)")
 # Template `if .Values.X` is a truthiness check, not a type indicator.
 CONTEXT_PATTERNS = [
     # pgdog.intval → integer (accepts int or underscore-separated string)
-    (re.compile(r'include\s+"pgdog\.intval".*\.Values\.{path}'), "integer"),
-    (re.compile(r'\.Values\.{path}.*\|\s*int'), "integer"),
+    (re.compile(r'include\s+"pgdog\.intval".*\.Values\.{path}\b'), "integer"),
+    (re.compile(r'\.Values\.{path}\b.*\|\s*int\b'), "integer"),
     # | toYaml / with .Values.X → object
-    (re.compile(r"\.Values\.{path}\s*\|\s*toYaml"), "object"),
-    (re.compile(r"toYaml\s+\.Values\.{path}"), "object"),
-    (re.compile(r"with\s+\.Values\.{path}\s"), "object"),
+    (re.compile(r"\.Values\.{path}\b\s*\|\s*toYaml"), "object"),
+    (re.compile(r"toYaml\s+\.Values\.{path}\b"), "object"),
+    (re.compile(r"with\s+\.Values\.{path}\b\s"), "object"),
     # | toToml → array
-    (re.compile(r"\.Values\.{path}\s*\|\s*toToml"), "array"),
+    (re.compile(r"\.Values\.{path}\b\s*\|\s*toToml"), "array"),
     # range .Values.X → array
-    (re.compile(r"range\s+\.Values\.{path}"), "array"),
-    # | quote → string
-    (re.compile(r"\.Values\.{path}\s*\|\s*quote"), "string"),
+    (re.compile(r"range\s+\.Values\.{path}\b"), "array"),
+    # | quote → string (allow intermediate filters like `| default "foo" | quote`)
+    (re.compile(r"\.Values\.{path}\b[^}]*\|\s*quote"), "string"),
 ]
 
 

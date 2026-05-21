@@ -650,6 +650,14 @@
         "off"
       ]
     },
+    "logMinDurationParse": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "logQuerySampleLength": {
+      "type": "integer",
+      "minimum": 0
+    },
     "lsnCheckDelay": {
       "type": "integer",
       "minimum": 0
@@ -901,8 +909,7 @@
       "description": "Delay before stopping container to allow endpoint updates"
     },
     "preparedStatements": {
-      "type": "integer",
-      "minimum": 0
+      "type": "string"
     },
     "preparedStatementsLimit": {
       "type": "integer",
@@ -1167,14 +1174,6 @@
     "readinessProbe": {
       "type": "object",
       "description": "Container readiness probe configuration"
-    },
-    "logMinDurationParse": {
-      "type": "integer",
-      "minimum": 0
-    },
-    "logQuerySampleLength": {
-      "type": "integer",
-      "minimum": 0
     },
     "regexParserLimit": {
       "type": "integer",
@@ -1491,8 +1490,7 @@
       }
     },
     "twoPhaseCommit": {
-      "type": "boolean",
-      "minimum": 0
+      "type": "boolean"
     },
     "twoPhaseCommitAuto": {
       "type": "boolean"
