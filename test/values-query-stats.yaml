@@ -7,6 +7,7 @@ queryStats:
   queryPlanMaxAge: 30000
   maxErrors: 250
   maxErrorAge: 600000
+  idleInTransactionThreshold: 5000
 
 databases:
   - name: primary

@@ -383,28 +383,65 @@ data:
         max_entries = {{ include "pgdog.intval" (.Values.qos.maxEntries | default "10_000") }}
         {{- end }}
 
-        {{- if .Values.queryStats.enabled }}
+        {{- with .Values.queryStats }}
+        {{- if .enabled }}
         [query_stats]
-        enabled = {{ .Values.queryStats.enabled }}
-        max_entries = {{ include "pgdog.intval" (.Values.queryStats.maxEntries | default "10_000") }}
-        query_plan_threshold = {{ include "pgdog.intval" (.Values.queryStats.queryPlanThreshold | default 250) }}
-        query_plans_cache = {{ include "pgdog.intval" (.Values.queryStats.queryPlansCache | default 100) }}
-        query_plan_max_age = {{ include "pgdog.intval" (.Values.queryStats.queryPlanMaxAge | default "15_000") }}
-        max_errors = {{ include "pgdog.intval" (.Values.queryStats.maxErrors | default 100) }}
-        max_error_age = {{ include "pgdog.intval" (.Values.queryStats.maxErrorAge | default "300_000") }}
+        enabled = {{ .enabled }}
+        {{- if .maxEntries }}
+        max_entries = {{ include "pgdog.intval" .maxEntries }}
+        {{- end }}
+        {{- if .queryPlanThreshold }}
+        query_plan_threshold = {{ include "pgdog.intval" .queryPlanThreshold }}
+        {{- end }}
+        {{- if .queryPlansCache }}
+        query_plans_cache = {{ include "pgdog.intval" .queryPlansCache }}
+        {{- end }}
+        {{- if .queryPlanMaxAge }}
+        query_plan_max_age = {{ include "pgdog.intval" .queryPlanMaxAge }}
+        {{- end }}
+        {{- if .maxErrors }}
+        max_errors = {{ include "pgdog.intval" .maxErrors }}
+        {{- end }}
+        {{- if .maxErrorAge }}
+        max_error_age = {{ include "pgdog.intval" .maxErrorAge }}
+        {{- end }}
+        {{- if .idleInTransactionThreshold }}
+        idle_in_transaction_threshold = {{ include "pgdog.intval" .idleInTransactionThreshold }}
+        {{- end }}
+        {{- end }}
         {{- end }}
 
-        {{- if .Values.control.enabled }}
+        {{- with .Values.control }}
+        {{- if .enabled }}
         [control]
-        endpoint = {{ .Values.control.endpoint | quote }}
-        token = {{ .Values.control.token | quote }}
-        metrics_interval = {{ include "pgdog.intval" (.Values.control.metricsInterval | default "1_000") }}
-        stats_interval = {{ include "pgdog.intval" (.Values.control.statsInterval | default "5_000") }}
-        active_queries_interval = {{ include "pgdog.intval" (.Values.control.activeQueriesInterval | default "5_000") }}
-        errors_interval = {{ include "pgdog.intval" (.Values.control.errorsInterval | default "5_000") }}
-        request_timeout = {{ include "pgdog.intval" (.Values.control.requestTimeout | default "1_000") }}
-        query_timings_chunk_size = {{ include "pgdog.intval" (.Values.control.queryTimingsChunkSize | default 25) }}
-        query_timings_new_query_queue_size = {{ include "pgdog.intval" (.Values.control.queryTimingsNewQueryQueueSize | default "1_000") }}
+        {{- if .endpoint }}
+        endpoint = {{ .endpoint | quote }}
+        {{- end }}
+        {{- if .token }}
+        token = {{ .token | quote }}
+        {{- end }}
+        {{- if .metricsInterval }}
+        metrics_interval = {{ include "pgdog.intval" .metricsInterval }}
+        {{- end }}
+        {{- if .statsInterval }}
+        stats_interval = {{ include "pgdog.intval" .statsInterval }}
+        {{- end }}
+        {{- if .activeQueriesInterval }}
+        active_queries_interval = {{ include "pgdog.intval" .activeQueriesInterval }}
+        {{- end }}
+        {{- if .errorsInterval }}
+        errors_interval = {{ include "pgdog.intval" .errorsInterval }}
+        {{- end }}
+        {{- if .requestTimeout }}
+        request_timeout = {{ include "pgdog.intval" .requestTimeout }}
+        {{- end }}
+        {{- if .queryTimingsChunkSize }}
+        query_timings_chunk_size = {{ include "pgdog.intval" .queryTimingsChunkSize }}
+        {{- end }}
+        {{- if .queryTimingsNewQueryQueueSize }}
+        query_timings_new_query_queue_size = {{ include "pgdog.intval" .queryTimingsNewQueryQueueSize }}
+        {{- end }}
+        {{- end }}
         {{- end }}
 
         {{- if .Values.rewrite }}
