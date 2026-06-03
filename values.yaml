@@ -653,3 +653,7 @@ prometheusCollector:
 
 securityContext: {}
 podSecurityContext: {}
+
+secret:
+  # annotations allows adding custom annotations to the generated Secret
+  annotations: {}
