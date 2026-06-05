@@ -11,6 +11,7 @@ checkoutTimeout: 10_000
 idleTimeout: 300_000
 clientIdleTimeout: 600_000
 clientLoginTimeout: 30_000
+serverLifetimeJitter: 60_000
 statsPeriod: 30_000
 lsnCheckDelay: 1_000
 lsnCheckInterval: 10_000

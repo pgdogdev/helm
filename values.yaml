@@ -189,6 +189,21 @@ logFormat: text
 # Defaults to `info`.
 logLevel: "info"
 
+# serverLifetime is the maximum amount of time (in milliseconds) a server
+# connection is allowed to exist. Connections exceeding this limit are closed
+# once they are checked back into the pool.
+# Defaults to 86400000 (24h).
+# serverLifetime: 86400000
+
+# serverLifetimeJitter is the maximum random adjustment (in milliseconds)
+# applied to serverLifetime per backend connection. Each connection's effective
+# lifetime is sampled uniformly from
+# [serverLifetime - jitter, serverLifetime + jitter] once at creation. This
+# breaks up synchronized retirement of connection cohorts that opened together
+# (e.g. during a traffic ramp).
+# Defaults to 0 (no jitter).
+# serverLifetimeJitter: 0
+
 # Admin password
 # adminPassword: change-me
 

@@ -162,6 +162,7 @@ data:
         openmetrics_port = {{ include "pgdog.intval" (.Values.openMetricsPort | default 9090) }}
         openmetrics_namespace = {{ .Values.openMetricsNamespace | default "pgdog_" | quote }}
         server_lifetime = {{ include "pgdog.intval" (.Values.serverLifetime | default 86400000) }}
+        server_lifetime_jitter = {{ include "pgdog.intval" (.Values.serverLifetimeJitter | default 0) }}
         log_connections = {{ hasKey .Values "logConnections" | ternary .Values.logConnections "true" }}
         log_disconnections = {{ hasKey .Values "logDisconnections" | ternary .Values.logDisconnections "true" }}
         {{- if .Values.logDedupThreshold }}
