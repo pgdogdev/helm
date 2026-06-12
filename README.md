@@ -178,6 +178,60 @@ externalSecrets:
   secretName: "my-secret" # Name of Secret you created
 ```
 
+### Referencing Existing Secrets
+
+If you manage Kubernetes Secrets yourself (via `kubectl`, sealed-secrets,
+SOPS, etc.), point the chart at them directly instead of putting secret
+values in `values.yaml`. This works without the ExternalSecrets operator.
+
+#### users.toml from an existing Secret
+
+Set `usersSecret.name` to reference a Secret you created that holds the
+`users.toml` file. The chart then skips rendering its own users Secret and
+mounts yours instead:
+
+```yaml
+usersSecret:
+  name: my-pgdog-users # existing Secret in the same namespace
+  key: users.toml      # key holding the users.toml content (default: users.toml)
+```
+
+Create the Secret, for example:
+
+```bash
+kubectl create secret generic my-pgdog-users \
+  --from-file=users.toml=./users.toml
+```
+
+The value is mounted at `/etc/secrets/pgdog/users.toml` regardless of the
+key name. A custom `key` is remapped automatically.
+
+#### Datadog API key from an existing Secret
+
+PgDog reads the Datadog API key from the `DD_API_KEY` environment variable.
+Reference an existing Secret and the chart injects it as `DD_API_KEY`, so the
+key is never written into `pgdog.toml` (or the ConfigMap):
+
+```yaml
+otel:
+  endpoint: https://otlp.example.com/v1/metrics # your OTLP endpoint
+  datadogApiKeySecret:
+    name: my-datadog # existing Secret in the same namespace
+    key: dd-api-key  # key holding the API key (default: dd-api-key)
+```
+
+Create the Secret, for example:
+
+```bash
+kubectl create secret generic my-datadog \
+  --from-literal=dd-api-key=<your-datadog-api-key>
+```
+
+This is mutually exclusive with the inline `otel.datadogApiKey`, which writes
+the key into the ConfigMap as plaintext and should be avoided.
+
+If both are set, the inline value takes precedence.
+
 ### ServiceAccount & RBAC
 
 RBAC with minimal permissions is enabled by default:

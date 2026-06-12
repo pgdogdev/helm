@@ -400,6 +400,32 @@ externalSecrets:
     #     key: pgdog/users
     #     property: users.toml
 
+# usersSecret references an existing Secret (that you created yourself in
+# this namespace) holding the users.toml file. When name is set, the chart
+# does not render its own users Secret and mounts this one instead.
+usersSecret:
+  # name of the existing Secret containing users.toml
+  name: ""
+  # key within that Secret whose value is the users.toml content;
+  # it is mounted at /etc/secrets/pgdog/users.toml regardless of the key name
+  key: users.toml
+
+# otel configures OpenTelemetry metrics export. Left unset by default so the
+# [otel] section is omitted from pgdog.toml. Uncomment and fill in to enable.
+# otel:
+#   endpoint: https://otlp.example.com/v1/metrics
+#   namespace: pgdog
+#   # Datadog API key options (mutually exclusive):
+#   #   datadogApiKey: inline value, written into pgdog.toml (plaintext in the
+#   #     ConfigMap) — avoid for real secrets.
+#   datadogApiKey: ""
+#   #   datadogApiKeySecret: inject the key from an existing Secret you created
+#   #     as the DD_API_KEY env var, which pgdog reads. Nothing is written into
+#   #     pgdog.toml. Preferred for real secrets.
+#   datadogApiKeySecret:
+#     name: ""          # existing Secret name
+#     key: dd-api-key   # key within that Secret holding the API key
+
 # ServiceMonitor for Prometheus metrics
 serviceMonitor:
   enabled: false
