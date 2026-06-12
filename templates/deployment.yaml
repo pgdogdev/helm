@@ -85,6 +85,17 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            {{- with .Values.otel }}
+            {{- with .datadogApiKeySecret }}
+            {{- if .name }}
+            - name: DD_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .name }}
+                  key: {{ .key | default "dd-api-key" }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
             {{- range .Values.env }}
             {{- if ne .name "NODE_ID" }}
             - {{- toYaml . | nindent 14 }}
@@ -181,7 +192,12 @@ spec:
             name: {{ include "pgdog.fullname" . }}
         - name: users
           secret:
-            {{- if and .Values.externalSecrets.enabled
+            {{- if .Values.usersSecret.name }}
+            secretName: {{ .Values.usersSecret.name }}
+            items:
+              - key: {{ .Values.usersSecret.key | default "users.toml" }}
+                path: users.toml
+            {{- else if and .Values.externalSecrets.enabled
                        .Values.externalSecrets.secretName }}
             secretName: {{ .Values.externalSecrets.secretName }}
             {{- else }}
