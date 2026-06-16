@@ -5,6 +5,7 @@ queryStats:
   queryPlansThreshold: 500
   queryPlansCache: 200
   queryPlansMaxAge: 30000
+  queryPlansSampleRate: 0.5
   maxErrors: 250
   maxErrorAge: 600000
   idleInTransactionThreshold: 5000
