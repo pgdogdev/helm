@@ -392,13 +392,13 @@ data:
         max_entries = {{ include "pgdog.intval" .maxEntries }}
         {{- end }}
         {{- if .queryPlanThreshold }}
-        query_plan_threshold = {{ include "pgdog.intval" .queryPlanThreshold }}
+        query_plans_threshold = {{ include "pgdog.intval" .queryPlansThreshold }}
         {{- end }}
         {{- if .queryPlansCache }}
         query_plans_cache = {{ include "pgdog.intval" .queryPlansCache }}
         {{- end }}
         {{- if .queryPlanMaxAge }}
-        query_plan_max_age = {{ include "pgdog.intval" .queryPlanMaxAge }}
+        query_plans_max_age = {{ include "pgdog.intval" .queryPlansMaxAge }}
         {{- end }}
         {{- if .maxErrors }}
         max_errors = {{ include "pgdog.intval" .maxErrors }}
