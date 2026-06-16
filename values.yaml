@@ -536,6 +536,7 @@ queryStats:
   queryPlansThreshold: 1000
   queryPlansMaxAge: 15000
   queryPlansCache: 100
+  queryPlansSampleRate: 1.0
   maxErrors: 100
   maxErrorAge: 300000
 # Control configuration (PgDog EE)

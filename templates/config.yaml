@@ -391,13 +391,16 @@ data:
         {{- if .maxEntries }}
         max_entries = {{ include "pgdog.intval" .maxEntries }}
         {{- end }}
-        {{- if .queryPlanThreshold }}
+        {{- if .queryPlansThreshold }}
         query_plans_threshold = {{ include "pgdog.intval" .queryPlansThreshold }}
         {{- end }}
         {{- if .queryPlansCache }}
         query_plans_cache = {{ include "pgdog.intval" .queryPlansCache }}
         {{- end }}
-        {{- if .queryPlanMaxAge }}
+        {{- if .queryPlansSampleRate }}
+        query_plans_sample_rate = {{ .queryPlansSampleRate }}
+        {{- end }}
+        {{- if .queryPlansMaxAge }}
         query_plans_max_age = {{ include "pgdog.intval" .queryPlansMaxAge }}
         {{- end }}
         {{- if .maxErrors }}
