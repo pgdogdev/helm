@@ -1,0 +1,10 @@
+# Test rendering PgDog's [gateway] connection section.
+gateway:
+  enabled: true
+  connectFromPgdog: true
+  port: 8443
+
+databases:
+  - name: primary
+    host: postgres.example.com
+    port: 5432

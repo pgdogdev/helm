@@ -1,0 +1,9 @@
+# Test explicit TLS path settings in pgdog.toml.
+tlsCertificate: /etc/ssl/certs/ssl-cert-snakeoil.pem
+tlsPrivateKey: /etc/ssl/private/ssl-cert-snakeoil.key
+tlsServerCaCertificate: /etc/ssl/certs/ca-certificates.crt
+
+databases:
+  - name: primary
+    host: postgres.example.com
+    port: 5432
