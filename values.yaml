@@ -189,6 +189,13 @@ logFormat: text
 # Defaults to `info`.
 logLevel: "info"
 
+# loadBalancingStrategy controls how read queries are distributed across
+# replicas.
+#
+# PgDog defaults to `random`; the chart keeps its historical default of
+# `round_robin` by setting this explicitly.
+loadBalancingStrategy: round_robin
+
 # serverLifetime is the maximum amount of time (in milliseconds) a server
 # connection is allowed to exist. Connections exceeding this limit are closed
 # once they are checked back into the pool.
