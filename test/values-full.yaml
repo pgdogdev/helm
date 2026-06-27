@@ -112,7 +112,7 @@ shardedMappings:
   - database: primary
     column: id
     kind: list
-    values: [1, 2, 3]
+    values: ["1", "2", "3"]
     shard: 0
   - database: primary
     column: id
