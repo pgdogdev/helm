@@ -505,65 +505,6 @@ grafanaRemoteWrite.queueConfig.maxBackoff:
 serviceMonitor.enabled:
   type: boolean
 
-# --- Gateway labels/scheduling ---
-gateway.labels:
-  type: object
-gateway.selectorLabels:
-  type: object
-gateway.nodeSelector:
-  type: object
-gateway.tolerations:
-  type: array
-  items:
-    type: object
-gateway.affinity:
-  type: object
-gateway.service.annotations:
-  type: object
-
-# --- Gateway ---
-gateway.enabled:
-  type: boolean
-gateway.connectFromPgdog:
-  type: boolean
-gateway.image.pullPolicy:
-  enum: ["Always", "IfNotPresent", "Never"]
-gateway.image.name:
-  type: string
-gateway.port:
-  type: integer
-  minimum: 1
-  maximum: 65535
-gateway.bindAddress:
-  type: string
-gateway.service.type:
-  enum: ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
-gateway.tls.existingSecret:
-  type: string
-gateway.tls.certPath:
-  type: string
-gateway.tls.keyPath:
-  type: string
-gateway.control.url:
-  type: string
-gateway.control.token:
-  type: string
-gateway.stats.activeQueriesInterval:
-  type: integer
-  minimum: 0
-gateway.stats.pingInterval:
-  type: integer
-  minimum: 0
-gateway.stats.pushInterval:
-  type: integer
-  minimum: 0
-gateway.stats.configInterval:
-  type: integer
-  minimum: 0
-gateway.stats.queryStatsInterval:
-  type: integer
-  minimum: 0
-
 # --- Prometheus collector labels/scheduling ---
 prometheusCollector.labels:
   type: object

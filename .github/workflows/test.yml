@@ -33,56 +33,27 @@ jobs:
   validate-configs:
     runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 30
+    permissions:
+      contents: read
+    env:
+      PGDOG_IMAGE: ghcr.io/pgdogdev/pgdog-enterprise:main-ent
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Checkout pgdog-enterprise
-        uses: actions/checkout@v4
-        with:
-          repository: pgdogdev/pgdog-enterprise
-          ref: main-ent
-          path: pgdog-source
-          token: ${{ secrets.PGDOG_ENTERPRISE_TOKEN }}
-
       - name: Install Helm
         uses: azure/setup-helm@v4
         with:
-          version: 'latest'
+          version: latest
 
       - name: Install yq
         uses: mikefarah/yq@master
 
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
+      - name: Pull pgdog image
+        run: docker pull "$PGDOG_IMAGE"
 
-      - name: Cache Rust dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            pgdog-source/target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('pgdog-source/**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-
-
-      - name: Install CMake 3.31
-        run: |
-          sudo apt update && sudo apt install mold -y
-          sudo apt remove cmake
-          sudo pip3 install cmake==3.31.6
-
-      - name: Build pgdog
-        run: cargo build --bin pgdog
-        working-directory: pgdog-source
-
-      - name: Validate configs
+      - name: Validate generated pgdog configs
         run: |
           set -eo pipefail
           for values_file in test/values-*.yaml; do
@@ -90,6 +61,9 @@ jobs:
             echo "==> Validating config for $name..."
             rm -f /tmp/pgdog.toml
             ./test/generate-config.sh "$values_file" /tmp/pgdog.toml
-            ./pgdog-source/target/debug/pgdog --config=/tmp/pgdog.toml configcheck
+            docker run --rm \
+              -v /tmp/pgdog.toml:/tmp/pgdog.toml:ro \
+              "$PGDOG_IMAGE" \
+              /usr/local/bin/pgdog --config=/tmp/pgdog.toml configcheck
           done
           echo "==> All configs valid!"
