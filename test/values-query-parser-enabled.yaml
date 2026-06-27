@@ -1,0 +1,7 @@
+# Test deprecated queryParserEnabled rendering when queryParser is absent.
+queryParserEnabled: true
+
+databases:
+  - name: primary
+    host: postgres.example.com
+    port: 5432

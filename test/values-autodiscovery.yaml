@@ -1,0 +1,15 @@
+autodiscovery:
+  enabled: true
+  checkInterval: 15000
+  checkDelay: 0
+  checkTimeout: 14000
+  databases:
+    - name: primary
+      replicasOnly: true
+    - name: analytics
+
+databases:
+  - name: primary
+    host: primary.example.com
+  - name: analytics
+    host: analytics.example.com

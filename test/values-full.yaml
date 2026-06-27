@@ -4,6 +4,37 @@ replicas: 3
 env:
   - name: RUST_LOG
     value: trace
+workers: 4
+defaultPoolSize: 20
+minPoolSize: 2
+poolerMode: transaction
+healthcheckInterval: 30_000
+idleHealthcheckInterval: 30_000
+idleHealthcheckDelay: 5_000
+loadBalancingStrategy: round_robin
+readWriteStrategy: conservative
+readWriteSplit: include_primary
+preparedStatements: extended
+preparedStatementsLimit: 1000
+queryCacheLimit: 500
+passthroughAuth: disabled
+connectAttempts: 2
+connectAttemptDelay: 100
+dryRun: false
+loadSchema: auto
+mirrorQueue: 256
+mirrorExposure: 1.0
+authType: scram
+crossShardDisabled: false
+dnsTtl: 30_000
+pubSubChannelSize: 1024
+openMetricsPort: 9090
+openMetricsNamespace: pgdog_
+logConnections: true
+logDisconnections: true
+logDedupThreshold: 100
+logDedupWindow: 1_000
+expandedExplain: false
 queryParserEngine: "pg_query_raw"
 regexParserLimit: 1000
 logMinDurationParse: 100
@@ -25,16 +56,39 @@ port: 6432
 healthcheckPort: 8080
 logFormat: json
 logLevel: debug
+tlsClientRequired: false
+tlsVerify: prefer
+adminPassword: admin-secret
+
+tcpKeepalive: true
+tcpTime: 7200
+tcpInterval: 75
+tcpRetries: 9
 
 
 databases:
   - name: primary
     host: postgres-primary.example.com
     port: 5432
+    shard: 0
+    databaseName: app
+    user: app_user
+    password: secret123
+    poolSize: 20
+    minPoolSize: 2
+    poolerMode: transaction
+    statementTimeout: 30_000
+    idleTimeout: 120_000
+    readOnly: false
+    serverLifetime: 86_400_000
   - name: replica
     host: postgres-replica.example.com
     port: 5432
     role: replica
+  - name: primary
+    host: postgres-shard1.example.com
+    port: 5432
+    shard: 1
 
 users:
   - username: app_user
@@ -49,9 +103,32 @@ shardedTables:
     column: id
     dataType: bigint
 
+shardedSchemas:
+  - database: primary
+    name: tenant_a
+    shard: 0
+
+shardedMappings:
+  - database: primary
+    column: id
+    kind: list
+    values: ["1", "2", "3"]
+    shard: 0
+  - database: primary
+    column: id
+    kind: range
+    start: 4
+    end: 100
+    shard: 1
+
 mirrors:
   - sourceDb: primary
     destinationDb: replica
+    queueDepth: 128
+
+qos:
+  enabled: true
+  maxEntries: 10_000
 
 omnishardedTables:
   - database: primary
