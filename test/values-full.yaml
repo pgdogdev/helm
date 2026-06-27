@@ -21,7 +21,7 @@ passthroughAuth: disabled
 connectAttempts: 2
 connectAttemptDelay: 100
 dryRun: false
-loadSchema: schema
+loadSchema: auto
 mirrorQueue: 256
 mirrorExposure: 1.0
 authType: scram
