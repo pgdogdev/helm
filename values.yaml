@@ -238,15 +238,32 @@ shardedSchemas: []
 
 # shardedTables contains the list of sharded table entries in pgdog.toml
 # Each entry requires: database, column and dataType; name is optional
+# An entry may also carry a list/range/default mapping via the optional `mapping` field.
+# Each mapping rule has a target `shard`; the rule type is inferred from the fields set:
+#   - `values` -> list rule
+#   - `start` and/or `end` -> range rule
+#   - `shard` only -> default (catch-all) rule
 # Example:
 # shardedTables:
 #   - database: "prod"
 #     name: "users"
 #     column: "id"
 #     dataType: "bigint"
+#   - database: "prod"
+#     column: "tenant_id"
+#     dataType: "bigint"
+#     mapping:
+#       - values: [1, 5, 1_000]
+#         shard: 0
+#       - start: 100
+#         end: 200
+#         shard: 1
+#       - shard: 2
 shardedTables: []
 
 # shardedMappings contains the list of sharded mapping entries in pgdog.toml
+# DEPRECATED: prefer the `mapping` field on shardedTables entries above. This
+# legacy top-level form is still supported for backward compatibility.
 # Each entry requires: database, column, kind, shard; values, start and end are optional
 # Example:
 # shardedMappings:

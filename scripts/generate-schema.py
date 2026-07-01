@@ -190,6 +190,14 @@ DEFS = {
             },
         },
     },
+    "flexibleType": {
+        "description": (
+            "pgdog FlexibleType: a bare integer, or a string (UUID or "
+            "arbitrary key). Numbers render as bare TOML integers; strings "
+            "render quoted."
+        ),
+        "type": ["integer", "string"],
+    },
 }
 
 # Properties that should use a $ref instead of being auto-generated

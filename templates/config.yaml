@@ -370,6 +370,19 @@ data:
         {{- end }}
         column = {{ .column | quote }}
         data_type = {{ .dataType | quote }}
+        {{- range .mapping }}
+        [[sharded_tables.mapping]]
+        {{- if hasKey . "values" }}
+        values = {{ include "pgdog.flexlist" .values }}
+        {{- end }}
+        {{- if hasKey . "start" }}
+        start = {{ include "pgdog.flexval" .start }}
+        {{- end }}
+        {{- if hasKey . "end" }}
+        end = {{ include "pgdog.flexval" .end }}
+        {{- end }}
+        shard = {{ include "pgdog.intval" .shard }}
+        {{- end }}
         {{- end }}
 
         {{- range .Values.shardedMappings }}
@@ -379,13 +392,13 @@ data:
         kind = {{ .kind | quote }}
         shard = {{ include "pgdog.intval" .shard }}
         {{- if hasKey . "values" }}
-        values = {{ .values| toToml }}
+        values = {{ include "pgdog.flexlist" .values }}
         {{- end }}
         {{- if hasKey . "start" }}
-        start = {{ include "pgdog.intval" .start }}
+        start = {{ include "pgdog.flexval" .start }}
         {{- end }}
         {{- if hasKey . "end" }}
-        end = {{ include "pgdog.intval" .end }}
+        end = {{ include "pgdog.flexval" .end }}
         {{- end}}
         {{- end }}
 

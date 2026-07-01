@@ -341,8 +341,27 @@ shardedTables:
         type: string
       dataType:
         type: string
+      mapping:
+        type: array
+        description: List/range/default sharding rules for this table
+        items:
+          type: object
+          additionalProperties: false
+          required: ["shard"]
+          properties:
+            shard:
+              type: integer
+              minimum: 0
+            values:
+              type: array
+              items:
+                $ref: "#/$defs/flexibleType"
+            start:
+              $ref: "#/$defs/flexibleType"
+            end:
+              $ref: "#/$defs/flexibleType"
 
-# --- Sharded mappings ---
+# --- Sharded mappings (Deprecated) ---
 shardedMappings:
   type: array
   description: Sharded mapping entries
@@ -363,10 +382,12 @@ shardedMappings:
         minimum: 0
       values:
         type: array
+        items:
+          $ref: "#/$defs/flexibleType"
       start:
-        type: integer
+        $ref: "#/$defs/flexibleType"
       end:
-        type: integer
+        $ref: "#/$defs/flexibleType"
 
 # --- Omnisharded tables ---
 omnishardedTables:

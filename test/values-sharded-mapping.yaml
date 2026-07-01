@@ -1,0 +1,39 @@
+# Test: inline `mapping` on shardedTables entries renders valid pgdog.toml.
+# Covers every FlexibleType value shape (integer / uuid / string) across all
+# three rule shapes (list / range / default) and several dataType values, to
+# confirm integers render bare and strings/uuids render quoted.
+databases:
+  - name: primary
+    host: postgres-primary.example.com
+    port: 5432
+
+shardedTables:
+  # Integer keys (bigint): list, range and default rules. Ints render bare.
+  - database: primary
+    column: tenant_id
+    dataType: bigint
+    mapping:
+      - values: [1, 2, 3]
+        shard: 0
+      - start: 100
+        end: 200
+        shard: 1
+      - shard: 2
+  # UUID keys: list and range rules. UUIDs are strings and must render quoted.
+  - database: primary
+    column: tenant_uuid
+    dataType: uuid
+    mapping:
+      - values: ["11111111-1111-1111-1111-111111111111"]
+        shard: 0
+      - start: "aaaaaaaa-0000-0000-0000-000000000000"
+        end: "bbbbbbbb-0000-0000-0000-000000000000"
+        shard: 1
+  # String keys (varchar): list of arbitrary strings, quoted.
+  - database: primary
+    column: region
+    dataType: varchar
+    mapping:
+      - values: ["us-east", "eu-west"]
+        shard: 0
+      - shard: 1

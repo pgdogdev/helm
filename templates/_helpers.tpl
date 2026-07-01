@@ -98,6 +98,28 @@ as scientific notation (e.g. 8.64e+07). TOML rejects this.
 {{- end -}}
 
 {{/*
+Render a single FlexibleType value (integer | uuid | string) as a TOML literal.
+pgdog's FlexibleType accepts integers, UUIDs and strings. Numbers must render as
+bare TOML integers (see pgdog.intval); everything else is a string and must be
+quoted to be valid TOML.
+- Numeric inputs (float64 from YAML): render bare via int64
+- String inputs (UUIDs, arbitrary keys, quoted numbers): render quoted
+*/}}
+{{- define "pgdog.flexval" -}}
+{{- if kindIs "string" . -}}{{ . | quote }}{{- else -}}{{ int64 . }}{{- end -}}
+{{- end -}}
+
+{{/*
+Render a list of FlexibleType values as a TOML array literal.
+Each element is rendered via pgdog.flexval (numbers bare, strings quoted),
+comma-separated and wrapped in brackets, e.g. [1, 2, 3] or ["a", "b"].
+Call as: include "pgdog.flexlist" .values
+*/}}
+{{- define "pgdog.flexlist" -}}
+[{{- range $i, $v := . }}{{ if $i }}, {{ end }}{{ include "pgdog.flexval" $v }}{{- end }}]
+{{- end -}}
+
+{{/*
 Render a resources block, omitting CPU limits when noCpuLimits is true.
 Call as: include "pgdog.resources" (dict "resources" .Values.resources "noCpuLimits" .Values.noCpuLimits)
 */}}

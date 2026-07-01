@@ -1,0 +1,26 @@
+# Test: the DEPRECATED top-level `shardedMappings` form still validates and
+# renders. Superseded by the `mapping` field on shardedTables entries, but kept
+# for backward compatibility. Covers list and range rules.
+databases:
+  - name: primary
+    host: postgres-primary.example.com
+    port: 5432
+
+shardedTables:
+  - database: primary
+    name: users
+    column: id
+    dataType: bigint
+
+shardedMappings:
+  - database: primary
+    column: id
+    kind: list
+    values: ["1", "2", "3"]
+    shard: 0
+  - database: primary
+    column: id
+    kind: range
+    start: 4
+    end: 100
+    shard: 1
