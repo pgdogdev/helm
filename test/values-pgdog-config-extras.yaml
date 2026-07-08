@@ -2,7 +2,7 @@
 # Covers: ban_replica_lag*, 2PC WAL persistence, resharding copy retries,
 # query_log, rewrite_shard_key_updates, unique_id_*, cutover_*,
 # tcp user_timeout/congestion_control, mirroring queue_length/level,
-# database lb_weight/resharding_only, multi_tenant, otel.
+# query_parser table, database lb_weight/resharding_only, multi_tenant, otel.
 
 banReplicaLag: 60_000
 banReplicaLagBytes: 10_000_000
@@ -62,3 +62,8 @@ mirrors:
     queueLength: 256
     exposure: 0.5
     level: dml
+
+queryParsers:
+  - database: primary
+    level: "off"
+    engine: pg_query_raw

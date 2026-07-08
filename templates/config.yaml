@@ -353,6 +353,15 @@ data:
         {{- end }}
         {{- end }}
 
+        {{- range .Values.queryParsers }}
+        [[query_parser]]
+        database = {{ .database | quote }}
+        level = {{ .level | quote }}
+        {{- if hasKey . "engine" }}
+        engine = {{ .engine | quote }}
+        {{- end }}
+        {{- end }}
+
         {{- range .Values.shardedSchemas }}
         [[sharded_schemas]]
         database = {{ .database | quote }}

@@ -227,6 +227,15 @@ users: []
 # mirrors contains a list of databases to replicate traffic from/to.
 mirrors: []
 
+# queryParsers contains per-database query parser settings in pgdog.toml.
+# Each entry requires: database and level; engine is optional.
+# Example:
+# queryParsers:
+#   - database: "prod"
+#     level: "off"
+#     engine: "pg_query_raw"
+queryParsers: []
+
 # shardedSchemas contains the list of sharded schema entries in pgdog.toml
 # Each entry requires: database and shard; name is optional
 # Example:

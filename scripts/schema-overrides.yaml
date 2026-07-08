@@ -307,6 +307,22 @@ mirrors:
       level:
         type: string
 
+# --- Query parser array ---
+queryParsers:
+  type: array
+  description: Per-database query parser entries
+  items:
+    type: object
+    additionalProperties: false
+    required: ["database", "level"]
+    properties:
+      database:
+        type: string
+      level:
+        type: string
+      engine:
+        type: string
+
 # --- Sharded schemas ---
 shardedSchemas:
   type: array
