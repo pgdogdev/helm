@@ -354,7 +354,7 @@ data:
         {{- end }}
 
         {{- range .Values.queryParsers }}
-        [[query_parser]]
+        [[query_parsers]]
         database = {{ .database | quote }}
         level = {{ .level | quote }}
         {{- if hasKey . "engine" }}

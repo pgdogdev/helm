@@ -2,7 +2,7 @@
 # Covers: ban_replica_lag*, 2PC WAL persistence, resharding copy retries,
 # query_log, rewrite_shard_key_updates, unique_id_*, cutover_*,
 # tcp user_timeout/congestion_control, mirroring queue_length/level,
-# query_parser table, database lb_weight/resharding_only, multi_tenant, otel.
+# query_parsers table, database lb_weight/resharding_only, multi_tenant, otel.
 
 banReplicaLag: 60_000
 banReplicaLagBytes: 10_000_000
