@@ -357,9 +357,7 @@ data:
         [[query_parsers]]
         database = {{ .database | quote }}
         level = {{ .level | quote }}
-        {{- if hasKey . "engine" }}
-        engine = {{ .engine | quote }}
-        {{- end }}
+        engine = {{ .engine | default "pg_query_protobuf" | quote }}
         {{- end }}
 
         {{- range .Values.shardedSchemas }}

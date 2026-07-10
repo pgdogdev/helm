@@ -67,3 +67,6 @@ queryParsers:
   - database: primary
     level: "off"
     engine: pg_query_raw
+  # engine omitted: should render the pg_query_protobuf default
+  - database: primary_mirror
+    level: "session_control_and_locks"

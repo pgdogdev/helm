@@ -228,7 +228,9 @@ users: []
 mirrors: []
 
 # queryParsers contains per-database query parser settings in pgdog.toml.
-# Each entry requires: database and level; engine is optional.
+# Each entry requires: database and level; engine is optional and
+# defaults to "pg_query_protobuf" (pgdog requires the field in
+# [[query_parsers]] entries and fails to start without it).
 # Example:
 # queryParsers:
 #   - database: "prod"
