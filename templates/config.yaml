@@ -152,7 +152,7 @@ data:
         {{- if hasKey .Values "twoPhaseCommitWalDir" }}
         two_phase_commit_wal_dir  =   {{ .Values.twoPhaseCommitWalDir | quote }}
         {{- else if and .Values.statefulSet.enabled .Values.statefulSet.walPvc.enabled }}
-        two_phase_commit_wal_dir  =   "/var/lib/pgdog"
+        two_phase_commit_wal_dir  =   "/var/lib/pgdog/wal"
         {{- end }}
         {{- if hasKey .Values "twoPhaseCommitWalSegmentSize" }}
         two_phase_commit_wal_segment_size      =   {{ include "pgdog.intval" .Values.twoPhaseCommitWalSegmentSize }}

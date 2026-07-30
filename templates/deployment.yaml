@@ -52,9 +52,26 @@ spec:
       {{- else }}
       terminationGracePeriodSeconds: {{ add (div (default 60000 .Values.shutdownTimeout | int64) 1000) 5 }}
       {{- end }}
-      {{- with .Values.extraInitContainers }}
+      {{- if or (and .Values.statefulSet.enabled .Values.statefulSet.walPvc.enabled) .Values.extraInitContainers }}
       initContainers:
+        {{- if and .Values.statefulSet.enabled .Values.statefulSet.walPvc.enabled }}
+        - name: create-wal-directory
+          {{- if .Values.image.name }}
+          image: {{ .Values.image.name }}
+          {{- else if .Values.image.digest }}
+          image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
+          {{- else }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["mkdir", "-p", "/var/lib/pgdog/wal"]
+          volumeMounts:
+            - name: wal
+              mountPath: /var/lib/pgdog
+        {{- end }}
+        {{- with .Values.extraInitContainers }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
