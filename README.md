@@ -115,6 +115,28 @@ mirrors:
 
 ### High Availability
 
+#### StatefulSet WAL storage
+
+PgDog can persist its two-phase commit WAL when running as a StatefulSet.
+Enable `walPvc` and configure the requested capacity:
+
+```yaml
+statefulSet:
+  enabled: true
+  walPvc:
+    enabled: true
+    size: 5Gi
+```
+
+The StatefulSet creates one `ReadWriteOnce` persistent volume claim per replica
+and mounts it at `/var/lib/pgdog`. The generated PgDog configuration sets
+`two_phase_commit_wal_dir` to that mount point automatically. An explicit
+`twoPhaseCommitWalDir` value takes precedence.
+
+The claims use the cluster's default `StorageClass`. Ensure one is configured
+for dynamic provisioning before enabling `walPvc`. This option has no effect
+when PgDog runs as a Deployment.
+
 #### PodDisruptionBudget
 
 Ensures minimum pod availability during voluntary disruptions

@@ -89,6 +89,12 @@ replicas: 2
 statefulSet:
   # enabled switches from Deployment to StatefulSet
   enabled: false
+  # walPvc creates one persistent volume claim per StatefulSet pod.
+  # The volume is mounted at /var/lib/pgdog. When enabled,
+  # twoPhaseCommitWalDir defaults to this mount point.
+  walPvc:
+    enabled: false
+    size: 1Gi
 
 # env allows setting custom environment variables on the pgdog container
 # Note: NODE_ID is automatically generated and cannot be overridden
