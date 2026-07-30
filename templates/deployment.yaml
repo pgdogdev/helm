@@ -130,6 +130,10 @@ spec:
               mountPath: /etc/pgdog
             - name: users
               mountPath: /etc/secrets/pgdog
+            {{- if and .Values.statefulSet.enabled .Values.statefulSet.walPvc.enabled }}
+            - name: wal
+              mountPath: /var/lib/pgdog
+            {{- end }}
             {{- if .Values.tlsGenerateSelfSignedCert }}
             - name: tls
               mountPath: /etc/pgdog-tls
@@ -254,3 +258,14 @@ spec:
       topologySpreadConstraints:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+  {{- if and .Values.statefulSet.enabled .Values.statefulSet.walPvc.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: wal
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.statefulSet.walPvc.size | quote }}
+  {{- end }}
