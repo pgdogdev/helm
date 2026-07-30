@@ -129,9 +129,10 @@ statefulSet:
 ```
 
 The StatefulSet creates one `ReadWriteOnce` persistent volume claim per replica
-and mounts it at `/var/lib/pgdog`. The generated PgDog configuration sets
-`two_phase_commit_wal_dir` to that mount point automatically. An explicit
-`twoPhaseCommitWalDir` value takes precedence.
+and mounts it at `/var/lib/pgdog`. Before PgDog starts, an init container creates
+`/var/lib/pgdog/wal` on the volume. The generated PgDog configuration sets
+`two_phase_commit_wal_dir` to that directory automatically. An explicit
+`twoPhaseCommitWalDir` value still takes precedence.
 
 The claims use the cluster's default `StorageClass`. Ensure one is configured
 for dynamic provisioning before enabling `walPvc`. This option has no effect
