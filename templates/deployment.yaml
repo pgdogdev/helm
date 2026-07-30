@@ -131,7 +131,7 @@ spec:
             - name: users
               mountPath: /etc/secrets/pgdog
             {{- if and .Values.statefulSet.enabled .Values.statefulSet.walPvc.enabled }}
-            - name: data
+            - name: wal
               mountPath: /var/lib/pgdog
             {{- end }}
             {{- if .Values.tlsGenerateSelfSignedCert }}
@@ -261,7 +261,7 @@ spec:
   {{- if and .Values.statefulSet.enabled .Values.statefulSet.walPvc.enabled }}
   volumeClaimTemplates:
     - metadata:
-        name: data
+        name: wal
       spec:
         accessModes:
           - ReadWriteOnce
