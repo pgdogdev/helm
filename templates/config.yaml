@@ -123,6 +123,12 @@ data:
         {{- if hasKey .Values "queryCacheLimit" }}
         query_cache_limit         =   {{ include "pgdog.intval" .Values.queryCacheLimit }}
         {{- end }}
+        {{- if hasKey .Values "queryCacheMemoryLimit" }}
+        query_cache_memory_limit  =   {{ include "pgdog.intval" .Values.queryCacheMemoryLimit }}
+        {{- end }}
+        {{- if hasKey .Values "queryCacheIdleTimeout" }}
+        query_cache_idle_timeout  =   {{ include "pgdog.intval" .Values.queryCacheIdleTimeout }}
+        {{- end }}
         {{- if hasKey .Values "passthroughAuth" }}
         passthrough_auth          =   {{ .Values.passthroughAuth | quote }}
         {{- end }}

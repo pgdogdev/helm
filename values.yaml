@@ -620,6 +620,17 @@ rdsCertificateBundle:
 # memoryMessageBuffer: 8192
 # memoryStackSize: 2097152
 
+# Query cache configuration (optional)
+# queryCacheMemoryLimit is the memory budget (in bytes) for the query (AST) cache;
+# least recently used entries are evicted once the summed entry size exceeds it.
+# 0 disables the memory cap.
+# queryCacheMemoryLimit: 1073741824
+
+# queryCacheIdleTimeout is the idle timeout (in milliseconds) for query cache
+# entries; entries not accessed within this window are dropped by the
+# maintenance sweep. 0 disables idle expiry.
+# queryCacheIdleTimeout: 600000
+
 # Query parser configuration
 # queryParser controls whether the query parser and which features are enabled
 # Valid values: "auto", "on", "off", "session_control", "session_control_and_locks"
