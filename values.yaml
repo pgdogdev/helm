@@ -54,6 +54,11 @@ image:
   # If set, this takes precedence over repository and tag for backward
   # compatibility
   # name: ghcr.io/pgdogdev/pgdog:main
+# host specifies the network interface IP address to bind to.
+# Default: "0.0.0.0" (IPv4 only)
+# For IPv6 dual-stack support, use "::"
+# Not set by default to maintain backward compatibility.
+# host: "::"
 # port on which PgDog will run.
 port: 6432
 # healthcheckPort on which PgDog will expose healthcheck endpoint
@@ -342,6 +347,16 @@ service:
   # routed (Cluster or Local).
   # see https://kubernetes.io/docs/reference/networking/virtual-ips/#internal-traffic-policy for more details.
   internalTrafficPolicy: ""
+  # ipFamilyPolicy controls IP family behavior for the service.
+  # Valid values: SingleStack, PreferDualStack, RequireDualStack
+  # Leave empty to use cluster defaults.
+  # Ref: https://kubernetes.io/docs/concepts/services-networking/dual-stack/
+  ipFamilyPolicy: ""
+  # ipFamilies specifies which IP families to use for the service.
+  # Example for dual-stack: ["IPv4", "IPv6"]
+  # Leave empty to use cluster defaults.
+  # Note: Order matters - first family is primary.
+  ipFamilies: []
   # aws configures AWS Load Balancer Controller annotations
   # When enabled, service type is automatically set to LoadBalancer
   aws:
