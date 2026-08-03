@@ -6,6 +6,9 @@ data:
     # This is pgdog.toml. You can configure anything here, incl. databases.
     pgdog.toml: |
         [general]
+        {{- if hasKey .Values "host" }}
+        host                      =   {{ .Values.host | quote }}
+        {{- end }}
         {{- if hasKey .Values "port" }}
         port                      =   {{ include "pgdog.intval" .Values.port }}
         {{- end }}

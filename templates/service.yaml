@@ -41,6 +41,12 @@ spec:
   {{- if .Values.service.internalTrafficPolicy }}
   internalTrafficPolicy: {{ .Values.service.internalTrafficPolicy | quote }}
   {{- end }}
+  {{- if .Values.service.ipFamilyPolicy }}
+  ipFamilyPolicy: {{ .Values.service.ipFamilyPolicy }}
+  {{- end }}
+  {{- if .Values.service.ipFamilies }}
+  ipFamilies: {{- toYaml .Values.service.ipFamilies | nindent 4 }}
+  {{- end }}
   ports:
     - name: pgdog
       protocol: TCP
