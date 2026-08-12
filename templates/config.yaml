@@ -1,3 +1,4 @@
+{{- if not .Values.configSecret.name }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -618,3 +619,4 @@ data:
 {{ .config | indent 8 }}
     {{- end }}
     {{- end }}
+{{- end }}

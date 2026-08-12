@@ -209,8 +209,16 @@ spec:
         {{- end }}
       volumes:
         - name: config
+          {{- if .Values.configSecret.name }}
+          secret:
+            secretName: {{ .Values.configSecret.name }}
+            items:
+              - key: {{ .Values.configSecret.key | default "pgdog.toml" }}
+                path: pgdog.toml
+          {{- else }}
           configMap:
             name: {{ include "pgdog.fullname" . }}
+          {{- end }}
         - name: users
           secret:
             {{- if .Values.usersSecret.name }}

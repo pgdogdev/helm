@@ -474,6 +474,27 @@ usersSecret:
   # it is mounted at /etc/secrets/pgdog/users.toml regardless of the key name
   key: users.toml
 
+# configSecret references an existing Secret (that you created yourself in
+# this namespace) holding the pgdog.toml file. When name is set, the chart
+# does not render its own pgdog.toml ConfigMap and mounts this Secret as the
+# /etc/pgdog directory instead. Use this when your pgdog.toml contains values
+# that must not live in a ConfigMap (e.g. database hosts or the admin
+# password sourced from a secrets manager).
+# Note: overlaying a Secret-provided pgdog.toml on top of the chart's
+# ConfigMap with a subPath volume mount does not work — the mount target is
+# a symlink inside the ConfigMap volume and the container runtime rejects it
+# (kubernetes/kubernetes#61545) — which is why this swaps the volume source.
+# Note: plugins[].config entries render into the chart's ConfigMap and are
+# not mounted when configSecret.name is set; a Secret-provided pgdog.toml
+# controls its own plugin config paths, so mount plugin files elsewhere via
+# extraVolumes/extraVolumeMounts.
+configSecret:
+  # name of the existing Secret containing pgdog.toml
+  name: ""
+  # key within that Secret whose value is the pgdog.toml content;
+  # it is mounted at /etc/pgdog/pgdog.toml regardless of the key name
+  key: pgdog.toml
+
 # otel configures OpenTelemetry metrics export. Left unset by default so the
 # [otel] section is omitted from pgdog.toml. Uncomment and fill in to enable.
 # otel:
