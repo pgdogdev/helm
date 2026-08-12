@@ -37,5 +37,42 @@ else
   exit 1
 fi
 
+# Validate configSecret swaps the config volume source and skips the ConfigMap
+echo ""
+echo "==> Validating configSecret volume and ConfigMap suppression..."
+rendered=$(helm template test-release "$CHART_DIR" -f "$TEST_DIR/values-existing-config-secret.yaml")
+
+config_volume=$(echo "$rendered" \
+  | yq -r 'select(.kind == "Deployment") | .spec.template.spec.volumes[] | select(.name == "config") | .secret.secretName')
+
+if [ "$config_volume" = "my-pgdog-config" ]; then
+  echo "  config volume sourced from the existing Secret"
+else
+  echo "  FAIL: config volume not sourced from the existing Secret"
+  echo "  Got: $config_volume"
+  exit 1
+fi
+
+config_key=$(echo "$rendered" \
+  | yq -r 'select(.kind == "Deployment") | .spec.template.spec.volumes[] | select(.name == "config") | .secret.items[0] | .key + ":" + .path')
+
+if [ "$config_key" = "my-config-key.toml:pgdog.toml" ]; then
+  echo "  custom key remapped to pgdog.toml"
+else
+  echo "  FAIL: custom key not remapped to pgdog.toml"
+  echo "  Got: $config_key"
+  exit 1
+fi
+
+config_map=$(echo "$rendered" \
+  | yq -r 'select(.kind == "ConfigMap" and .metadata.name == "test-release-pgdog") | .metadata.name')
+
+if [ -z "$config_map" ]; then
+  echo "  chart pgdog.toml ConfigMap not rendered"
+else
+  echo "  FAIL: chart pgdog.toml ConfigMap still rendered"
+  exit 1
+fi
+
 echo ""
 echo "==> All tests passed!"

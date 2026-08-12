@@ -229,6 +229,43 @@ kubectl create secret generic my-pgdog-users \
 The value is mounted at `/etc/secrets/pgdog/users.toml` regardless of the
 key name. A custom `key` is remapped automatically.
 
+#### pgdog.toml from an existing Secret
+
+Set `configSecret.name` to reference a Secret you created that holds the
+`pgdog.toml` file. The chart then skips rendering its own pgdog.toml
+ConfigMap and mounts your Secret as the config volume instead. Use this when
+your pgdog.toml contains values that must not live in a ConfigMap, such as
+database hosts or the admin password sourced from a secrets manager:
+
+```yaml
+configSecret:
+  name: my-pgdog-config # existing Secret in the same namespace
+  key: pgdog.toml       # key holding the pgdog.toml content (default: pgdog.toml)
+```
+
+Create the Secret, for example:
+
+```bash
+kubectl create secret generic my-pgdog-config \
+  --from-file=pgdog.toml=./pgdog.toml
+```
+
+The value is mounted at `/etc/pgdog/pgdog.toml` regardless of the key name.
+A custom `key` is remapped automatically. All pgdog.toml-related chart values
+(`databases`, `defaultPoolSize`, sharding settings, etc.) are ignored, since
+your Secret provides the whole file.
+
+Note: swapping the volume source is required — overlaying a Secret-provided
+`pgdog.toml` on top of the chart's ConfigMap with a `subPath` volume mount
+fails at container start (the mount target is a symlink inside the ConfigMap
+volume; see
+[kubernetes/kubernetes#61545](https://github.com/kubernetes/kubernetes/issues/61545)).
+
+Note: `plugins[].config` entries render into the chart's ConfigMap and are
+not mounted when `configSecret.name` is set. A Secret-provided pgdog.toml
+controls its own plugin config paths, so mount plugin files elsewhere via
+`extraVolumes`/`extraVolumeMounts`.
+
 #### Datadog API key from an existing Secret
 
 PgDog reads the Datadog API key from the `DD_API_KEY` environment variable.
