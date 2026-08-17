@@ -462,6 +462,12 @@ topologySpreadConstraints:
   description: Topology spread constraints
   items:
     type: object
+multiAz.enabled:
+  type: boolean
+  description: Enable spreading pods evenly across availability zones
+multiAz.whenUnsatisfiable:
+  enum: ["DoNotSchedule", "ScheduleAnyway"]
+  description: Action to take when the zone spread constraint cannot be satisfied
 
 # --- Pod anti-affinity ---
 podAntiAffinity.enabled:

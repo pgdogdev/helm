@@ -1,0 +1,4 @@
+# Test multi-AZ topology spread rendering
+multiAz:
+  enabled: true
+  whenUnsatisfiable: DoNotSchedule

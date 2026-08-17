@@ -279,9 +279,19 @@ spec:
           {{- end }}
         {{- end }}
       {{- end }}
-      {{- with .Values.topologySpreadConstraints }}
+      {{- if or .Values.multiAz.enabled .Values.topologySpreadConstraints }}
       topologySpreadConstraints:
+        {{- if .Values.multiAz.enabled }}
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: {{ .Values.multiAz.whenUnsatisfiable }}
+          labelSelector:
+            matchLabels:
+              {{- include "pgdog.selectorLabels" . | nindent 14 }}
+        {{- end }}
+        {{- with .Values.topologySpreadConstraints }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- end }}
   {{- if and .Values.statefulSet.enabled .Values.statefulSet.walPvc.enabled }}
   volumeClaimTemplates:
