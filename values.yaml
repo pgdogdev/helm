@@ -397,6 +397,12 @@ topologySpreadConstraints: []
   #     matchLabels:
   #       app: pgdog
 
+# multiAz spreads pods evenly across availability zones with a maximum skew of 1.
+multiAz:
+  enabled: true
+  # Valid values: DoNotSchedule, ScheduleAnyway
+  whenUnsatisfiable: ScheduleAnyway
+
 # podAntiAffinity enables default anti-affinity rules to spread pods
 # across nodes
 # Set to true for automatic pod anti-affinity configuration

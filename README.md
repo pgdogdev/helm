@@ -160,6 +160,20 @@ podAntiAffinity:
   type: soft # "soft" (preferred) or "hard" (required)
 ```
 
+#### Multi-AZ
+
+Spread replicas evenly across availability zones with a maximum skew of one:
+
+```yaml
+multiAz:
+  enabled: true
+  whenUnsatisfiable: ScheduleAnyway
+```
+
+This uses the `topology.kubernetes.io/zone` node label. Set
+`whenUnsatisfiable` to `DoNotSchedule` to make the constraint strict. Additional
+constraints can be set with `topologySpreadConstraints`.
+
 ### Config Change Restarts
 
 By default, ConfigMap changes are not automatically picked up by
