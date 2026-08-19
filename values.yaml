@@ -21,7 +21,9 @@ podLabels: {}
 # allows adding custom annotations to the pods
 podAnnotations: {}
 
-# restartOnConfigChange triggers a rolling restart when pgdog config changes.
+# restartOnConfigChange triggers a rolling restart when chart-rendered pgdog.toml
+# or users.toml content changes. It cannot detect changes to existing Secrets
+# referenced by configSecret, usersSecret, or externalSecrets.
 # Disabled by default; enable if you don't have a hot-reload mechanism (e.g. SIGHUP sidecar).
 # See: https://github.com/pgdogdev/helm/issues/15
 # restartOnConfigChange: false

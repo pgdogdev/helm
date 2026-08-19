@@ -1,3 +1,5 @@
+{{- $checksumConfig := and .Values.restartOnConfigChange (not .Values.configSecret.name) }}
+{{- $checksumUsers := and .Values.restartOnConfigChange (not .Values.externalSecrets.enabled) (not .Values.usersSecret.name) }}
 apiVersion: apps/v1
 {{- if .Values.statefulSet.enabled }}
 kind: StatefulSet
@@ -33,10 +35,13 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- include "pgdog.selectorLabels" . | nindent 8 }}
-      {{- if or .Values.restartOnConfigChange .Values.podAnnotations }}
+      {{- if or $checksumConfig $checksumUsers .Values.podAnnotations }}
       annotations:
-        {{- if .Values.restartOnConfigChange }}
+        {{- if $checksumConfig }}
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        {{- end }}
+        {{- if $checksumUsers }}
+        checksum/users: {{ include "pgdog.users" . | sha256sum }}
         {{- end }}
         {{- if .Values.podAnnotations }}
         {{- toYaml .Values.podAnnotations | nindent 8 }}

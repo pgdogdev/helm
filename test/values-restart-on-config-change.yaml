@@ -1,0 +1,11 @@
+# Test opt-in rollouts for chart-rendered pgdog.toml and users.toml.
+restartOnConfigChange: true
+
+databases:
+  - name: primary
+    host: db.example.com
+
+users:
+  - name: app
+    database: primary
+    password: initial-password

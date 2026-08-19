@@ -176,16 +176,39 @@ constraints can be set with `topologySpreadConstraints`.
 
 ### Config Change Restarts
 
-By default, ConfigMap changes are not automatically picked up by
-running pods. Enable `restartOnConfigChange` to trigger a rolling
-restart whenever the rendered config changes:
+By default, ConfigMap and Secret changes are not automatically picked up by
+running pods. Enable `restartOnConfigChange` to trigger a rolling restart
+whenever the chart-rendered `pgdog.toml` or `users.toml` changes:
 
 ```yaml
 restartOnConfigChange: true
 ```
 
-This injects a `checksum/config` pod annotation that changes when the
-config template output changes, causing Kubernetes to roll the pods.
+This injects `checksum/config` and `checksum/users` pod annotations for the
+files rendered by the chart, causing Kubernetes to roll the pods when either
+file changes. The option is disabled by default because a rollout interrupts
+client connections; leave it disabled if you reload PgDog another way.
+
+Helm cannot checksum the contents of existing Secrets referenced through
+`configSecret`, `usersSecret`, or `externalSecrets`. In particular, local and
+GitOps rendering does not have access to live Secret data, and using `lookup`
+would make rendering cluster-dependent without reliably detecting remote
+secret rotations. For source-controlled Secret changes, pass a revision or
+content hash as a pod annotation and update it with the Secret:
+
+```yaml
+podAnnotations:
+  checksum/external-config: "<revision-or-content-hash>"
+```
+
+For Secrets updated independently by a secrets operator, use a rollout
+controller and configure its watch annotation through `annotations`. For
+example, with Stakater Reloader:
+
+```yaml
+annotations:
+  secret.reloader.stakater.com/reload: "my-pgdog-config,my-pgdog-users"
+```
 
 ### ExternalSecrets Integration
 
