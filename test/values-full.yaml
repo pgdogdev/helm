@@ -17,6 +17,8 @@ readWriteSplit: include_primary
 preparedStatements: extended
 preparedStatementsLimit: 1000
 queryCacheLimit: 500
+queryCacheMemoryLimit: 1_073_741_824
+queryCacheIdleTimeout: 600_000
 passthroughAuth: disabled
 connectAttempts: 2
 connectAttemptDelay: 100
