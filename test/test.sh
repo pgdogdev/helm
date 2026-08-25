@@ -37,5 +37,28 @@ else
   exit 1
 fi
 
+# Validate password hash renders valid TOML
+echo ""
+echo "==> Validating password hash TOML output..."
+users_toml=$(helm template test-release "$CHART_DIR" -f "$TEST_DIR/values-password-hash.yaml" \
+  | yq -r 'select(.kind == "Secret" and .metadata.name == "test-release-pgdog") | .data["users.toml"]' \
+  | base64 -d)
+
+if echo "$users_toml" | grep -q 'password_hash = "SCRAM-SHA-256\$4096:'; then
+  echo "  password hash rendered correctly"
+else
+  echo "  FAIL: password hash not rendered correctly"
+  echo "  Got: $users_toml"
+  exit 1
+fi
+
+if echo "$users_toml" | grep -q '^password = '; then
+  echo "  FAIL: plaintext password rendered for a hash-only user"
+  echo "  Got: $users_toml"
+  exit 1
+else
+  echo "  no plaintext password rendered"
+fi
+
 echo ""
 echo "==> All tests passed!"
