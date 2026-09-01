@@ -61,6 +61,11 @@ image:
 # host: "::"
 # port on which PgDog will run.
 port: 6432
+# listenBacklog is the maximum number of pending client connections queued by
+# the listening socket. The kernel caps the effective value at
+# net.core.somaxconn, so raise both settings when increasing this value.
+# Defaults to 1024. This setting cannot be changed at runtime.
+# listenBacklog: 1024
 # healthcheckPort on which PgDog will expose healthcheck endpoint
 # (if not specified, no separate healthcheck port is configured)
 # healthcheckPort: 8080

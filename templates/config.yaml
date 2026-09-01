@@ -13,6 +13,9 @@ data:
         {{- if hasKey .Values "port" }}
         port                      =   {{ include "pgdog.intval" .Values.port }}
         {{- end }}
+        {{- if hasKey .Values "listenBacklog" }}
+        listen_backlog            =   {{ include "pgdog.intval" .Values.listenBacklog }}
+        {{- end }}
         {{- if hasKey .Values "workers" }}
         workers                   =   {{ include "pgdog.intval" .Values.workers }}
         {{- end }}

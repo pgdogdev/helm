@@ -230,7 +230,7 @@ mounts yours instead:
 ```yaml
 usersSecret:
   name: my-pgdog-users # existing Secret in the same namespace
-  key: users.toml      # key holding the users.toml content (default: users.toml)
+  key: users.toml # key holding the users.toml content (default: users.toml)
 ```
 
 Create the Secret, for example:
@@ -254,7 +254,7 @@ database hosts or the admin password sourced from a secrets manager:
 ```yaml
 configSecret:
   name: my-pgdog-config # existing Secret in the same namespace
-  key: pgdog.toml       # key holding the pgdog.toml content (default: pgdog.toml)
+  key: pgdog.toml # key holding the pgdog.toml content (default: pgdog.toml)
 ```
 
 Create the Secret, for example:
@@ -291,7 +291,7 @@ otel:
   endpoint: https://otlp.example.com/v1/metrics # your OTLP endpoint
   datadogApiKeySecret:
     name: my-datadog # existing Secret in the same namespace
-    key: dd-api-key  # key holding the API key (default: dd-api-key)
+    key: dd-api-key # key holding the API key (default: dd-api-key)
 ```
 
 Create the Secret, for example:
@@ -421,6 +421,22 @@ tcpRetries: 9 # Number of keepalive probes before connection is dropped
 These settings control the TCP keep-alive behavior for database
 connections. All time values are in milliseconds. If not specified,
 system defaults are used.
+
+### Connection storms
+
+`listenBacklog` controls the maximum number of pending client connections in
+PgDog's listening TCP socket. The kernel caps the queue length at
+`net.core.somaxconn`, so configure both values when increasing the connection backlog:
+
+```yaml
+listenBacklog: 4096
+podSecurityContext:
+  sysctls:
+    - name: net.core.somaxconn
+      value: "4096"
+```
+
+Read more about configuring `sysctl` [here](https://kubernetes.io/docs/tasks/administer-cluster/sysctl-cluster/).
 
 ## Contributions
 
