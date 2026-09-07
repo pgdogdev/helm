@@ -37,5 +37,34 @@ else
   exit 1
 fi
 
+# Validate zero values survive on the PodDisruptionBudget
+echo ""
+echo "==> Validating PodDisruptionBudget zero values..."
+
+pdb_spec() {
+  helm template test-release "$CHART_DIR" -f "$1" \
+    | yq -r 'select(.kind == "PodDisruptionBudget") | .spec | del(.selector)'
+}
+
+min_available=$(pdb_spec "$TEST_DIR/values-pdb-min-available-zero.yaml")
+
+if [ "$min_available" = "minAvailable: 0" ]; then
+  echo "  minAvailable: 0 rendered correctly"
+else
+  echo "  FAIL: minAvailable: 0 not rendered correctly"
+  echo "  Got: $min_available"
+  exit 1
+fi
+
+max_unavailable=$(pdb_spec "$TEST_DIR/values-pdb-max-unavailable-zero.yaml")
+
+if [ "$max_unavailable" = "maxUnavailable: 0" ]; then
+  echo "  maxUnavailable: 0 rendered correctly"
+else
+  echo "  FAIL: maxUnavailable: 0 not rendered correctly"
+  echo "  Got: $max_unavailable"
+  exit 1
+fi
+
 echo ""
 echo "==> All tests passed!"
