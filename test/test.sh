@@ -37,5 +37,30 @@ else
   exit 1
 fi
 
+# Validate workers: auto derives from CPU resources
+echo ""
+echo "==> Validating workers: auto derivation..."
+workers_line() {
+  helm template test-release "$CHART_DIR" -f "$TEST_DIR/values-workers-auto.yaml" "$@" \
+    | yq -r 'select(.kind == "ConfigMap" and .metadata.name == "test-release-pgdog") | .data["pgdog.toml"]' \
+    | grep '^workers'
+}
+
+if workers_line | grep -Eq '= +4$'; then
+  echo "  workers derived from limits.cpu (2000m -> 4)"
+else
+  echo "  FAIL: expected workers = 4 from limits.cpu 2000m"
+  echo "  Got: $(workers_line)"
+  exit 1
+fi
+
+if workers_line --set noCpuLimits=true | grep -Eq '= +3$'; then
+  echo "  workers derived from requests.cpu with noCpuLimits (1500m -> 3)"
+else
+  echo "  FAIL: expected workers = 3 from requests.cpu 1500m with noCpuLimits"
+  echo "  Got: $(workers_line --set noCpuLimits=true)"
+  exit 1
+fi
+
 echo ""
 echo "==> All tests passed!"

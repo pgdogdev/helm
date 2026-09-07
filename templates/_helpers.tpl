@@ -120,6 +120,35 @@ Call as: include "pgdog.flexlist" .values
 {{- end -}}
 
 {{/*
+Render the workers setting.
+"auto" derives it from container CPU resources: 2 workers per vCPU
+(pgdog's recommendation), rounded up. Uses resources.limits.cpu, or
+resources.requests.cpu when noCpuLimits is true (no CPU limit applies then).
+Any other value renders as-is via pgdog.intval.
+*/}}
+{{- define "pgdog.workers" -}}
+{{- if eq (toString .Values.workers) "auto" -}}
+{{- $res := .Values.resources | default dict -}}
+{{- $limits := $res.limits | default dict -}}
+{{- $requests := $res.requests | default dict -}}
+{{- $cpu := ternary $requests.cpu ($limits.cpu | default $requests.cpu) (.Values.noCpuLimits | default false) -}}
+{{- if not $cpu -}}
+{{- fail "workers: auto requires resources.limits.cpu (or resources.requests.cpu when noCpuLimits is true)" -}}
+{{- end -}}
+{{- $cpu = toString $cpu -}}
+{{- $cores := 0.0 -}}
+{{- if hasSuffix "m" $cpu -}}
+{{- $cores = divf (float64 (trimSuffix "m" $cpu)) 1000 -}}
+{{- else -}}
+{{- $cores = float64 $cpu -}}
+{{- end -}}
+{{- max 1 (int (ceil (mulf 2 $cores))) -}}
+{{- else -}}
+{{- include "pgdog.intval" .Values.workers -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Render a resources block, omitting CPU limits when noCpuLimits is true.
 Call as: include "pgdog.resources" (dict "resources" .Values.resources "noCpuLimits" .Values.noCpuLimits)
 */}}

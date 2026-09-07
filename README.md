@@ -47,6 +47,12 @@ logFormat: json
 logLevel: info
 ```
 
+`workers` also accepts `auto`, which sizes the tokio runtime to the
+container's CPU allocation: 2 workers per vCPU (PgDog's recommendation),
+rounded up, derived from `resources.limits.cpu` — or
+`resources.requests.cpu` when `noCpuLimits` is true. Changing it
+requires a pod restart.
+
 ### Docker Image
 
 By default, the chart uses the `appVersion` from `Chart.yaml` as the image

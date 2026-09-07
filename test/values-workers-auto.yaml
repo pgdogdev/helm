@@ -1,0 +1,8 @@
+workers: auto
+resources:
+  requests:
+    cpu: 1500m
+    memory: 2Gi
+  limits:
+    cpu: 2000m
+    memory: 2Gi

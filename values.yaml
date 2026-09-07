@@ -152,6 +152,13 @@ extraVolumeMounts: []
 # Memory limits are still applied. CPU requests are preserved for scheduling.
 noCpuLimits: false
 
+# workers sets the number of tokio worker threads ([general] workers in pgdog.toml).
+# Set to "auto" to derive it from CPU resources: 2 workers per vCPU (pgdog's
+# recommendation), rounded up, based on resources.limits.cpu — or
+# resources.requests.cpu when noCpuLimits is true. Omit to use pgdog's
+# built-in default (2). Requires a pod restart to take effect.
+# workers: auto
+
 # resources define resource requests and limits for the pgdog container
 # Note: requests and limits are set to the same values for Guaranteed QoS
 # Ratio: 1GB memory per 1 CPU (1000m CPU = 1Gi memory)
