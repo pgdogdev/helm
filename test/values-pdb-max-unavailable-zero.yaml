@@ -1,0 +1,7 @@
+# maxUnavailable: 0 is a valid PDB value requiring zero voluntary evictions.
+# minAvailable is nulled because only one of the two fields may be set, and
+# values.yaml ships minAvailable: 1.
+podDisruptionBudget:
+  enabled: true
+  minAvailable: null
+  maxUnavailable: 0

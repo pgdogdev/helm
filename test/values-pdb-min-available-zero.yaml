@@ -1,0 +1,5 @@
+# minAvailable: 0 is a valid PDB value meaning zero pods must stay available.
+# It is falsy in Go templates, so it must be guarded on presence, not truthiness.
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 0
