@@ -387,7 +387,9 @@ data:
         name = {{ .name | quote }}
         {{- end }}
         column = {{ .column | quote }}
-        data_type = {{ .dataType | quote }}
+        {{- with .dataType }}
+        data_type = {{ . | quote }}
+        {{- end }}
         {{- range .mapping }}
         [[sharded_tables.mapping]]
         {{- if hasKey . "values" }}

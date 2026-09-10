@@ -262,7 +262,8 @@ queryParsers: []
 shardedSchemas: []
 
 # shardedTables contains the list of sharded table entries in pgdog.toml
-# Each entry requires: database, column and dataType; name is optional
+# Each entry requires: database and column; name and dataType are optional.
+# When dataType is omitted, PgDog defaults to bigint.
 # An entry may also carry a list/range/default mapping via the optional `mapping` field.
 # Each mapping rule has a target `shard`; the rule type is inferred from the fields set:
 #   - `values` -> list rule
