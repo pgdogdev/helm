@@ -1,0 +1,19 @@
+databases:
+  - name: prod
+    host: shard-0
+    shard: 0
+  - name: prod
+    host: shard-1
+    shard: 1
+users:
+  - name: postgres
+    database: prod
+    password: test
+shardedTables:
+  - database: prod
+    name: tenants
+    column: tenant_id
+  - database: prod
+    name: events
+    column: event_id
+    dataType: uuid
