@@ -9,6 +9,7 @@ users:
   - name: postgres
     database: prod
     password: test
+    schemaAdmin: true
 shardedTables:
   - database: prod
     name: tenants
