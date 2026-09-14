@@ -205,6 +205,9 @@ logFormat: text
 # Defaults to `info`.
 logLevel: "info"
 
+# queryLogStdout controls query logging to stdout (optional).
+# queryLogStdout: false
+
 # loadBalancingStrategy controls how read queries are distributed across
 # replicas.
 #
