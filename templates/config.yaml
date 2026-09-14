@@ -28,6 +28,9 @@ data:
         {{- if hasKey .Values "logLevel" }}
         log_level                 =   {{ .Values.logLevel | quote }}
         {{- end }}
+        {{- if hasKey .Values "queryLogStdout" }}
+        query_log_stdout          =   {{ .Values.queryLogStdout }}
+        {{- end }}
         {{- if hasKey .Values "minPoolSize" }}
         min_pool_size             =   {{ include "pgdog.intval" .Values.minPoolSize }}
         {{- end }}
