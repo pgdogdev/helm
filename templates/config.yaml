@@ -593,6 +593,9 @@ data:
         {{- if hasKey .Values.rewrite "primaryKey" }}
         primary_key = {{ .Values.rewrite.primaryKey | quote }}
         {{- end }}
+        {{- if hasKey .Values.rewrite "omniNonDeterministicFunctions" }}
+        primary_key = {{ .Values.rewrite.omniNonDeterministicFunctions | quote }}
+        {{- end }}
         {{- end }}
 
         {{- if .Values.multiTenant }}
