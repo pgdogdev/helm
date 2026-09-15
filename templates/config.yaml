@@ -594,7 +594,7 @@ data:
         primary_key = {{ .Values.rewrite.primaryKey | quote }}
         {{- end }}
         {{- if hasKey .Values.rewrite "omniNonDeterministicFunctions" }}
-        primary_key = {{ .Values.rewrite.omniNonDeterministicFunctions | quote }}
+        omni_non_deterministic_functions = {{ .Values.rewrite.omniNonDeterministicFunctions | quote }}
         {{- end }}
         {{- end }}
 
