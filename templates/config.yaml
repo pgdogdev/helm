@@ -593,8 +593,8 @@ data:
         {{- if hasKey .Values.rewrite "primaryKey" }}
         primary_key = {{ .Values.rewrite.primaryKey | quote }}
         {{- end }}
-        {{- if hasKey .Values.rewrite "omniNonDeterministicFunctions" }}
-        omni_non_deterministic_functions = {{ .Values.rewrite.omniNonDeterministicFunctions | quote }}
+        {{- if hasKey .Values.rewrite "nonDeterministicFunctions" }}
+        non_deterministic_functions = {{ .Values.rewrite.nonDeterministicFunctions | quote }}
         {{- end }}
         {{- end }}
 
