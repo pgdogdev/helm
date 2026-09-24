@@ -69,6 +69,8 @@ port: 6432
 # healthcheckPort on which PgDog will expose healthcheck endpoint
 # (if not specified, no separate healthcheck port is configured)
 # healthcheckPort: 8080
+# Optional [general] setting; omitted unless explicitly set to true or false.
+# requireHealthcheckOnDiscovery: true
 # replicas indicates how many instances of PgDog will run (HA).
 replicas: 2
 
