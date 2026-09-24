@@ -9,6 +9,7 @@ defaultPoolSize: 20
 minPoolSize: 2
 poolerMode: transaction
 healthcheckInterval: 30_000
+requireHealthcheckOnDiscovery: true
 idleHealthcheckInterval: 30_000
 idleHealthcheckDelay: 5_000
 loadBalancingStrategy: round_robin

@@ -52,6 +52,9 @@ data:
         {{- if hasKey .Values "healthcheckTimeout" }}
         healthcheck_timeout       =   {{ include "pgdog.intval" .Values.healthcheckTimeout }}
         {{- end }}
+        {{- if hasKey .Values "requireHealthcheckOnDiscovery" }}
+        require_healthcheck_on_discovery = {{ .Values.requireHealthcheckOnDiscovery }}
+        {{- end }}
         {{- if hasKey .Values "banTimeout" }}
         ban_timeout               =   {{ include "pgdog.intval" .Values.banTimeout }}
         {{- end }}
