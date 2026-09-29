@@ -552,10 +552,10 @@ data:
         {{- with .Values.control }}
         {{- if .enabled }}
         [control]
-        {{- if hasKey . "endpoint" }}
+        {{- if .endpoint }}
         endpoint = {{ .endpoint | quote }}
         {{- end }}
-        {{- if hasKey . "token" }}
+        {{- if .token }}
         token = {{ .token | quote }}
         {{- end }}
         {{- if hasKey . "metricsInterval" }}
