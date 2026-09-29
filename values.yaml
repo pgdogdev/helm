@@ -576,10 +576,19 @@ queryStats:
 control:
   # enabled controls whether to include [control] section in pgdog.toml
   enabled: false
-  # endpoint is the control plane URL
+  # endpoint is the control plane URL. Leave empty to use PGDOG_CONTROL_ENDPOINT.
   endpoint: ""
-  # token is the authentication token for the control plane
+  # token is the authentication token. Leave empty to use PGDOG_CONTROL_TOKEN.
   token: ""
+  # Inject the endpoint/token from existing Secrets in the same namespace.
+  # Inline endpoint/token values take precedence. Requires a PgDog EE version
+  # that supports PGDOG_CONTROL_ENDPOINT and PGDOG_CONTROL_TOKEN.
+  endpointSecret:
+    name: ""
+    key: endpoint
+  tokenSecret:
+    name: ""
+    key: token
   # metricsInterval defines how often to push metrics (in milliseconds)
   metricsInterval: 1000
   # statsInterval defines how often to push stats (in milliseconds)

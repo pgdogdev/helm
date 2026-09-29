@@ -106,6 +106,28 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            {{- with .Values.control }}
+            {{- if .enabled }}
+            {{- with .endpointSecret }}
+            {{- if .name }}
+            - name: PGDOG_CONTROL_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .name | quote }}
+                  key: {{ .key | default "endpoint" | quote }}
+            {{- end }}
+            {{- end }}
+            {{- with .tokenSecret }}
+            {{- if .name }}
+            - name: PGDOG_CONTROL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .name | quote }}
+                  key: {{ .key | default "token" | quote }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
             {{- with .Values.otel }}
             {{- with .datadogApiKeySecret }}
             {{- if .name }}
