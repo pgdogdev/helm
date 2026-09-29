@@ -82,4 +82,22 @@ else
 fi
 
 echo ""
+echo "==> Validating WAL PVC StorageClass selection..."
+wal_pvc_storage_class() {
+  helm template test-release "$CHART_DIR" -f "$1" "${@:2}" \
+    | yq -r 'select(.kind == "StatefulSet") | .spec.volumeClaimTemplates[0].spec.storageClassName'
+}
+
+default_class=$(wal_pvc_storage_class "$TEST_DIR/values-statefulset.yaml")
+custom_class=$(wal_pvc_storage_class "$TEST_DIR/values-statefulset-storage-class.yaml")
+no_class=$(wal_pvc_storage_class "$TEST_DIR/values-statefulset.yaml" --set 'statefulSet.walPvc.storageClassName=')
+
+if [ "$default_class" = "null" ] && [ "$custom_class" = "balanced-storage" ] && [ -z "$no_class" ]; then
+  echo "  WAL PVC uses the default, specified, or disabled StorageClass as requested"
+else
+  echo "  FAIL: unexpected WAL PVC StorageClass (default=$default_class, custom=$custom_class, disabled=$no_class)"
+  exit 1
+fi
+
+echo ""
 echo "==> All tests passed!"
