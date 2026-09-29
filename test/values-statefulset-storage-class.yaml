@@ -1,0 +1,6 @@
+# Pin WAL volumes to a StorageClass compatible with the PgDog node pool.
+statefulSet:
+  enabled: true
+  walPvc:
+    enabled: true
+    storageClassName: balanced-storage

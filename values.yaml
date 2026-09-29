@@ -107,6 +107,9 @@ statefulSet:
   walPvc:
     enabled: false
     size: 1Gi
+    # Set to a StorageClass compatible with the nodes running PgDog.
+    # Omit to use the cluster default; set to "" to disable dynamic provisioning.
+    # storageClassName: balanced-storage
 
 # env allows setting custom environment variables on the pgdog container
 # Note: NODE_ID is automatically generated and cannot be overridden
