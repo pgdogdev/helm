@@ -215,11 +215,56 @@ externalSecrets:
   secretName: "my-secret" # Name of Secret you created
 ```
 
+### Secrets
+
+The chart can inject values from existing Kubernetes Secrets into the PgDog
+container's environment:
+
+| Setting                    | Environment variable     | Default Secret key |
+| -------------------------- | ------------------------ | ------------------ |
+| `control.endpointSecret`   | `PGDOG_CONTROL_ENDPOINT` | `endpoint`         |
+| `control.tokenSecret`      | `PGDOG_CONTROL_TOKEN`    | `token`            |
+| `otel.datadogApiKeySecret` | `DD_API_KEY`             | `dd-api-key`       |
+
+#### Example
+
+Create a `Secret` in the same namespace as PgDog:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pgdog-control
+type: Opaque
+stringData:
+  endpoint: "https://control.example.com"
+  token: "replace-with-your-control-token"
+  dd-api-key: "replace-with-your-datadog-api-key"
+```
+
+Reference it in your Helm values:
+
+```yaml
+control:
+  enabled: true
+  endpointSecret:
+    name: pgdog-control
+    key: endpoint
+  tokenSecret:
+    name: pgdog-control
+    key: token
+otel:
+  endpoint: "https://otlp.example.com/v1/metrics" # Your OTLP endpoint.
+  datadogApiKeySecret:
+    name: pgdog-control
+    key: dd-api-key
+```
+
 ### Referencing Existing Secrets
 
 If you manage Kubernetes Secrets yourself (via `kubectl`, sealed-secrets,
 SOPS, etc.), point the chart at them directly instead of putting secret
-values in `values.yaml`. This works without the ExternalSecrets operator.
+values in `values.yaml`. This works without the `ExternalSecrets` operator.
 
 #### users.toml from an existing Secret
 
@@ -279,32 +324,6 @@ Note: `plugins[].config` entries render into the chart's ConfigMap and are
 not mounted when `configSecret.name` is set. A Secret-provided pgdog.toml
 controls its own plugin config paths, so mount plugin files elsewhere via
 `extraVolumes`/`extraVolumeMounts`.
-
-#### Datadog API key from an existing Secret
-
-PgDog reads the Datadog API key from the `DD_API_KEY` environment variable.
-Reference an existing Secret and the chart injects it as `DD_API_KEY`, so the
-key is never written into `pgdog.toml` (or the ConfigMap):
-
-```yaml
-otel:
-  endpoint: https://otlp.example.com/v1/metrics # your OTLP endpoint
-  datadogApiKeySecret:
-    name: my-datadog # existing Secret in the same namespace
-    key: dd-api-key # key holding the API key (default: dd-api-key)
-```
-
-Create the Secret, for example:
-
-```bash
-kubectl create secret generic my-datadog \
-  --from-literal=dd-api-key=<your-datadog-api-key>
-```
-
-This is mutually exclusive with the inline `otel.datadogApiKey`, which writes
-the key into the ConfigMap as plaintext and should be avoided.
-
-If both are set, the inline value takes precedence.
 
 ### ServiceAccount & RBAC
 
