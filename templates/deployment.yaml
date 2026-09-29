@@ -65,6 +65,10 @@ spec:
           {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["mkdir", "-p", "/var/lib/pgdog/wal"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
           volumeMounts:
             - name: wal
               mountPath: /var/lib/pgdog

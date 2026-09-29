@@ -66,5 +66,20 @@ else
   exit 1
 fi
 
+# The WAL init container needs its own privilege settings; these cannot be set
+# through podSecurityContext or the main container's securityContext.
+echo ""
+echo "==> Validating WAL init container privilege settings..."
+wal_init_security_context=$(helm template test-release "$CHART_DIR" -f "$TEST_DIR/values-statefulset.yaml" \
+  | yq -o=json -I=0 'select(.kind == "StatefulSet") | .spec.template.spec.initContainers[] | select(.name == "create-wal-directory") | .securityContext')
+
+if [ "$wal_init_security_context" = '{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]}}' ]; then
+  echo "  WAL init container drops capabilities and disallows privilege escalation"
+else
+  echo "  FAIL: WAL init container lacks required privilege settings"
+  echo "  Got: $wal_init_security_context"
+  exit 1
+fi
+
 echo ""
 echo "==> All tests passed!"
