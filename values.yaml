@@ -37,6 +37,10 @@ podAnnotations: {}
 ## imagePullSecrets:
 ##   - name: regcred
 ##
+# Rendered through tpl (pgdog.tplvalues.render), so a parent chart can point it at
+# its own globals: a string is a template producing the whole field, e.g.
+# '{{ toYaml .Values.global.imagePullSecrets }}'; a map or list may template its leaves.
+# Values without {{ }} render unchanged.
 imagePullSecrets: []
 
 # image contains the Docker image properties.
@@ -383,10 +387,18 @@ service:
     # Valid values: "internet-facing" or "internal"
     scheme: "internet-facing"
 
-# nodeSelector allows scheduling pods on nodes with specific labels
+# nodeSelector allows scheduling pods on nodes with specific labels.
+# Rendered through tpl (pgdog.tplvalues.render), so a parent chart can point it at
+# its own globals: a string is a template producing the whole field, e.g.
+# '{{ toYaml .Values.global.nodeSelector }}'; a map or list may template its leaves.
+# Values without {{ }} render unchanged.
 nodeSelector: {}
 
-# tolerations allows pods to be scheduled on nodes with matching taints
+# tolerations allows pods to be scheduled on nodes with matching taints.
+# Rendered through tpl (pgdog.tplvalues.render), so a parent chart can point it at
+# its own globals: a string is a template producing the whole field, e.g.
+# '{{ toYaml .Values.global.tolerations }}'; a map or list may template its leaves.
+# Values without {{ }} render unchanged.
 tolerations: []
 
 # affinity and anti-affinity rules for pod scheduling
