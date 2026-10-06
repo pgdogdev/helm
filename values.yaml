@@ -241,11 +241,14 @@ loadBalancingStrategy: round_robin
 # databases contains the list of database entries in pgdog.toml
 # Supports all arguments from pgdog.toml. Arguments are named in
 # camelCase format.
+# Set tlsServerCertificate and tlsServerPrivateKey on a database to use
+# a different certificate and key for its PostgreSQL connections.
 databases: []
 
 # users contains the list of user entries in users.toml
 # Supports all arguments from users.toml. Arguments are named in
 # camelCase format.
+# Set identity on a user to match the identity in its client TLS certificate.
 users: []
 
 # mirrors contains a list of databases to replicate traffic from/to.
@@ -618,6 +621,16 @@ control:
 # in pgdog.toml, so you don't need to set tlsCertificate/tlsPrivateKey manually.
 # Note: certificates are regenerated on every helm upgrade.
 # tlsGenerateSelfSignedCert: false
+
+# tlsClientCaCertificate is the path to the CA certificate used to verify
+# client TLS certificates. Mount it with extraVolumes/extraVolumeMounts.
+# tlsClientCaCertificate: /etc/pgdog-client-ca/ca.crt
+
+# tlsServerCertificate and tlsServerPrivateKey are paths to the certificate
+# and private key PgDog presents when authenticating to PostgreSQL with mTLS.
+# Mount these files with extraVolumes/extraVolumeMounts.
+# tlsServerCertificate: /etc/pgdog-server-tls/tls.crt
+# tlsServerPrivateKey: /etc/pgdog-server-tls/tls.key
 
 # rdsCertificateBundle includes the AWS RDS CA certificate bundle so pgdog can
 # verify TLS connections to RDS/Aurora instances. When enabled,
