@@ -246,6 +246,7 @@ databases: []
 # users contains the list of user entries in users.toml
 # Supports all arguments from users.toml. Arguments are named in
 # camelCase format.
+# Set identity on a user to match the identity in its client TLS certificate.
 users: []
 
 # mirrors contains a list of databases to replicate traffic from/to.
@@ -618,6 +619,10 @@ control:
 # in pgdog.toml, so you don't need to set tlsCertificate/tlsPrivateKey manually.
 # Note: certificates are regenerated on every helm upgrade.
 # tlsGenerateSelfSignedCert: false
+
+# tlsClientCaCertificate is the path to the CA certificate used to verify
+# client TLS certificates. Mount it with extraVolumes/extraVolumeMounts.
+# tlsClientCaCertificate: /etc/pgdog-client-ca/ca.crt
 
 # rdsCertificateBundle includes the AWS RDS CA certificate bundle so pgdog can
 # verify TLS connections to RDS/Aurora instances. When enabled,

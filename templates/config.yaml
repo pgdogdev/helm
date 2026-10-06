@@ -87,6 +87,9 @@ data:
         tls_private_key           =   {{ .Values.tlsPrivateKey | quote }}
         {{- end }}
         {{- end }}
+        {{- if .Values.tlsClientCaCertificate }}
+        tls_client_ca_certificate =   {{ .Values.tlsClientCaCertificate | quote }}
+        {{- end }}
         {{- if hasKey .Values "tlsClientRequired" }}
         tls_client_required       =   {{ .Values.tlsClientRequired }}
         {{- end }}
