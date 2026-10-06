@@ -101,6 +101,12 @@ data:
         {{- else if .Values.tlsServerCaCertificate }}
         tls_server_ca_certificate =   {{ .Values.tlsServerCaCertificate | quote }}
         {{- end}}
+        {{- if .Values.tlsServerCertificate }}
+        tls_server_certificate    =   {{ .Values.tlsServerCertificate | quote }}
+        {{- end }}
+        {{- if .Values.tlsServerPrivateKey }}
+        tls_server_private_key    =   {{ .Values.tlsServerPrivateKey | quote }}
+        {{- end }}
         {{- if hasKey .Values "shutdownTimeout" }}
         shutdown_timeout          =   {{ include "pgdog.intval" .Values.shutdownTimeout }}
         {{- end }}
@@ -351,6 +357,12 @@ data:
         {{- end }}
         {{- if hasKey . "lbWeight" }}
         lb_weight = {{ include "pgdog.intval" .lbWeight }}
+        {{- end }}
+        {{- if .tlsServerCertificate }}
+        tls_server_certificate = {{ .tlsServerCertificate | quote }}
+        {{- end }}
+        {{- if .tlsServerPrivateKey }}
+        tls_server_private_key = {{ .tlsServerPrivateKey | quote }}
         {{- end }}
         {{- end }}
 

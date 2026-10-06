@@ -3,6 +3,8 @@ tlsCertificate: /etc/ssl/certs/ssl-cert-snakeoil.pem
 tlsPrivateKey: /etc/ssl/private/ssl-cert-snakeoil.key
 tlsClientCaCertificate: /etc/ssl/certs/ca-certificates.crt
 tlsServerCaCertificate: /etc/ssl/certs/ca-certificates.crt
+tlsServerCertificate: /etc/ssl/certs/ssl-cert-snakeoil.pem
+tlsServerPrivateKey: /etc/ssl/private/ssl-cert-snakeoil.key
 
 users:
   - name: app
@@ -13,3 +15,5 @@ databases:
   - name: primary
     host: postgres.example.com
     port: 5432
+    tlsServerCertificate: /etc/ssl/certs/ssl-cert-snakeoil.pem
+    tlsServerPrivateKey: /etc/ssl/private/ssl-cert-snakeoil.key
