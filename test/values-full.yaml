@@ -26,6 +26,7 @@ loadSchema: auto
 mirrorQueue: 256
 mirrorExposure: 1.0
 authType: scram
+authTokenCacheSize: 2000
 crossShardDisabled: false
 dnsTtl: 30_000
 pubSubChannelSize: 1024

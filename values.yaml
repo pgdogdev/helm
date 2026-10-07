@@ -71,6 +71,9 @@ port: 6432
 # healthcheckPort: 8080
 # Optional [general] setting; omitted unless explicitly set to true or false.
 # requireHealthcheckOnDiscovery: true
+# authTokenCacheSize sets auth_token_cache_size in the [general] section.
+# Omitted unless explicitly set.
+# authTokenCacheSize: 2000
 # replicas indicates how many instances of PgDog will run (HA).
 replicas: 2
 
