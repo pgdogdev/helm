@@ -252,6 +252,7 @@ databases: []
 # Supports all arguments from users.toml. Arguments are named in
 # camelCase format.
 # Set identity on a user to match the identity in its client TLS certificate.
+# Set authType on a user to override the general authType setting.
 users: []
 
 # mirrors contains a list of databases to replicate traffic from/to.
