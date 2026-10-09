@@ -141,3 +141,20 @@ resources:
   {{- end }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Render a value that may contain Helm template expressions, for fields a parent
+chart may need to point at its own global values (pull secrets, placement).
+A string is rendered as a template that produces YAML, so it can stand for the
+whole field, e.g. '{{ toYaml .Values.global.tolerations }}'. A map or list is
+converted to YAML first, so expressions in its leaves are rendered too. A value
+with no template markers renders unchanged. Do not template untrusted input.
+Usage: {{ include "pgdog.tplvalues.render" (dict "value" .Values.nodeSelector "context" $) }}
+*/}}
+{{- define "pgdog.tplvalues.render" -}}
+{{- if typeIs "string" .value -}}
+{{- tpl .value .context -}}
+{{- else -}}
+{{- tpl (.value | toYaml) .context -}}
+{{- end -}}
+{{- end -}}

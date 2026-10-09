@@ -79,7 +79,7 @@ spec:
       {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
+        {{- include "pgdog.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
       {{- end }}
       {{- with .Values.podSecurityContext }}
       securityContext:
@@ -276,11 +276,11 @@ spec:
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 8 }}
+        {{- include "pgdog.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
       {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
-        {{- toYaml . | nindent 8 }}
+        {{- include "pgdog.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
       {{- end }}
       {{- if or .Values.affinity .Values.podAntiAffinity.enabled }}
       affinity:

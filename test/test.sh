@@ -100,4 +100,26 @@ else
 fi
 
 echo ""
+echo "==> Validating templated pull secrets and placement..."
+tpl_field() {
+  helm template test-release "$CHART_DIR" -f "$TEST_DIR/$1" \
+    | yq -o=json -I=0 "select(.kind == \"Deployment\" and .metadata.name == \"test-release-pgdog\") | .spec.template.spec.$2"
+}
+
+tpl_pull=$(tpl_field values-tpl-placement.yaml imagePullSecrets)
+tpl_node=$(tpl_field values-tpl-placement.yaml nodeSelector)
+tpl_tol=$(tpl_field values-tpl-placement.yaml tolerations)
+plain_pull=$(tpl_field values-default.yaml imagePullSecrets)
+
+if [ "$tpl_pull" = '[{"name":"parent-regcred"}]' ] \
+  && [ "$tpl_node" = '{"service":"pooler"}' ] \
+  && [ "$tpl_tol" = '[{"effect":"NoSchedule","key":"dedicated","operator":"Equal","value":"pooler"}]' ] \
+  && [ "$plain_pull" = "null" ]; then
+  echo "  Templated pull secrets, nodeSelector and tolerations render from the given values"
+else
+  echo "  FAIL: unexpected templated fields (pull=$tpl_pull node=$tpl_node tolerations=$tpl_tol default pull=$plain_pull)"
+  exit 1
+fi
+
+echo ""
 echo "==> All tests passed!"
