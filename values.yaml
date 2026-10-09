@@ -75,6 +75,9 @@ port: 6432
 # healthcheckPort: 8080
 # Optional [general] setting; omitted unless explicitly set to true or false.
 # requireHealthcheckOnDiscovery: true
+# authTokenCacheSize sets auth_token_cache_size in the [general] section.
+# Omitted unless explicitly set.
+# authTokenCacheSize: 2000
 # replicas indicates how many instances of PgDog will run (HA).
 replicas: 2
 
@@ -253,6 +256,7 @@ databases: []
 # Supports all arguments from users.toml. Arguments are named in
 # camelCase format.
 # Set identity on a user to match the identity in its client TLS certificate.
+# Set authType on a user to override the general authType setting.
 users: []
 
 # mirrors contains a list of databases to replicate traffic from/to.

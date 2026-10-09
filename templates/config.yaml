@@ -227,6 +227,9 @@ data:
         {{- if hasKey .Values "authType" }}
         auth_type                 =   {{ .Values.authType | quote }}
         {{- end }}
+        {{- if hasKey .Values "authTokenCacheSize" }}
+        auth_token_cache_size     =   {{ include "pgdog.intval" .Values.authTokenCacheSize }}
+        {{- end }}
         {{- if hasKey .Values "crossShardDisabled" }}
         cross_shard_disabled      =   {{ .Values.crossShardDisabled }}
         {{- end }}

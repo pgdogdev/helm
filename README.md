@@ -100,6 +100,9 @@ users:
     password: "hunter2" # See ExternalSecrets for secure storage
 ```
 
+Set `authType` on a user to override the general `authType` setting. It accepts
+the same values and renders as `auth_type` in `users.toml`.
+
 **⚠️ For production**: Use ExternalSecrets instead of plain text
 passwords (see ExternalSecrets section below).
 
