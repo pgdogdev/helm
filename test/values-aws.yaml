@@ -8,4 +8,5 @@ users:
   - name: app_user
     database: primary
     serverAuth: rds_iam
+    serverIamRegion: us-east-1
     serverIamAssumeRole: "arn:aws:iam::123456789012:role/pgdog-rds-connect"

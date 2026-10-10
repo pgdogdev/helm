@@ -253,6 +253,8 @@ databases: []
 # camelCase format.
 # Set identity on a user to match the identity in its client TLS certificate.
 # Set authType on a user to override the general authType setting.
+# Set serverIamRegion to the AWS region for RDS IAM authentication
+# when serverAuth is rds_iam.
 # Set serverIamAssumeRole to an IAM role ARN to assume for RDS IAM authentication
 # when serverAuth is rds_iam.
 users: []
