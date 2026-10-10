@@ -3,3 +3,9 @@ service:
   aws:
     enabled: true
     scheme: internet-facing
+
+users:
+  - name: app_user
+    database: primary
+    serverAuth: rds_iam
+    serverIamAssumeRole: "arn:aws:iam::123456789012:role/pgdog-rds-connect"
