@@ -98,6 +98,9 @@ users:
     poolMode: transaction
   - username: admin_user
     password: admin123
+    databases:
+      - primary
+      - replica
 
 shardedTables:
   - database: primary
