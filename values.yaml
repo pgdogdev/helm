@@ -257,6 +257,11 @@ databases: []
 # when serverAuth is rds_iam.
 # Set serverIamAssumeRole to an IAM role ARN to assume for RDS IAM authentication
 # when serverAuth is rds_iam.
+# Set serverVaultPath to the Vault credentials path when serverAuth is
+# vault_dynamic or vault_static, and vaultRefreshPercent (1-80) to control
+# when dynamic credentials are renewed. Set vaultPath to a static role path
+# to authenticate clients against its Vault-managed password. These require
+# the vault section below.
 users: []
 
 # mirrors contains a list of databases to replicate traffic from/to.
@@ -541,6 +546,28 @@ configSecret:
 #   datadogApiKeySecret:
 #     name: ""          # existing Secret name
 #     key: dd-api-key   # key within that Secret holding the API key
+
+# vault configures HashiCorp Vault, used by users with serverAuth set to
+# vault_dynamic or vault_static, or with vaultPath set. Left unset by default
+# so the [vault] section is omitted from pgdog.toml.
+# vault:
+#   url: https://vault.internal:8200
+#   authMethod: kubernetes   # kubernetes or approle
+#   authMount: ""            # default: kubernetes or approle
+#   namespace: ""            # Vault Enterprise namespace
+#   # Kubernetes auth
+#   kubernetesRole: pgdog
+#   kubernetesJwtPath: ""    # default: the pod's service account token
+#   # AppRole auth
+#   approleRoleId: ""
+#   approleSecretIdFile: ""  # file holding the secret ID, e.g. via extraVolumes
+#   # Alternatively, inject the secret ID from an existing Secret you created
+#   # as the VAULT_SECRET_ID env var, which pgdog reads when
+#   # approleSecretIdFile is not set.
+#   approleSecretIdSecret:
+#     name: ""          # existing Secret name
+#     key: secret-id    # key within that Secret holding the secret ID
+#   clientTokenTtl: 60       # seconds before token expiry to log in again
 
 # ServiceMonitor for Prometheus metrics
 serviceMonitor:

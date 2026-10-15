@@ -139,6 +139,17 @@ spec:
             {{- end }}
             {{- end }}
             {{- end }}
+            {{- with .Values.vault }}
+            {{- with .approleSecretIdSecret }}
+            {{- if .name }}
+            - name: VAULT_SECRET_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .name }}
+                  key: {{ .key | default "secret-id" }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
             {{- range .Values.env }}
             {{- if ne .name "NODE_ID" }}
             - {{- toYaml . | nindent 14 }}
