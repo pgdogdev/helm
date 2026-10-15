@@ -624,6 +624,33 @@ data:
         column = {{ .Values.multiTenant.column | quote }}
         {{- end }}
 
+        {{- with .Values.vault }}
+        [vault]
+        url = {{ required "vault.url is required" .url | quote }}
+        auth_method = {{ required "vault.authMethod is required" .authMethod | quote }}
+        {{- if .authMount }}
+        auth_mount = {{ .authMount | quote }}
+        {{- end }}
+        {{- if .namespace }}
+        namespace = {{ .namespace | quote }}
+        {{- end }}
+        {{- if .kubernetesRole }}
+        kubernetes_role = {{ .kubernetesRole | quote }}
+        {{- end }}
+        {{- if .kubernetesJwtPath }}
+        kubernetes_jwt_path = {{ .kubernetesJwtPath | quote }}
+        {{- end }}
+        {{- if .approleRoleId }}
+        approle_role_id = {{ .approleRoleId | quote }}
+        {{- end }}
+        {{- if .approleSecretIdFile }}
+        approle_secret_id_file = {{ .approleSecretIdFile | quote }}
+        {{- end }}
+        {{- if hasKey . "clientTokenTtl" }}
+        client_token_ttl = {{ include "pgdog.intval" .clientTokenTtl }}
+        {{- end }}
+        {{- end }}
+
         {{- if .Values.otel }}
         [otel]
         {{- if hasKey .Values.otel "endpoint" }}

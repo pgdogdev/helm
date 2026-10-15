@@ -37,6 +37,57 @@ else
   exit 1
 fi
 
+# Validate Vault settings render into pgdog.toml, users.toml and the env
+echo ""
+echo "==> Validating Vault settings..."
+vault_manifests=$(helm template test-release "$CHART_DIR" -f "$TEST_DIR/values-vault.yaml")
+vault_config=$(echo "$vault_manifests" \
+  | yq -r 'select(.kind == "ConfigMap" and .metadata.name == "test-release-pgdog") | .data["pgdog.toml"]')
+vault_users=$(echo "$vault_manifests" \
+  | yq -r 'select(.kind == "Secret" and .metadata.name == "test-release-pgdog") | .data["users.toml"]' \
+  | base64 -d)
+vault_env=$(echo "$vault_manifests" \
+  | yq -o=json -I=0 'select(.kind == "Deployment") | .spec.template.spec.containers[0].env[] | select(.name == "VAULT_SECRET_ID")')
+
+for expected in \
+  '[vault]' \
+  'url = "https://vault.internal:8200"' \
+  'auth_method = "approle"' \
+  'auth_mount = "pgdog-approle"' \
+  'namespace = "team-a"' \
+  'approle_role_id = "4f8e2c1a-role-id"' \
+  'client_token_ttl = 120'; do
+  if ! echo "$vault_config" | grep -qF "$expected"; then
+    echo "  FAIL: pgdog.toml is missing: $expected"
+    echo "  Got: $vault_config"
+    exit 1
+  fi
+done
+echo "  [vault] section rendered correctly"
+
+for expected in \
+  'server_auth = "vault_dynamic"' \
+  'server_vault_path = "database/creds/pgdog-role"' \
+  'vault_refresh_percent = 75' \
+  'server_auth = "vault_static"' \
+  'server_vault_path = "database/static-creds/pgdog-static-role"' \
+  'vault_path = "database/static-creds/pgdog-static-role"'; do
+  if ! echo "$vault_users" | grep -qF "$expected"; then
+    echo "  FAIL: users.toml is missing: $expected"
+    echo "  Got: $vault_users"
+    exit 1
+  fi
+done
+echo "  Vault user settings rendered correctly"
+
+if [ "$vault_env" = '{"name":"VAULT_SECRET_ID","valueFrom":{"secretKeyRef":{"name":"pgdog-vault","key":"secret-id"}}}' ]; then
+  echo "  VAULT_SECRET_ID injected from the Secret"
+else
+  echo "  FAIL: VAULT_SECRET_ID not injected correctly"
+  echo "  Got: $vault_env"
+  exit 1
+fi
+
 # Validate zero values survive on the PodDisruptionBudget
 echo ""
 echo "==> Validating PodDisruptionBudget zero values..."

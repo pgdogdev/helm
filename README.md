@@ -223,11 +223,12 @@ externalSecrets:
 The chart can inject values from existing Kubernetes Secrets into the PgDog
 container's environment:
 
-| Setting                    | Environment variable     | Default Secret key |
-| -------------------------- | ------------------------ | ------------------ |
-| `control.endpointSecret`   | `PGDOG_CONTROL_ENDPOINT` | `endpoint`         |
-| `control.tokenSecret`      | `PGDOG_CONTROL_TOKEN`    | `token`            |
-| `otel.datadogApiKeySecret` | `DD_API_KEY`             | `dd-api-key`       |
+| Setting                       | Environment variable     | Default Secret key |
+| ----------------------------- | ------------------------ | ------------------ |
+| `control.endpointSecret`      | `PGDOG_CONTROL_ENDPOINT` | `endpoint`         |
+| `control.tokenSecret`         | `PGDOG_CONTROL_TOKEN`    | `token`            |
+| `otel.datadogApiKeySecret`    | `DD_API_KEY`             | `dd-api-key`       |
+| `vault.approleSecretIdSecret` | `VAULT_SECRET_ID`        | `secret-id`        |
 
 #### Example
 
