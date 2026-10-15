@@ -1,0 +1,9 @@
+# allDatabases takes precedence over both database selectors when specified.
+users:
+  - name: all_databases_true
+    allDatabases: true
+databases:
+  - name: primary
+    host: 127.0.0.1
+  - name: secondary
+    host: 10.0.0.1
