@@ -1,0 +1,10 @@
+# Test explicitly configured write backoff settings, including zero jitter.
+qos:
+  writeBackoffDelay: 100
+  writeBackoffDelayJitter: 0
+  writeBackoffQueueSize: 50
+
+databases:
+  - name: primary
+    host: postgres.example.com
+    port: 5432

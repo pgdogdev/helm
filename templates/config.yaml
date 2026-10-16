@@ -534,6 +534,15 @@ data:
         {{- if hasKey .Values.qos "maxEntries" }}
         max_entries = {{ include "pgdog.intval" .Values.qos.maxEntries }}
         {{- end }}
+        {{- if hasKey .Values.qos "writeBackoffDelay" }}
+        write_backoff_delay = {{ include "pgdog.intval" .Values.qos.writeBackoffDelay }}
+        {{- end }}
+        {{- if hasKey .Values.qos "writeBackoffDelayJitter" }}
+        write_backoff_delay_jitter = {{ include "pgdog.intval" .Values.qos.writeBackoffDelayJitter }}
+        {{- end }}
+        {{- if hasKey .Values.qos "writeBackoffQueueSize" }}
+        write_backoff_queue_size = {{ include "pgdog.intval" .Values.qos.writeBackoffQueueSize }}
+        {{- end }}
         {{- end }}
 
         {{- with .Values.queryStats }}
