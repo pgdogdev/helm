@@ -1,0 +1,16 @@
+# A parent chart pointing pull secrets and placement at its own globals: whole-field
+# string templates and a leaf template, rendered through pgdog.tplvalues.render.
+global:
+  imagePullSecrets:
+    - name: parent-regcred
+  nodeSelector:
+    service: pooler
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: pooler
+      effect: NoSchedule
+imagePullSecrets: '{{ toYaml .Values.global.imagePullSecrets }}'
+nodeSelector:
+  service: '{{ .Values.global.nodeSelector.service }}'
+tolerations: '{{ toYaml .Values.global.tolerations }}'

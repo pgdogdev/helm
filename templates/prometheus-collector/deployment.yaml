@@ -109,11 +109,11 @@ spec:
         {{- end }}
       {{- with .Values.prometheusCollector.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 8 }}
+        {{- include "pgdog.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
       {{- end }}
       {{- with .Values.prometheusCollector.tolerations }}
       tolerations:
-        {{- toYaml . | nindent 8 }}
+        {{- include "pgdog.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
       {{- end }}
       {{- with .Values.prometheusCollector.affinity }}
       affinity:
