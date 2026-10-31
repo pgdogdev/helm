@@ -647,6 +647,9 @@ data:
         {{- if hasKey .Values.otel "pushInterval" }}
         push_interval = {{ include "pgdog.intval" .Values.otel.pushInterval }}
         {{- end }}
+        {{- if hasKey .Values.otel "temporality" }}
+        temporality = {{ .Values.otel.temporality | quote }}
+        {{- end }}
         {{- if hasKey .Values.otel "headers" }}
         [otel.headers]
         {{- range $k, $v := .Values.otel.headers }}
