@@ -372,6 +372,10 @@ service:
   # routed (Cluster or Local).
   # see https://kubernetes.io/docs/reference/networking/virtual-ips/#internal-traffic-policy for more details.
   internalTrafficPolicy: ""
+  # loadBalancerIP pins a LoadBalancer service to a pre-reserved IP.
+  # Support depends on the cloud provider.
+  # see https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer for more details.
+  loadBalancerIP: ""
   # ipFamilyPolicy controls IP family behavior for the service.
   # Valid values: SingleStack, PreferDualStack, RequireDualStack
   # Leave empty to use cluster defaults.
