@@ -41,6 +41,9 @@ spec:
   {{- if .Values.service.internalTrafficPolicy }}
   internalTrafficPolicy: {{ .Values.service.internalTrafficPolicy | quote }}
   {{- end }}
+  {{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP | quote }}
+  {{- end }}
   {{- if .Values.service.ipFamilyPolicy }}
   ipFamilyPolicy: {{ .Values.service.ipFamilyPolicy }}
   {{- end }}
