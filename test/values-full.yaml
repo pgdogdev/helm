@@ -93,11 +93,13 @@ databases:
     shard: 1
 
 users:
-  - username: app_user
+  - name: app_user
+    database: primary
     password: secret123
-    poolMode: transaction
+    poolerMode: transaction
     readWriteSplit: exclude_primary
-  - username: admin_user
+  - name: admin_user
+    database: primary
     password: admin123
 
 shardedTables:

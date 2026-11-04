@@ -18,5 +18,6 @@ databases:
     port: 5432
 
 users:
-  - username: app_user
+  - name: app_user
+    database: primary
     password: secret123
