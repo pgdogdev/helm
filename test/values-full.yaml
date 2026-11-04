@@ -96,6 +96,7 @@ users:
   - username: app_user
     password: secret123
     poolMode: transaction
+    readWriteSplit: exclude_primary
   - username: admin_user
     password: admin123
 
