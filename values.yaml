@@ -91,6 +91,21 @@ replicas: 2
 # This is useful in combination with short client connection lifetimes to avoid errors during pod shutdown.
 # preStopSleepSeconds: 25
 
+# Optional: lifecycle hooks for the pgdog container, instead of preStopSleepSeconds
+# (set one, not both). A preStop requires terminationGracePeriodSeconds covering
+# it plus shutdownTimeout. The image's stop signal is SIGINT, PgDog's graceful
+# shutdown, so a preStop only needs to wait, e.g. until clients have left:
+# lifecycle:
+#   preStop:
+#     exec:
+#       command:
+#         - /bin/sh
+#         - -c
+#         - |
+#           sleep 30
+#           until curl -fsS localhost:9090 | awk '$1 == "pgdog_clients" && $2 == 0 {f = 1} END {exit !f}'; do sleep 5; done
+# terminationGracePeriodSeconds: 3600
+
 # Optional: Deployment rollout strategy (Deployment only)
 # strategy: {}
 
@@ -139,6 +154,34 @@ env: []
 #       - name: pki
 #         mountPath: /pki
 extraInitContainers: []
+
+# extraContainers adds sidecar containers next to pgdog (and the prometheus
+# sidecar, if enabled), e.g. one that sends SIGHUP to reload a renewed TLS
+# certificate. Combine with shareProcessNamespace to signal the pgdog process.
+# Sidecars get the pod's service account token unless automountServiceAccountToken
+# is false, and inherit nothing from securityContext: set their own. Run only
+# trusted images pinned by digest.
+# Example:
+# extraContainers:
+#   - name: sidecar
+#     image: busybox:1.37@sha256:<digest>
+#     command: ['sh', '-c', 'sleep infinity']
+#     securityContext:
+#       allowPrivilegeEscalation: false
+#       capabilities:
+#         drop: [ALL]
+extraContainers: []
+
+# shareProcessNamespace lets containers in the pod see and signal each other's
+# processes. PID 1 is then the pause container, not pgdog: signal pgdog by name
+# (pidof -s pgdog). A container running as pgdog's user can read its environment
+# and files through /proc, users.toml passwords included.
+# shareProcessNamespace: false
+
+# automountServiceAccountToken controls whether the pod gets a Kubernetes API
+# token. PgDog does not call the Kubernetes API; set to false when nothing else
+# in the pod does. Omitted from the pod spec unless set.
+# automountServiceAccountToken: false
 
 # extraVolumes allows adding custom volumes to the pod
 # These volumes can be referenced by extraVolumeMounts or extraInitContainers
@@ -387,6 +430,10 @@ service:
   # Leave empty to use cluster defaults.
   # Note: Order matters - first family is primary.
   ipFamilies: []
+  # exposeMetrics adds the openMetricsPort to the Service. Set to false for any
+  # internet-facing LoadBalancer and scrape the pods directly (e.g. a PodMonitor);
+  # serviceMonitor needs it true, except with statefulSet (headless Service).
+  exposeMetrics: true
   # aws configures AWS Load Balancer Controller annotations
   # When enabled, service type is automatically set to LoadBalancer
   aws:

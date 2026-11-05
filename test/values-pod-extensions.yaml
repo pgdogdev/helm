@@ -1,0 +1,15 @@
+# Custom preStop, a sidecar sharing the process namespace, no API token, and
+# metrics kept off the Service.
+terminationGracePeriodSeconds: 120
+lifecycle:
+  preStop:
+    exec:
+      command: ["/bin/sh", "-c", "sleep 30"]
+extraContainers:
+  - name: reloader
+    image: busybox
+    command: ["sh", "-c", "sleep infinity"]
+shareProcessNamespace: true
+automountServiceAccountToken: false
+service:
+  exposeMetrics: false

@@ -100,4 +100,52 @@ else
 fi
 
 echo ""
+echo "==> Validating pod extension points..."
+pod_spec() {
+  helm template test-release "$CHART_DIR" -f "$@" \
+    | yq -o=json -I=0 'select(.kind == "Deployment") | .spec.template.spec | {"automount": .automountServiceAccountToken, "shareProcessNamespace": .shareProcessNamespace, "containers": (.containers | map(.name)), "lifecycle": .containers[0].lifecycle}'
+}
+service_ports() {
+  helm template test-release "$CHART_DIR" -f "$@" \
+    | yq -o=json -I=0 'select(.kind == "Service" and .metadata.name == "test-release-pgdog") | .spec.ports | map(.name)'
+}
+expect() {
+  if [ "$2" != "$3" ]; then
+    echo "  FAIL: $1"
+    echo "  Expected: $3"
+    echo "  Got:      $2"
+    exit 1
+  fi
+}
+expect_fail() {
+  if helm template test-release "$CHART_DIR" "${@:2}" >/dev/null 2>&1; then
+    echo "  FAIL: rendered although $1"
+    exit 1
+  fi
+}
+
+expect "extension points render as set" "$(pod_spec "$TEST_DIR/values-pod-extensions.yaml")" \
+  '{"automount":false,"shareProcessNamespace":true,"containers":["pgdog","reloader"],"lifecycle":{"preStop":{"exec":{"command":["/bin/sh","-c","sleep 30"]}}}}'
+expect "defaults render none of them" "$(pod_spec "$TEST_DIR/values-default.yaml")" \
+  '{"automount":null,"shareProcessNamespace":null,"containers":["pgdog"],"lifecycle":null}'
+expect "preStopSleepSeconds still renders its preStop" "$(pod_spec "$TEST_DIR/values-default.yaml" --set preStopSleepSeconds=25 | yq -o=json -I=0 .lifecycle)" \
+  '{"preStop":{"sleep":{"seconds":25}}}'
+expect "automountServiceAccountToken true renders" "$(pod_spec "$TEST_DIR/values-default.yaml" --set automountServiceAccountToken=true | yq .automount)" 'true'
+expect "extraContainers follow the prometheus sidecar" "$(pod_spec "$TEST_DIR/values-pod-extensions.yaml" --set prometheusPort=9091 | yq -o=json -I=0 .containers)" \
+  '["pgdog","prom","reloader"]'
+
+expect "exposeMetrics false drops the metrics port" "$(service_ports "$TEST_DIR/values-pod-extensions.yaml")" '["pgdog"]'
+expect "metrics port is on the Service by default" "$(service_ports "$TEST_DIR/values-default.yaml")" '["pgdog","openmetrics"]'
+# helm upgrade --reuse-values keeps the old release's values, which lack the key.
+expect "missing exposeMetrics keeps the metrics port" "$(service_ports "$TEST_DIR/values-default.yaml" --set service.exposeMetrics=null)" '["pgdog","openmetrics"]'
+helm template test-release "$CHART_DIR" -f "$TEST_DIR/values-monitoring.yaml" --set service.exposeMetrics=null >/dev/null
+helm template test-release "$CHART_DIR" -f "$TEST_DIR/values-monitoring.yaml" -f "$TEST_DIR/values-statefulset.yaml" --set service.exposeMetrics=false >/dev/null
+
+expect_fail "serviceMonitor has no Service metrics port" -f "$TEST_DIR/values-monitoring.yaml" --set service.exposeMetrics=false
+expect_fail "lifecycle and preStopSleepSeconds are both set" -f "$TEST_DIR/values-pod-extensions.yaml" --set preStopSleepSeconds=25
+helm template test-release "$CHART_DIR" --set-json 'lifecycle={"postStart":{"exec":{"command":["true"]}}}' >/dev/null
+expect_fail "lifecycle.preStop has no explicit terminationGracePeriodSeconds" -f "$TEST_DIR/values-pod-extensions.yaml" --set terminationGracePeriodSeconds=null
+echo "  lifecycle, extraContainers, shareProcessNamespace, automountServiceAccountToken and service.exposeMetrics render as set, and only when set"
+
+echo ""
 echo "==> All tests passed!"
