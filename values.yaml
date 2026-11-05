@@ -595,6 +595,8 @@ queryStats:
 control:
   # enabled controls whether to include [control] section in pgdog.toml
   enabled: false
+  # Require a control plane connection before allowing application traffic.
+  required: false
   # endpoint is the control plane URL. Leave empty to use PGDOG_CONTROL_ENDPOINT.
   endpoint: ""
   # token is the authentication token. Leave empty to use PGDOG_CONTROL_TOKEN.

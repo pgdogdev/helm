@@ -1,4 +1,4 @@
 apiVersion: v1
 name: pgdog
-version: v0.94
+version: v0.95
 appVersion: "v0.1.63"

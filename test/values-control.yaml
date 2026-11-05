@@ -1,6 +1,7 @@
 # Test control plane configuration (PgDog EE)
 control:
   enabled: true
+  required: true
   endpoint: "wss://control.example.com/ws"
   token: "test-token-12345"
   metricsInterval: 2000
