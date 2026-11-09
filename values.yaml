@@ -66,7 +66,9 @@ port: 6432
 # net.core.somaxconn, so raise both settings when increasing this value.
 # Defaults to 1024. This setting cannot be changed at runtime.
 # listenBacklog: 1024
-# healthcheckPort on which PgDog will expose healthcheck endpoint
+# healthcheckPort on which PgDog will expose its HTTP healthcheck endpoint.
+# It returns 502 when every connection pool is down. Unless readinessProbe is
+# set, the chart uses it as the readiness probe.
 # (if not specified, no separate healthcheck port is configured)
 # healthcheckPort: 8080
 # Optional [general] setting; omitted unless explicitly set to true or false.
@@ -109,7 +111,8 @@ replicas: 2
 # Optional: Deployment rollout strategy (Deployment only)
 # strategy: {}
 
-# Optional: container health probes (disabled by default)
+# Optional: container health probes. When readinessProbe is not set and
+# healthcheckPort is, the chart adds an HTTP readiness probe on healthcheckPort.
 # livenessProbe: {}
 # readinessProbe: {}
 # startupProbe: {}

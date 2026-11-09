@@ -155,6 +155,10 @@ spec:
               containerPort: {{ .Values.port }}
             - name: metrics
               containerPort: {{ .Values.openMetricsPort }}
+            {{- if .Values.healthcheckPort }}
+            - name: healthcheck
+              containerPort: {{ .Values.healthcheckPort }}
+            {{- end }}
           {{- if .Values.lifecycle }}
           {{- if .Values.preStopSleepSeconds }}
           {{- fail "lifecycle replaces the preStop that preStopSleepSeconds renders; set one of them" }}
@@ -178,6 +182,14 @@ spec:
           {{- if .Values.readinessProbe }}
           readinessProbe:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
+          {{- else if .Values.healthcheckPort }}
+          readinessProbe:
+            # Pools report healthy until their first connection attempt fails,
+            # which takes up to connect_timeout (5s by default).
+            initialDelaySeconds: 10
+            httpGet:
+              path: /
+              port: healthcheck
           {{- end }}
           {{- if .Values.startupProbe }}
           startupProbe:
