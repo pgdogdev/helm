@@ -55,10 +55,12 @@ spec:
       protocol: TCP
       port: {{ .Values.port }}
       targetPort: {{ .Values.port }}
+    {{- if or (not (hasKey .Values.service "exposeMetrics")) .Values.service.exposeMetrics }}
     - name: openmetrics
       protocol: TCP
       port: {{ .Values.openMetricsPort }}
       targetPort: {{ .Values.openMetricsPort }}
+    {{- end }}
     {{- if .Values.healthcheckPort }}
     - name: healthcheck
       protocol: TCP

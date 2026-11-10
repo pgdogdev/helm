@@ -37,6 +37,57 @@ else
   exit 1
 fi
 
+# Validate Vault settings render into pgdog.toml, users.toml and the env
+echo ""
+echo "==> Validating Vault settings..."
+vault_manifests=$(helm template test-release "$CHART_DIR" -f "$TEST_DIR/values-vault.yaml")
+vault_config=$(echo "$vault_manifests" \
+  | yq -r 'select(.kind == "ConfigMap" and .metadata.name == "test-release-pgdog") | .data["pgdog.toml"]')
+vault_users=$(echo "$vault_manifests" \
+  | yq -r 'select(.kind == "Secret" and .metadata.name == "test-release-pgdog") | .data["users.toml"]' \
+  | base64 -d)
+vault_env=$(echo "$vault_manifests" \
+  | yq -o=json -I=0 'select(.kind == "Deployment") | .spec.template.spec.containers[0].env[] | select(.name == "VAULT_SECRET_ID")')
+
+for expected in \
+  '[vault]' \
+  'url = "https://vault.internal:8200"' \
+  'auth_method = "approle"' \
+  'auth_mount = "pgdog-approle"' \
+  'namespace = "team-a"' \
+  'approle_role_id = "4f8e2c1a-role-id"' \
+  'client_token_ttl = 120'; do
+  if ! echo "$vault_config" | grep -qF "$expected"; then
+    echo "  FAIL: pgdog.toml is missing: $expected"
+    echo "  Got: $vault_config"
+    exit 1
+  fi
+done
+echo "  [vault] section rendered correctly"
+
+for expected in \
+  'server_auth = "vault_dynamic"' \
+  'server_vault_path = "database/creds/pgdog-role"' \
+  'vault_refresh_percent = 75' \
+  'server_auth = "vault_static"' \
+  'server_vault_path = "database/static-creds/pgdog-static-role"' \
+  'vault_path = "database/static-creds/pgdog-static-role"'; do
+  if ! echo "$vault_users" | grep -qF "$expected"; then
+    echo "  FAIL: users.toml is missing: $expected"
+    echo "  Got: $vault_users"
+    exit 1
+  fi
+done
+echo "  Vault user settings rendered correctly"
+
+if [ "$vault_env" = '{"name":"VAULT_SECRET_ID","valueFrom":{"secretKeyRef":{"name":"pgdog-vault","key":"secret-id"}}}' ]; then
+  echo "  VAULT_SECRET_ID injected from the Secret"
+else
+  echo "  FAIL: VAULT_SECRET_ID not injected correctly"
+  echo "  Got: $vault_env"
+  exit 1
+fi
+
 # Validate zero values survive on the PodDisruptionBudget
 echo ""
 echo "==> Validating PodDisruptionBudget zero values..."
@@ -98,6 +149,54 @@ else
   echo "  FAIL: unexpected WAL PVC StorageClass (default=$default_class, custom=$custom_class, disabled=$no_class)"
   exit 1
 fi
+
+echo ""
+echo "==> Validating pod extension points..."
+pod_spec() {
+  helm template test-release "$CHART_DIR" -f "$@" \
+    | yq -o=json -I=0 'select(.kind == "Deployment") | .spec.template.spec | {"automount": .automountServiceAccountToken, "shareProcessNamespace": .shareProcessNamespace, "containers": (.containers | map(.name)), "lifecycle": .containers[0].lifecycle}'
+}
+service_ports() {
+  helm template test-release "$CHART_DIR" -f "$@" \
+    | yq -o=json -I=0 'select(.kind == "Service" and .metadata.name == "test-release-pgdog") | .spec.ports | map(.name)'
+}
+expect() {
+  if [ "$2" != "$3" ]; then
+    echo "  FAIL: $1"
+    echo "  Expected: $3"
+    echo "  Got:      $2"
+    exit 1
+  fi
+}
+expect_fail() {
+  if helm template test-release "$CHART_DIR" "${@:2}" >/dev/null 2>&1; then
+    echo "  FAIL: rendered although $1"
+    exit 1
+  fi
+}
+
+expect "extension points render as set" "$(pod_spec "$TEST_DIR/values-pod-extensions.yaml")" \
+  '{"automount":false,"shareProcessNamespace":true,"containers":["pgdog","reloader"],"lifecycle":{"preStop":{"exec":{"command":["/bin/sh","-c","sleep 30"]}}}}'
+expect "defaults render none of them" "$(pod_spec "$TEST_DIR/values-default.yaml")" \
+  '{"automount":null,"shareProcessNamespace":null,"containers":["pgdog"],"lifecycle":null}'
+expect "preStopSleepSeconds still renders its preStop" "$(pod_spec "$TEST_DIR/values-default.yaml" --set preStopSleepSeconds=25 | yq -o=json -I=0 .lifecycle)" \
+  '{"preStop":{"sleep":{"seconds":25}}}'
+expect "automountServiceAccountToken true renders" "$(pod_spec "$TEST_DIR/values-default.yaml" --set automountServiceAccountToken=true | yq .automount)" 'true'
+expect "extraContainers follow the prometheus sidecar" "$(pod_spec "$TEST_DIR/values-pod-extensions.yaml" --set prometheusPort=9091 | yq -o=json -I=0 .containers)" \
+  '["pgdog","prom","reloader"]'
+
+expect "exposeMetrics false drops the metrics port" "$(service_ports "$TEST_DIR/values-pod-extensions.yaml")" '["pgdog"]'
+expect "metrics port is on the Service by default" "$(service_ports "$TEST_DIR/values-default.yaml")" '["pgdog","openmetrics"]'
+# helm upgrade --reuse-values keeps the old release's values, which lack the key.
+expect "missing exposeMetrics keeps the metrics port" "$(service_ports "$TEST_DIR/values-default.yaml" --set service.exposeMetrics=null)" '["pgdog","openmetrics"]'
+helm template test-release "$CHART_DIR" -f "$TEST_DIR/values-monitoring.yaml" --set service.exposeMetrics=null >/dev/null
+helm template test-release "$CHART_DIR" -f "$TEST_DIR/values-monitoring.yaml" -f "$TEST_DIR/values-statefulset.yaml" --set service.exposeMetrics=false >/dev/null
+
+expect_fail "serviceMonitor has no Service metrics port" -f "$TEST_DIR/values-monitoring.yaml" --set service.exposeMetrics=false
+expect_fail "lifecycle and preStopSleepSeconds are both set" -f "$TEST_DIR/values-pod-extensions.yaml" --set preStopSleepSeconds=25
+helm template test-release "$CHART_DIR" --set-json 'lifecycle={"postStart":{"exec":{"command":["true"]}}}' >/dev/null
+expect_fail "lifecycle.preStop has no explicit terminationGracePeriodSeconds" -f "$TEST_DIR/values-pod-extensions.yaml" --set terminationGracePeriodSeconds=null
+echo "  lifecycle, extraContainers, shareProcessNamespace, automountServiceAccountToken and service.exposeMetrics render as set, and only when set"
 
 echo ""
 echo "==> Validating templated pull secrets and placement..."

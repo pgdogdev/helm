@@ -44,6 +44,12 @@ spec:
       {{- end }}
     spec:
       serviceAccountName: {{ include "pgdog.serviceAccountName" . }}
+      {{- if hasKey .Values "automountServiceAccountToken" }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+      {{- end }}
+      {{- if .Values.shareProcessNamespace }}
+      shareProcessNamespace: true
+      {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
@@ -139,6 +145,17 @@ spec:
             {{- end }}
             {{- end }}
             {{- end }}
+            {{- with .Values.vault }}
+            {{- with .approleSecretIdSecret }}
+            {{- if .name }}
+            - name: VAULT_SECRET_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .name }}
+                  key: {{ .key | default "secret-id" }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
             {{- range .Values.env }}
             {{- if ne .name "NODE_ID" }}
             - {{- toYaml . | nindent 14 }}
@@ -149,7 +166,16 @@ spec:
               containerPort: {{ .Values.port }}
             - name: metrics
               containerPort: {{ .Values.openMetricsPort }}
+          {{- if .Values.lifecycle }}
           {{- if .Values.preStopSleepSeconds }}
+          {{- fail "lifecycle replaces the preStop that preStopSleepSeconds renders; set one of them" }}
+          {{- end }}
+          {{- if and .Values.lifecycle.preStop (not .Values.terminationGracePeriodSeconds) }}
+          {{- fail "lifecycle.preStop needs an explicit terminationGracePeriodSeconds that covers the preStop plus shutdownTimeout" }}
+          {{- end }}
+          lifecycle:
+            {{- toYaml .Values.lifecycle | nindent 12 }}
+          {{- else if .Values.preStopSleepSeconds }}
           lifecycle:
             preStop:
               sleep:
@@ -232,6 +258,9 @@ spec:
           volumeMounts:
             - name: prom
               mountPath: /etc/prom
+        {{- end }}
+        {{- with .Values.extraContainers }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
       volumes:
         - name: config

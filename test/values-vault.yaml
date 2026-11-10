@@ -1,0 +1,27 @@
+# Test HashiCorp Vault settings
+databases:
+  - name: prod
+    host: 10.0.0.1
+
+vault:
+  url: https://vault.internal:8200
+  authMethod: approle
+  authMount: pgdog-approle
+  namespace: team-a
+  approleRoleId: 4f8e2c1a-role-id
+  approleSecretIdSecret:
+    name: pgdog-vault
+  clientTokenTtl: 120
+
+users:
+  - name: pgdog
+    database: prod
+    password: hunter2
+    serverAuth: vault_dynamic
+    serverVaultPath: database/creds/pgdog-role
+    vaultRefreshPercent: 75
+  - name: pgdog_static
+    database: prod
+    vaultPath: database/static-creds/pgdog-static-role
+    serverAuth: vault_static
+    serverVaultPath: database/static-creds/pgdog-static-role
