@@ -1,0 +1,32 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "GitHubActions",
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::588738614642:oidc-provider/token.actions.githubusercontent.com"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+        },
+        "StringLike": {
+          "token.actions.githubusercontent.com:sub": [
+            "repo:pgdogdev/helm:*",
+            "repo:pgdogdev/pgdog:*"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AccountAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::588738614642:root"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
