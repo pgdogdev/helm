@@ -7,10 +7,9 @@ control:
   metricsInterval: 2000
   statsInterval: 10000
   activeQueriesInterval: 5000
-  errorsInterval: 5000
   requestTimeout: 2000
-  queryTimingsChunkSize: 50
-  queryTimingsNewQueryQueueSize: 500
+  configRefreshInterval: 30000
+  taskUpdatesInterval: 2000
 
 # Basic database config for testing control integration
 databases:

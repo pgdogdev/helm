@@ -144,6 +144,9 @@ data:
         {{- if hasKey .Values "passthroughAuth" }}
         passthrough_auth          =   {{ .Values.passthroughAuth | quote }}
         {{- end }}
+        {{- if hasKey .Values "passthroughAuthDebounceDelay" }}
+        passthrough_auth_debounce_delay = {{ include "pgdog.intval" .Values.passthroughAuthDebounceDelay }}
+        {{- end }}
         {{- if hasKey .Values "connectTimeout" }}
         connect_timeout           =   {{ include "pgdog.intval" .Values.connectTimeout }}
         {{- end }}
@@ -155,6 +158,9 @@ data:
         {{- end }}
         {{- if hasKey .Values "queryTimeout" }}
         query_timeout             =   {{ include "pgdog.intval" .Values.queryTimeout }}
+        {{- end }}
+        {{- if hasKey .Values "queryCancellationTimeout" }}
+        query_cancellation_timeout = {{ include "pgdog.intval" .Values.queryCancellationTimeout }}
         {{- end }}
         {{- if hasKey .Values "clientIdleInTransactionTimeout" }}
         client_idle_in_transaction_timeout =   {{ include "pgdog.intval" .Values.clientIdleInTransactionTimeout }}
@@ -196,6 +202,9 @@ data:
         {{- end }}
         {{- if hasKey .Values "reshardingParallelCopies" }}
         resharding_parallel_copies =   {{ include "pgdog.intval" .Values.reshardingParallelCopies }}
+        {{- end }}
+        {{- if hasKey .Values "reshardingParallelWithinTableCopies" }}
+        resharding_parallel_within_table_copies = {{ include "pgdog.intval" .Values.reshardingParallelWithinTableCopies }}
         {{- end }}
         {{- if hasKey .Values "reshardingCopyRetryMaxAttempts" }}
         resharding_copy_retry_max_attempts =   {{ include "pgdog.intval" .Values.reshardingCopyRetryMaxAttempts }}
@@ -308,9 +317,6 @@ data:
         {{- if hasKey .Values "cutoverTimeoutAction" }}
         cutover_timeout_action    =   {{ .Values.cutoverTimeoutAction | quote }}
         {{- end }}
-        {{- if hasKey .Values "cutoverSaveConfig" }}
-        cutover_save_config       =   {{ .Values.cutoverSaveConfig }}
-        {{- end }}
 
         {{- range .Values.databases }}
         [[databases]]
@@ -409,6 +415,9 @@ data:
         database = {{ .database | quote }}
         {{- if hasKey . "name" }}
         name = {{ .name | quote }}
+        {{- end }}
+        {{- if hasKey . "prefix" }}
+        prefix = {{ .prefix }}
         {{- end }}
         column = {{ .column | quote }}
         {{- with .dataType }}
@@ -543,6 +552,17 @@ data:
         {{- if hasKey .Values.qos "writeBackoffQueueSize" }}
         write_backoff_queue_size = {{ include "pgdog.intval" .Values.qos.writeBackoffQueueSize }}
         {{- end }}
+        {{- with .Values.qos.unit }}
+        [qos.unit]
+        regex = {{ required "qos.unit.regex is required" .regex | quote }}
+        template = {{ required "qos.unit.template is required" .template | quote }}
+        {{- if hasKey . "regexSizeLimit" }}
+        regex_size_limit = {{ include "pgdog.intval" .regexSizeLimit }}
+        {{- end }}
+        {{- if hasKey . "maxUnitLength" }}
+        max_unit_length = {{ include "pgdog.intval" .maxUnitLength }}
+        {{- end }}
+        {{- end }}
         {{- end }}
 
         {{- with .Values.queryStats }}
@@ -597,17 +617,14 @@ data:
         {{- if hasKey . "activeQueriesInterval" }}
         active_queries_interval = {{ include "pgdog.intval" .activeQueriesInterval }}
         {{- end }}
-        {{- if hasKey . "errorsInterval" }}
-        errors_interval = {{ include "pgdog.intval" .errorsInterval }}
-        {{- end }}
         {{- if hasKey . "requestTimeout" }}
         request_timeout = {{ include "pgdog.intval" .requestTimeout }}
         {{- end }}
-        {{- if hasKey . "queryTimingsChunkSize" }}
-        query_timings_chunk_size = {{ include "pgdog.intval" .queryTimingsChunkSize }}
+        {{- if hasKey . "configRefreshInterval" }}
+        config_refresh_interval = {{ include "pgdog.intval" .configRefreshInterval }}
         {{- end }}
-        {{- if hasKey . "queryTimingsNewQueryQueueSize" }}
-        query_timings_new_query_queue_size = {{ include "pgdog.intval" .queryTimingsNewQueryQueueSize }}
+        {{- if hasKey . "taskUpdatesInterval" }}
+        task_updates_interval = {{ include "pgdog.intval" .taskUpdatesInterval }}
         {{- end }}
         {{- end }}
         {{- end }}
@@ -628,6 +645,19 @@ data:
         {{- end }}
         {{- if hasKey .Values.rewrite "nonDeterministicFunctions" }}
         non_deterministic_functions = {{ .Values.rewrite.nonDeterministicFunctions | quote }}
+        {{- end }}
+        {{- if hasKey .Values.rewrite "subqueries" }}
+        subqueries = {{ .Values.rewrite.subqueries | quote }}
+        {{- end }}
+        {{- end }}
+
+        {{- with .Values.resharding }}
+        [resharding]
+        {{- if hasKey . "postDataValidation" }}
+        post_data_validation = {{ .postDataValidation | quote }}
+        {{- end }}
+        {{- if hasKey . "twoPcCleanupTimeout" }}
+        two_pc_cleanup_timeout = {{ include "pgdog.intval" .twoPcCleanupTimeout }}
         {{- end }}
         {{- end }}
 

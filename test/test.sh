@@ -199,4 +199,44 @@ expect_fail "lifecycle.preStop has no explicit terminationGracePeriodSeconds" -f
 echo "  lifecycle, extraContainers, shareProcessNamespace, automountServiceAccountToken and service.exposeMetrics render as set, and only when set"
 
 echo ""
+echo "==> Validating recent pgdog-config settings..."
+config_json() {
+  helm template test-release "$CHART_DIR" "$@" \
+    | yq -r 'select(.kind == "ConfigMap" and .metadata.name == "test-release-pgdog") | .data["pgdog.toml"]' \
+    | yq -p toml -o json -I=0
+}
+extras=$(config_json -f "$TEST_DIR/values-pgdog-config-extras.yaml")
+expect "general timeouts and parallel copies preserve integers and zero" \
+  "$(echo "$extras" | yq -p json -o json -I=0 '[.general.passthrough_auth_debounce_delay, .general.query_cancellation_timeout, .general.resharding_parallel_within_table_copies]')" \
+  '[0,12000,4]'
+expect "resharding options are in their own table" \
+  "$(echo "$extras" | yq -p json -o json -I=0 '.resharding')" \
+  '{"post_data_validation":"before_cutover","two_pc_cleanup_timeout":0}'
+expect "sharded table prefixes preserve true and false" \
+  "$(echo "$extras" | yq -p json -o json -I=0 '[.sharded_tables[].prefix]')" '[true,false]'
+expect "removed cutover option is not emitted" \
+  "$(config_json --set cutoverSaveConfig=true | yq -p json '.general | has("cutover_save_config")')" 'false'
+
+qos=$(config_json -f "$TEST_DIR/values-qos-backoff.yaml")
+expect "QoS units preserve regex escapes and literal template groups" \
+  "$(echo "$qos" | yq -p json -o json -I=0 '[.qos.unit.regex, .qos.unit.template, .qos.unit.regex_size_limit, .qos.unit.max_unit_length]')" \
+  "$(yq -o json -I=0 '[.qos.unit.regex, .qos.unit.template, .qos.unit.regexSizeLimit, .qos.unit.maxUnitLength]' "$TEST_DIR/values-qos-backoff.yaml")"
+expect "QoS backoff remains in the parent table" \
+  "$(echo "$qos" | yq -p json -o json -I=0 '[.qos.enabled, .qos.max_entries, .qos.write_backoff_delay, .qos.write_backoff_delay_jitter, .qos.write_backoff_queue_size]')" \
+  '[true,10000,100,0,50]'
+expect "optional QoS limits use PgDog defaults when omitted" \
+  "$(config_json -f "$TEST_DIR/values-qos-backoff.yaml" --set qos.unit.regexSizeLimit=null --set qos.unit.maxUnitLength=null | yq -p json -o json -I=0 '[.qos.unit | has("regex_size_limit"), has("max_unit_length")]')" \
+  '[false,false]'
+expect_fail "QoS unit has no regex" -f "$TEST_DIR/values-qos-backoff.yaml" --set qos.unit.regex=null
+expect_fail "QoS unit has no template" -f "$TEST_DIR/values-qos-backoff.yaml" --set qos.unit.template=null
+expect "subquery rewriting renders" \
+  "$(config_json -f "$TEST_DIR/values-rewrite.yaml" | yq -p json '.rewrite.subqueries')" 'rewrite'
+expect "control uses current interval fields" \
+  "$(config_json -f "$TEST_DIR/values-control.yaml" | yq -p json -o json -I=0 '[.control.config_refresh_interval, .control.task_updates_interval, (.control | has("errors_interval")), (.control | has("query_timings_chunk_size")), (.control | has("query_timings_new_query_queue_size"))]')" \
+  '[30000,2000,false,false,false]'
+expect "optional new settings stay omitted by default" \
+  "$(config_json | yq -p json -o json -I=0 '[has("qos"), has("resharding"), has("rewrite"), (.general | has("query_cancellation_timeout")), (.general | has("passthrough_auth_debounce_delay")), (.general | has("resharding_parallel_within_table_copies"))]')" \
+  '[false,false,false,false,false,false]'
+
+echo ""
 echo "==> All tests passed!"
