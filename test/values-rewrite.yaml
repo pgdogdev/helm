@@ -4,6 +4,7 @@ rewrite:
   shardKey: "rewrite"
   splitInserts: "ignore"
   primaryKey: "rewrite"
+  subqueries: "rewrite"
 
 # Basic database config for testing rewrite
 databases:

@@ -74,6 +74,22 @@ port: 6432
 # authTokenCacheSize sets auth_token_cache_size in the [general] section.
 # Omitted unless explicitly set.
 # authTokenCacheSize: 2000
+# Passthrough authentication debounce delay in milliseconds (default: 1000).
+# passthroughAuthDebounceDelay: 1000
+# Maximum time to send a cancellation request and wait for PostgreSQL to
+# acknowledge it, in milliseconds (default: 5000).
+# queryCancellationTimeout: 5000
+# Number of parallel source COPY streams per table (default: 1).
+# reshardingParallelWithinTableCopies: 1
+# Resharding validation and failed two-phase commit cleanup settings.
+# resharding:
+#   # off, during_replication, before_cutover, or after_cutover
+#   postDataValidation: during_replication
+#   twoPcCleanupTimeout: 600000  # milliseconds
+# Query rewrite behavior for subqueries (default: ignore; experimental upstream).
+# rewrite:
+#   enabled: true
+#   subqueries: rewrite
 # replicas indicates how many instances of PgDog will run (HA).
 replicas: 2
 
@@ -331,6 +347,7 @@ shardedSchemas: []
 
 # shardedTables contains the list of sharded table entries in pgdog.toml
 # Each entry requires: database and column; name and dataType are optional.
+# Set prefix: true to match table names starting with name (default: false).
 # When dataType is omitted, PgDog defaults to bigint.
 # An entry may also carry a list/range/default mapping via the optional `mapping` field.
 # Each mapping rule has a target `shard`; the rule type is inferred from the fields set:
@@ -654,6 +671,17 @@ grafanaRemoteWrite:
     # maxBackoff is the maximum retry delay
     maxBackoff: 5s
 
+# QoS (PgDog EE). Optional unit rules extract a unit from SQL block comments.
+# Regex capture groups are substituted into template by PgDog.
+# qos:
+#   enabled: true
+#   maxEntries: 10000
+#   unit:
+#     regex: "module='(?P<module>[^']*)'.*?op='(?P<op>[^']*)'"
+#     template: '${module}.${op}'
+#     regexSizeLimit: 1048576  # bytes of compiled regex memory
+#     maxUnitLength: 128      # bytes in a recorded unit
+
 # Query stats (PgDog EE)
 queryStats:
   # enabled enables pgdog query stats (EE version only)
@@ -690,14 +718,12 @@ control:
   statsInterval: 5000
   # activeQueriesInterval defines how often to push active queries (in milliseconds)
   activeQueriesInterval: 5000
-  # errorsInterval defines how often to push errors (in milliseconds)
-  errorsInterval: 5000
   # requestTimeout defines the timeout for control plane requests (in milliseconds)
   requestTimeout: 1000
-  # queryTimingsChunkSize defines the chunk size for query timings
-  queryTimingsChunkSize: 25
-  # queryTimingsNewQueryQueueSize defines the queue size for new query timings
-  queryTimingsNewQueryQueueSize: 1000
+  # configRefreshInterval defines how often to push configuration (in milliseconds)
+  configRefreshInterval: 60000
+  # taskUpdatesInterval defines how often to push resharding tasks (in milliseconds)
+  taskUpdatesInterval: 1000
 
 # LSN check configuration for replication failover auto mode (in milliseconds)
 # See: https://docs.pgdog.dev/features/load-balancer/replication-failover/

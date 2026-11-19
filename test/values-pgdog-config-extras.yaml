@@ -5,6 +5,8 @@
 # query_parsers table, database lb_weight/resharding_only, multi_tenant, otel.
 
 listenBacklog: 4_096
+passthroughAuthDebounceDelay: 0
+queryCancellationTimeout: 12_000
 
 banReplicaLag: 60_000
 banReplicaLagBytes: 10_000_000
@@ -16,6 +18,11 @@ twoPhaseCommitWalCheckpointInterval: 60
 
 reshardingCopyRetryMaxAttempts: 3
 reshardingCopyRetryMinDelay: 1_000
+reshardingParallelWithinTableCopies: 4
+
+resharding:
+  postDataValidation: before_cutover
+  twoPcCleanupTimeout: 0
 
 rewriteShardKeyUpdates: error
 
@@ -27,7 +34,6 @@ cutoverReplicationLagThreshold: 0
 cutoverLastTransactionDelay: 1_000
 cutoverTimeout: 30_000
 cutoverTimeoutAction: abort
-cutoverSaveConfig: false
 
 tcpKeepalive: true
 tcpUserTimeout: 30_000
@@ -69,3 +75,13 @@ queryParsers:
   - database: primary
     level: "off"
     engine: pg_query_raw
+
+shardedTables:
+  - database: shard0
+    name: events_
+    prefix: true
+    column: tenant_id
+  - database: shard0
+    name: users
+    prefix: false
+    column: id

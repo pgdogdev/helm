@@ -1,8 +1,16 @@
 # Test explicitly configured write backoff settings, including zero jitter.
 qos:
+  enabled: true
+  maxEntries: 10_000
   writeBackoffDelay: 100
   writeBackoffDelayJitter: 0
   writeBackoffQueueSize: 50
+  unit:
+    # Exercise TOML escaping of regex backslashes and quotes, and literal $ groups.
+    regex: 'module="(?P<module>\w+)".*?op="(?P<op>\w+)"'
+    template: '${module}.${op}'
+    regexSizeLimit: 2_097_152
+    maxUnitLength: 0
 
 databases:
   - name: primary
