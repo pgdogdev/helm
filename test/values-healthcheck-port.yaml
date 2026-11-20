@@ -1,0 +1,2 @@
+# Test healthcheck port with its default HTTP readiness probe
+healthcheckPort: 8080
