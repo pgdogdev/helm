@@ -305,6 +305,8 @@ loadBalancingStrategy: round_robin
 # camelCase format.
 # Set tlsServerCertificate and tlsServerPrivateKey on a database to use
 # a different certificate and key for its PostgreSQL connections.
+# Set labels (e.g. ["analytics", "reporting"]) on a replica to route queries
+# by label. Set labelRequired to true to exclude it from unlabeled reads.
 databases: []
 
 # users contains the list of user entries in users.toml
