@@ -175,6 +175,14 @@ expect_fail() {
   fi
 }
 
+workload() {
+  helm template test-release "$CHART_DIR" --show-only templates/deployment.yaml "$@"
+}
+for stateful in true false; do
+  expect "replicas stay configurable" "$(workload --set statefulSet.enabled="$stateful" --set replicas=0 | yq '.spec.replicas')" "0"
+  expect "external controller owns replicas" "$(workload --set statefulSet.enabled="$stateful" --set externallyManagedReplicas=true | yq '.spec | has("replicas")')" "false"
+done
+
 expect "extension points render as set" "$(pod_spec "$TEST_DIR/values-pod-extensions.yaml")" \
   '{"automount":false,"shareProcessNamespace":true,"containers":["pgdog","reloader"],"lifecycle":{"preStop":{"exec":{"command":["/bin/sh","-c","sleep 30"]}}}}'
 expect "defaults render none of them" "$(pod_spec "$TEST_DIR/values-default.yaml")" \
