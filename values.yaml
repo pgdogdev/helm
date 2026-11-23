@@ -93,6 +93,9 @@ port: 6432
 # replicas indicates how many instances of PgDog will run (HA).
 replicas: 2
 
+# Omit spec.replicas when an external controller (e.g. an HPA) owns the count.
+externallyManagedReplicas: false
+
 # priorityClassName assigns a PriorityClass to pgdog pods for scheduling priority.
 # Not set by default; omitted from the pod spec unless explicitly specified.
 # Example: priorityClassName: production-critical

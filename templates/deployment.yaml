@@ -16,7 +16,9 @@ spec:
   {{- if .Values.statefulSet.enabled }}
   serviceName: {{ include "pgdog.fullname" . }}-headless
   {{- end }}
+  {{- if not .Values.externallyManagedReplicas }}
   replicas: {{ .Values.replicas }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "pgdog.selectorLabels" . | nindent 6 }}
