@@ -364,6 +364,12 @@ data:
         {{- if hasKey . "reshardingOnly" }}
         resharding_only = {{ .reshardingOnly }}
         {{- end }}
+        {{- if hasKey . "labels" }}
+        labels = [{{ range $i, $label := .labels }}{{ if $i }}, {{ end }}{{ $label | quote }}{{ end }}]
+        {{- end }}
+        {{- if hasKey . "labelRequired" }}
+        label_required = {{ .labelRequired }}
+        {{- end }}
         {{- if hasKey . "lbWeight" }}
         lb_weight = {{ include "pgdog.intval" .lbWeight }}
         {{- end }}

@@ -59,6 +59,13 @@ databases:
     host: db.example.com
     port: 5432
     lbWeight: 100
+  - name: primary
+    host: replica.example.com
+    role: replica
+    labels:
+      - analytics
+      - reporting
+    labelRequired: true
   - name: shard0
     host: shard0.example.com
     role: primary
