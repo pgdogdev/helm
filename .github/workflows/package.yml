@@ -23,11 +23,26 @@ jobs:
         with:
           version: 'latest'
 
+      - name: Assume AWS Marketplace ECR role
+        id: ecr-credentials
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: arn:aws:iam::588738614642:role/aws-marketplace-ecr
+          aws-region: us-east-1
+          translate-env-variables: false
+          output-credentials: true
+          output-env-credentials: false
+
       - name: Run deploy script
         env:
+          # Existing credentials publish the Helm repository to S3.
           AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
+          # dev/ecr.sh uses the OIDC role credentials for Marketplace uploads.
+          ECR_AWS_ACCESS_KEY_ID: ${{ steps.ecr-credentials.outputs.aws-access-key-id }}
+          ECR_AWS_SECRET_ACCESS_KEY: ${{ steps.ecr-credentials.outputs.aws-secret-access-key }}
+          ECR_AWS_SESSION_TOKEN: ${{ steps.ecr-credentials.outputs.aws-session-token }}
         run: |
           chmod +x dev/deploy.sh
           ./dev/deploy.sh
